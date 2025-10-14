@@ -1,5 +1,6 @@
-package be.ucll.team10_bakery.product.domain;
+package be.ucll.team10_bakery.order.domain.entities;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 import jakarta.persistence.Entity;
@@ -7,20 +8,21 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "products")
-public class Product {
+@Table(name = "orders")
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @NotBlank(message = "Name of product should not be empty")
-    private String name;
+    private LocalDate date;
 
-    public Product() {
-        setName(name);
+    protected Order() {
+    }
+
+    public Order(LocalDate date) {
+        setDate(date);
     }
 
     public UUID getId() {
@@ -31,12 +33,13 @@ public class Product {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public LocalDate getDate() {
+        return date;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
+
 
 }

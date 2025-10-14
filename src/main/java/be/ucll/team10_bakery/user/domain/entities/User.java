@@ -1,4 +1,4 @@
-package be.ucll.team10_bakery.user.domain;
+package be.ucll.team10_bakery.user.domain.entities;
 
 import java.util.UUID;
 
