@@ -1,6 +1,5 @@
 package be.ucll.team10_bakery.product.domain.entities;
 
-import java.util.UUID;
 
 import be.ucll.team10_bakery.product.domain.valueobjects.ProductId;
 import jakarta.persistence.*;
@@ -16,8 +15,11 @@ public class Product {
     @NotBlank(message = "Name of product should not be empty")
     private String name;
 
-    public Product() {
-        setName(name);
+    protected Product() {
+    }
+
+    public Product(String name) {
+        this.name = name;
     }
 
     public ProductId getId() {

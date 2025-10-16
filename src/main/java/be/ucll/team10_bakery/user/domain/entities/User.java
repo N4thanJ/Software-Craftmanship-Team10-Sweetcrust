@@ -19,6 +19,9 @@ public class User {
     @NotBlank(message = "Password should not be blank")
     private String password;
 
+    protected User() {
+    }
+
     public User(String username, String password) {
         setUsername(username);
         setPassword(password);
