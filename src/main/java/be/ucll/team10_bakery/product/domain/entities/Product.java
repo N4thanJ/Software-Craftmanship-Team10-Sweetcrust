@@ -1,34 +1,29 @@
 package be.ucll.team10_bakery.product.domain.entities;
 
-import java.util.UUID;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import be.ucll.team10_bakery.product.domain.valueobjects.ProductId;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "products")
 public class Product {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+
+    @EmbeddedId
+    private ProductId id;
 
     @NotBlank(message = "Name of product should not be empty")
     private String name;
 
-    public Product() {
-        setName(name);
+    protected Product() {
     }
 
-    public UUID getId() {
+    public Product(String name) {
+        this.name = name;
+    }
+
+    public ProductId getId() {
         return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public String getName() {

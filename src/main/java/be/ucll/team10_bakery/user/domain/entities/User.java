@@ -2,19 +2,16 @@ package be.ucll.team10_bakery.user.domain.entities;
 
 import java.util.UUID;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import be.ucll.team10_bakery.user.domain.valueobjects.UserId;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "users")
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+
+    @EmbeddedId
+    private UserId id;
 
     @NotBlank(message = "Username should not be blank")
     private String username;
@@ -22,17 +19,16 @@ public class User {
     @NotBlank(message = "Password should not be blank")
     private String password;
 
+    protected User() {
+    }
+
     public User(String username, String password) {
         setUsername(username);
         setPassword(password);
     }
 
-    public UUID getId() {
+    public UserId getId() {
         return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public String getUsername() {

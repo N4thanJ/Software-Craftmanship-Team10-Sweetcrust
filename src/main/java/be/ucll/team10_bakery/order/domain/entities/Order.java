@@ -3,18 +3,15 @@ package be.ucll.team10_bakery.order.domain.entities;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import be.ucll.team10_bakery.order.domain.valueobjects.OrderId;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "orders")
 public class Order {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+
+    @EmbeddedId
+    private OrderId id;
 
     private LocalDate date;
 
@@ -25,12 +22,8 @@ public class Order {
         setDate(date);
     }
 
-    public UUID getId() {
+    public OrderId getId() {
         return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public LocalDate getDate() {
