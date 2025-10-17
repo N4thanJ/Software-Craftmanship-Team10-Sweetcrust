@@ -11,7 +11,7 @@ import jakarta.persistence.*;
 public class Order {
 
     @EmbeddedId
-    private OrderId id;
+    private OrderId orderId = new OrderId();
 
     private LocalDate date;
 
@@ -22,8 +22,8 @@ public class Order {
         setDate(date);
     }
 
-    public OrderId getId() {
-        return id;
+    public OrderId getOrderId() {
+        return orderId;
     }
 
     public LocalDate getDate() {

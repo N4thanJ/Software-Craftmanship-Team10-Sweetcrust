@@ -10,7 +10,7 @@ import jakarta.validation.constraints.NotBlank;
 public class Product {
 
     @EmbeddedId
-    private ProductId id;
+    private ProductId productId = new ProductId();
 
     @NotBlank(message = "Name of product should not be empty")
     private String name;
@@ -22,8 +22,8 @@ public class Product {
         this.name = name;
     }
 
-    public ProductId getId() {
-        return id;
+    public ProductId getProductId() {
+        return productId;
     }
 
     public String getName() {
