@@ -30,7 +30,7 @@ public class UserCommandService {
 
         try {
             role = UserRole.valueOf(addUserCommand.role().toUpperCase());
-        } catch  (UserServiceException e) {
+        } catch  (IllegalArgumentException e) {
             throw new  UserServiceException("role", "invalid role: " +  addUserCommand.role());
         }
 
