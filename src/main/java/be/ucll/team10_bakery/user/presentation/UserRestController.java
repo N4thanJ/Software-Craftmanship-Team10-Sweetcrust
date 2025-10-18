@@ -4,18 +4,16 @@ import be.ucll.team10_bakery.user.application.UserCommandService;
 import be.ucll.team10_bakery.user.application.UserQueryService;
 import be.ucll.team10_bakery.user.application.commands.AddUserCommand;
 import be.ucll.team10_bakery.user.domain.entities.User;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/user")
+@Tag(name = "User Management", description = "Endpoints related to user registration and user fetching")
 public class UserRestController {
 
     private final UserCommandService userCommandService;
