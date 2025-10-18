@@ -31,7 +31,7 @@ public class UserCommandService {
         try {
             role = UserRole.valueOf(addUserCommand.role().toUpperCase());
         } catch  (IllegalArgumentException e) {
-            throw new  UserServiceException("role", "invalid role: " +  addUserCommand.role());
+            throw new  UserServiceException("role", "invalid role: " +  addUserCommand.role() + " available roles: ADMIN, BAKER, CUSTOMER");
         }
 
         User user = new User(
