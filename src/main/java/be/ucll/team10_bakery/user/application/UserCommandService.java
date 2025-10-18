@@ -19,9 +19,14 @@ public class UserCommandService {
     }
 
     public void registerUser(AddUserCommand addUserCommand) {
-        boolean exists = userRepository.existsByEmail(addUserCommand.email());
-        if (exists) {
+        boolean existsEmail = userRepository.existsByEmail(addUserCommand.email());
+        if (existsEmail) {
             throw new UserServiceException("email", "user with email already exists");
+        }
+
+        boolean existsUsername = userRepository.existsByUsername(addUserCommand.username());
+        if (existsUsername) {
+            throw new UserServiceException("username", "user with username already exists");
         }
 
         String hashedPassword =  bCryptPasswordEncoder.encode(addUserCommand.password());
