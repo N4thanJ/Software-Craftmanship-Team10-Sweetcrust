@@ -1,6 +1,7 @@
 package be.ucll.team10_bakery.user.application;
 
 import be.ucll.team10_bakery.user.domain.entities.User;
+import be.ucll.team10_bakery.user.domain.valueobjects.UserId;
 import be.ucll.team10_bakery.user.infrastructure.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -18,4 +19,10 @@ public class UserQueryService {
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
+
+    public User getUserById(UserId userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserServiceException("user", "user not found"));
+    }
+
 }

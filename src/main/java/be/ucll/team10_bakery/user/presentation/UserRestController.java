@@ -4,12 +4,14 @@ import be.ucll.team10_bakery.user.application.UserCommandService;
 import be.ucll.team10_bakery.user.application.UserQueryService;
 import be.ucll.team10_bakery.user.application.commands.AddUserCommand;
 import be.ucll.team10_bakery.user.domain.entities.User;
+import be.ucll.team10_bakery.user.domain.valueobjects.UserId;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/user")
@@ -31,15 +33,16 @@ public class UserRestController {
         return ResponseEntity.ok(users);
     }
 
+    @GetMapping("/{userId}")
+    public ResponseEntity<User> getUser(@PathVariable UUID userId) {
+        User user = userQueryService.getUserById(new UserId(userId));
+        return ResponseEntity.ok(user);
+    }
+
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody AddUserCommand addUserCommand) {
         userCommandService.registerUser(addUserCommand);
         return ResponseEntity.ok().build();
     }
-
-
-
-
-
 
 }
