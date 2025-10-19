@@ -48,5 +48,6 @@ public class ProductCategory {
         if (description == null || description.isBlank()) {
             throw new ProductDomainException("category", "description should not be null or blank");
         }
+        this.description = description;
     }
 }

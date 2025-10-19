@@ -83,6 +83,7 @@ public class Product {
         if  (basePrice.compareTo(BigDecimal.ZERO) <= 0) {
             throw new ProductDomainException("product", "basePrice should be greater than 0");
         }
+        this.basePrice = basePrice;
     }
 
     public void setAvailable(boolean available) {
