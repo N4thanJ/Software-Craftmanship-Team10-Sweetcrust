@@ -9,7 +9,7 @@
 		<relativePath/>
 		<!-- lookup parent from repository -->
 	</parent>
-	<groupId>be.ucll</groupId>
+	<groupId>com.sweetcrust</groupId>
 	<artifactId>team10-bakery</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>team10-bakery</name>
