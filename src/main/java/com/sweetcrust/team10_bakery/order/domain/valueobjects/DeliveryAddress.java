@@ -1,6 +1,6 @@
 package com.sweetcrust.team10_bakery.order.domain.valueobjects;
 
-import org.springframework.util.Assert;
+import com.sweetcrust.team10_bakery.order.domain.OrderDomainException;
 
 public record DeliveryAddress(
         String street,
@@ -9,9 +9,20 @@ public record DeliveryAddress(
         String country
 ) {
     public DeliveryAddress {
-        Assert.notNull(street, "street must not be null");
-        Assert.notNull(city, "city must not be null");
-        Assert.notNull(postalCode, "postalCode must not be null");
-        Assert.notNull(country, "country must not be null");
+        if (street == null || street.isBlank()) {
+            throw new OrderDomainException("deliveryAddress", "street should not be blank or null");
+        }
+        if (city == null || city.isBlank()) {
+            throw new OrderDomainException("deliveryAddress", "city should not be blank or null");
+        }
+        if (postalCode == null || postalCode.isBlank()) {
+            throw new OrderDomainException("deliveryAddress", "postalCode should not be blank or null");
+        }
+        if (country == null || country.isBlank()) {
+            throw new OrderDomainException("deliveryAddress", "country should not be blank or null");
+        }
+        if (!postalCode.matches("\\d{3,10}")) {
+            throw new OrderDomainException("deliveryAddress", "valid postalCode are 3-10 numbers");
+        }
     }
 }
