@@ -10,6 +10,6 @@ public class UserServiceException extends RuntimeException {
     }
 
     public String getField() {
-        return field;
+        return this.field;
     }
 }
