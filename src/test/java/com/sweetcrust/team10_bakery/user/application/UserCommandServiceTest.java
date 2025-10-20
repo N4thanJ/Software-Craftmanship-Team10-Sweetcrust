@@ -1,7 +1,5 @@
-package com.sweetcrust.team10_bakery.application.user;
+package com.sweetcrust.team10_bakery.user.application;
 
-import com.sweetcrust.team10_bakery.user.application.UserCommandService;
-import com.sweetcrust.team10_bakery.user.application.UserServiceException;
 import com.sweetcrust.team10_bakery.user.application.commands.AddUserCommand;
 import com.sweetcrust.team10_bakery.user.domain.entities.User;
 import com.sweetcrust.team10_bakery.user.infrastructure.UserRepository;

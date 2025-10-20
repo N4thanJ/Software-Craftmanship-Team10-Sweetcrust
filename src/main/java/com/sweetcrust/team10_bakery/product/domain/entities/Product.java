@@ -30,12 +30,12 @@ public class Product {
     protected Product() {
     }
 
-    public Product(String name, String description, BigDecimal basePrice, CategoryId categoryId) {
+    public Product(String name, String description, BigDecimal basePrice, boolean available, CategoryId categoryId) {
         this.productId = new ProductId();
         setName(name);
         setDescription(description);
         setBasePrice(basePrice);
-        setAvailable(true);
+        setAvailable(available);
         setCategoryId(categoryId);
     }
 
