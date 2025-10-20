@@ -1,6 +1,5 @@
-package com.sweetcrust.team10_bakery.domain.product;
+package com.sweetcrust.team10_bakery.product.domain;
 
-import com.sweetcrust.team10_bakery.product.domain.ProductDomainException;
 import com.sweetcrust.team10_bakery.product.domain.entities.ProductVariant;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductId;
 import org.junit.jupiter.api.Test;

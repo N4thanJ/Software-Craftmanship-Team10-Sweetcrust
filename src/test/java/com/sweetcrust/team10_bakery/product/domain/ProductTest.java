@@ -1,6 +1,5 @@
-package com.sweetcrust.team10_bakery.domain.product;
+package com.sweetcrust.team10_bakery.product.domain;
 
-import com.sweetcrust.team10_bakery.product.domain.ProductDomainException;
 import com.sweetcrust.team10_bakery.product.domain.entities.Product;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.CategoryId;
 import org.junit.jupiter.api.Test;
@@ -18,9 +17,10 @@ public class ProductTest {
         String description = "A cinnamon roll with attitude";
         BigDecimal price = BigDecimal.valueOf(4.20);
         CategoryId categoryId = new CategoryId();
+        boolean available = true;
 
         // when
-        Product product = new Product(name, description, price, categoryId);
+        Product product = new Product(name, description, price, available, categoryId);
 
         // then
         assertNotNull(product);
@@ -37,10 +37,11 @@ public class ProductTest {
         // given
         BigDecimal price = BigDecimal.valueOf(3.50);
         CategoryId categoryId = new CategoryId();
+        boolean available = true;
 
         // when
         ProductDomainException exception = assertThrows(ProductDomainException.class,
-                () -> new Product(null, "Magically delicious", price, categoryId));
+                () -> new Product(null, "Magically delicious", price, available, categoryId));
 
         // then
         assertEquals("product", exception.getField());
@@ -52,10 +53,11 @@ public class ProductTest {
         // given
         BigDecimal price = BigDecimal.valueOf(3.50);
         CategoryId categoryId = new CategoryId();
+        boolean available = true;
 
         // when
         ProductDomainException exception = assertThrows(ProductDomainException.class,
-                () -> new Product("   ", "Magically delicious", price, categoryId));
+                () -> new Product("   ", "Magically delicious", price, available, categoryId));
 
         // then
         assertEquals("product", exception.getField());
@@ -67,10 +69,11 @@ public class ProductTest {
         // given
         BigDecimal price = BigDecimal.valueOf(5.00);
         CategoryId categoryId = new CategoryId();
+        boolean available = true;
 
         // when
         ProductDomainException exception = assertThrows(ProductDomainException.class,
-                () -> new Product("Funky Monkey Muffin", null, price, categoryId));
+                () -> new Product("Funky Monkey Muffin", null, price, available, categoryId));
 
         // then
         assertEquals("product", exception.getField());
@@ -82,10 +85,11 @@ public class ProductTest {
         // given
         BigDecimal price = BigDecimal.valueOf(5.00);
         CategoryId categoryId = new CategoryId();
+        boolean available = true;
 
         // when
         ProductDomainException exception = assertThrows(ProductDomainException.class,
-                () -> new Product("Funky Monkey Muffin", "   ", price, categoryId));
+                () -> new Product("Funky Monkey Muffin", "   ", price, available, categoryId));
 
         // then
         assertEquals("product", exception.getField());
@@ -96,10 +100,11 @@ public class ProductTest {
     void givenNullBasePrice_whenCreatingProduct_thenThrowsException() {
         // given
         CategoryId categoryId = new CategoryId();
+        boolean available = true;
 
         // when
         ProductDomainException exception = assertThrows(ProductDomainException.class,
-                () -> new Product("Glazed Unicorn Donut", "Sparkly and magical", null, categoryId));
+                () -> new Product("Glazed Unicorn Donut", "Sparkly and magical", null, available, categoryId));
 
         // then
         assertEquals("product", exception.getField());
@@ -111,10 +116,11 @@ public class ProductTest {
         // given
         CategoryId categoryId = new CategoryId();
         BigDecimal price = BigDecimal.ZERO;
+        boolean available = true;
 
         // when
         ProductDomainException exception = assertThrows(ProductDomainException.class,
-                () -> new Product("Baguette of Doom", "Seriously dangerous carbs", price, categoryId));
+                () -> new Product("Baguette of Doom", "Seriously dangerous carbs", price, available, categoryId));
 
         // then
         assertEquals("product", exception.getField());
@@ -126,10 +132,11 @@ public class ProductTest {
         // given
         CategoryId categoryId = new CategoryId();
         BigDecimal price = BigDecimal.valueOf(-2.50);
+        boolean available = true;
 
         // when
         ProductDomainException exception = assertThrows(ProductDomainException.class,
-                () -> new Product("Eclair of Mystery", "Sweet, but suspicious", price, categoryId));
+                () -> new Product("Eclair of Mystery", "Sweet, but suspicious", price, available, categoryId));
 
         // then
         assertEquals("product", exception.getField());
@@ -140,10 +147,11 @@ public class ProductTest {
     void givenNullCategoryId_whenCreatingProduct_thenThrowsException() {
         // given
         BigDecimal price = BigDecimal.valueOf(3.75);
+        boolean available = true;
 
         // when
         ProductDomainException exception = assertThrows(ProductDomainException.class,
-                () -> new Product("Croissantzilla", "Monster-sized buttery delight", price, null));
+                () -> new Product("Croissantzilla", "Monster-sized buttery delight", price, available, null));
 
         // then
         assertEquals("product", exception.getField());

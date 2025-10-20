@@ -1,6 +1,5 @@
-package com.sweetcrust.team10_bakery.domain.order;
+package com.sweetcrust.team10_bakery.order.domain;
 
-import com.sweetcrust.team10_bakery.order.domain.OrderDomainException;
 import com.sweetcrust.team10_bakery.order.domain.entities.OrderItem;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductId;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.VariantId;

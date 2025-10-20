@@ -4,10 +4,7 @@ import com.sweetcrust.team10_bakery.product.domain.valueobjects.VariantId;
 import com.sweetcrust.team10_bakery.shop.domain.ShopDomainException;
 import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopId;
 import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopProductVariantId;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "shop_product_variants")
@@ -17,9 +14,11 @@ public class ShopProductVariant {
     private ShopProductVariantId shopProductVariantId;
 
     @Embedded
+    @AttributeOverride(name = "id", column = @Column(name = "shop_id"))
     private ShopId shopId;
 
     @Embedded
+    @AttributeOverride(name = "id", column = @Column(name = "variant_id"))
     private VariantId variantId;
 
     protected ShopProductVariant() {

@@ -6,8 +6,7 @@ public record ShopAddress(
         String street,
         String city,
         String postalCode,
-        String country,
-        CountryCode countryCode
+        String country
 ) {
     public ShopAddress {
         if (street == null || street.isBlank()) {
@@ -21,9 +20,6 @@ public record ShopAddress(
         }
         if (country == null || country.isBlank()) {
             throw new ShopDomainException("shopAddress", "country should not be blank or null");
-        }
-        if (countryCode == null) {
-            throw new ShopDomainException("shopAddress", "countryCode should not be null");
         }
         if (!postalCode.matches("\\d{3,10}")) {
             throw new ShopDomainException("shopAddress", "valid postalCode are 3-10 numbers");

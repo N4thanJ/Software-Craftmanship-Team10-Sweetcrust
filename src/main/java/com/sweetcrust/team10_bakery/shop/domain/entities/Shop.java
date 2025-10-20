@@ -1,6 +1,7 @@
 package com.sweetcrust.team10_bakery.shop.domain.entities;
 
 import com.sweetcrust.team10_bakery.shop.domain.ShopDomainException;
+import com.sweetcrust.team10_bakery.shop.domain.valueobjects.CountryCode;
 import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopAddress;
 import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopId;
 import jakarta.persistence.Embedded;
@@ -22,6 +23,9 @@ public class Shop {
     private ShopAddress address;
 
     private String email;
+
+    @Embedded
+    private CountryCode countryCode;
 
     protected Shop() {
     }
@@ -49,6 +53,10 @@ public class Shop {
         return email;
     }
 
+    public  CountryCode getCountryCode() {
+        return countryCode;
+    }
+
     public void setName(String name) {
         if  (name == null || name.isBlank()) {
             throw new ShopDomainException("shopName", "name should not be null");
@@ -71,5 +79,12 @@ public class Shop {
             throw new ShopDomainException("email", "invalid email");
         }
         this.email = email;
+    }
+
+    public void setCountryCode(CountryCode countryCode) {
+        if (countryCode == null) {
+            throw new ShopDomainException("countryCode", "countryCode should not be null");
+        }
+        this.countryCode = countryCode;
     }
 }

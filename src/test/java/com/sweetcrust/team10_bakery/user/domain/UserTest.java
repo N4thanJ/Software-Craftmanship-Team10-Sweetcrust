@@ -1,6 +1,5 @@
-package com.sweetcrust.team10_bakery.domain.user;
+package com.sweetcrust.team10_bakery.user.domain;
 
-import com.sweetcrust.team10_bakery.user.domain.UserDomainException;
 import com.sweetcrust.team10_bakery.user.domain.entities.User;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserRole;
 import org.junit.jupiter.api.Test;
