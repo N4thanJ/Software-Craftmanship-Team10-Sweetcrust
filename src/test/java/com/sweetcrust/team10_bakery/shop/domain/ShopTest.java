@@ -14,7 +14,7 @@ public class ShopTest {
         // given
         String name = "The Rolling Scones";
         ShopAddress address = new ShopAddress("42 Doughnut Drive", "Crumbsville", "12345", "Bakeland");
-        String email = "contact@rollingscones.com";
+        String email = "amsterdam@sweetcrust.nl";
 
         // when
         Shop shop = new Shop(name, address, email);
@@ -31,7 +31,7 @@ public class ShopTest {
     void givenNullName_whenCreatingShop_thenThrowsException() {
         // given
         ShopAddress address = new ShopAddress("10 Croissant Crescent", "Pastrytown", "54321", "Bakeland");
-        String email = "yum@croissantcafe.com";
+        String email = "rome@sweetcrust.it";
 
         // when
         ShopDomainException exception = assertThrows(ShopDomainException.class,
@@ -46,7 +46,7 @@ public class ShopTest {
     void givenBlankName_whenCreatingShop_thenThrowsException() {
         // given
         ShopAddress address = new ShopAddress("9 Pretzel Place", "Twistopolis", "67890", "Bakeland");
-        String email = "hello@pretzelparlor.com";
+        String email = "athens@sweetcrust.gr";
 
         // when
         ShopDomainException exception = assertThrows(ShopDomainException.class,
@@ -61,7 +61,7 @@ public class ShopTest {
     void givenNullAddress_whenCreatingShop_thenThrowsException() {
         // given
         String name = "Bun Intended";
-        String email = "info@bunintended.com";
+        String email = "stockholm@sweetcrust.se";
 
         // when
         ShopDomainException exception = assertThrows(ShopDomainException.class,
@@ -107,7 +107,7 @@ public class ShopTest {
 
         // when
         ShopDomainException exception = assertThrows(ShopDomainException.class,
-                () -> new Shop("The Bread Awakens", address, "breadawakens.com"));
+                () -> new Shop("The Bread Awakens", address, "berlin@sweetcrust.de"));
 
         // then
         assertEquals("email", exception.getField());
@@ -132,7 +132,7 @@ public class ShopTest {
     void givenValidEmail_whenCreatingShop_thenShopIsCreated() {
         // given
         ShopAddress address = new ShopAddress("88 Tart Terrace", "Pufftown", "20202", "Bakeland");
-        String email = "orders@pufftown.com";
+        String email = "barcelona@sweetcrust.es";
 
         // when
         Shop shop = new Shop("Flour Power", address, email);
@@ -146,7 +146,7 @@ public class ShopTest {
     void givenValidCountryCode_whenSettingCountryCode_thenCountryCodeIsSet() {
         // given
         ShopAddress address = new ShopAddress("100 Donut Drive", "Sprinkleville", "60606", "Bakeland");
-        Shop shop = new Shop("Holy Sheet Cakes", address, "sheetcakes@holy.com");
+        Shop shop = new Shop("Holy Sheet Cakes", address, "newdelhi@sweetcrust.in");
         CountryCode countryCode = new CountryCode("US");
 
         // when
@@ -160,7 +160,7 @@ public class ShopTest {
     void givenNullCountryCode_whenSettingCountryCode_thenThrowsException() {
         // given
         ShopAddress address = new ShopAddress("22 Muffin Mile", "Cupcake City", "80808", "Bakeland");
-        Shop shop = new Shop("Dough My Gosh", address, "yum@doughmygosh.com");
+        Shop shop = new Shop("Dough My Gosh", address, "miami@sweetcrust.us");
 
         // when
         ShopDomainException exception = assertThrows(ShopDomainException.class,
@@ -175,7 +175,7 @@ public class ShopTest {
     void givenShopWithValidAddress_whenAccessingValues_thenTheyMatch() {
         // given
         ShopAddress address = new ShopAddress("123 Cupcake Avenue", "Frostville", "34567", "Bakeland");
-        Shop shop = new Shop("Bake Street Boys", address, "info@bakestreetboys.com");
+        Shop shop = new Shop("Bake Street Boys", address, "leuven@sweetcrust.be");
 
         // then
         assertEquals("123 Cupcake Avenue", shop.getAddress().street());
