@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 public class Product {
 
     @EmbeddedId
-    private ProductId productId = new ProductId();
+    private ProductId productId;
 
     private String name;
 
@@ -31,6 +31,7 @@ public class Product {
     }
 
     public Product(String name, String description, BigDecimal basePrice, CategoryId categoryId) {
+        this.productId = new ProductId();
         setName(name);
         setDescription(description);
         setBasePrice(basePrice);

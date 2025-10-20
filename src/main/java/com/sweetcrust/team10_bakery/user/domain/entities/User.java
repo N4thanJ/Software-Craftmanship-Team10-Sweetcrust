@@ -10,7 +10,7 @@ import jakarta.persistence.*;
 public class User {
 
     @EmbeddedId
-    private UserId userId =  new UserId();
+    private UserId userId;
 
     private String username;
 
@@ -25,6 +25,7 @@ public class User {
     }
 
     public User(String username, String password, String email,  UserRole role) {
+        this.userId = new  UserId();
         setUsername(username);
         setPassword(password);
         setEmail(email);

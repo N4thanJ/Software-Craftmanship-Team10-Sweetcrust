@@ -1,8 +1,16 @@
 package com.sweetcrust.team10_bakery.order.domain.entities;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.sweetcrust.team10_bakery.order.domain.OrderDomainException;
+import com.sweetcrust.team10_bakery.order.domain.valueobjects.DeliveryAddress;
 import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderId;
+import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderStatus;
+import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderType;
+import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserId;
 import jakarta.persistence.*;
 
 @Entity
@@ -10,28 +18,162 @@ import jakarta.persistence.*;
 public class Order {
 
     @EmbeddedId
-    private OrderId orderId = new OrderId();
+    private OrderId orderId;
 
-    private LocalDate date;
+    @Enumerated(EnumType.STRING)
+    private OrderType orderType;
+
+    // tijdelijk, branch domain moet eerst toegevoegd worden
+    // orderingBranch is bv. SweetCrust Germany die een order plaatst bij de sourceBranch Belgium
+    private String orderingBranchId; // optional enkel gebruiken bij B2B
+    private String sourceBranchId; // optional enkel gebruiken bij B2B
+
+    @Embedded
+    @AttributeOverride(name = "id", column = @Column(name = "customer_id"))
+    private UserId customerId;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<OrderItem> orderItems = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
+
+    @Embedded
+    private DeliveryAddress deliveryAddress;
+
+    private LocalDateTime orderDate;
+
+    private LocalDateTime requestedDeliveryDate;
 
     protected Order() {
     }
 
-    public Order(LocalDate date) {
-        setDate(date);
+    // Factory constructor (private omdat die enkel hier gebruikt moe worden om te scheiden tussen B2B en B2C orders)
+    private Order(OrderType orderType, LocalDateTime requestedDeliveryDate) {
+        this.orderId = new  OrderId();
+        this.orderDate = LocalDateTime.now();
+        this.status = OrderStatus.PENDING;
+        setOrderType(orderType);
+        setRequestedDeliveryDate(requestedDeliveryDate);
+    }
+
+    // B2C orders (klant order)
+    public static Order createB2C(OrderType orderType, DeliveryAddress deliveryAddress, LocalDateTime requestedDeliveryDate, UserId customerId) {
+        Order order = new Order(orderType, requestedDeliveryDate);
+        order.setDeliveryAddress(deliveryAddress);
+        order.setCustomerId(customerId);
+        return order;
+    }
+
+    // B2B orders (SweetCrust order bij andere SweetCrust)
+    public static Order createB2B(OrderType orderType, LocalDateTime requestedDeliveryDate, String orderingBranchId, String sourceBranchId) {
+        Order order = new Order(orderType, requestedDeliveryDate);
+        order.setOrderingBranchId(orderingBranchId);
+        order.setSourceBranchId(sourceBranchId);
+        return order;
     }
 
     public OrderId getOrderId() {
         return orderId;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public OrderType getOrderType() {
+        return orderType;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public UserId getCustomerId() {
+        return customerId;
     }
 
+    public List<OrderItem> getOrderItems() {
+        return List.copyOf(orderItems);
+    }
+
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public DeliveryAddress getDeliveryAddress() {
+        return deliveryAddress;
+    }
+
+    public LocalDateTime getOrderDate() {
+        return orderDate;
+    }
+
+    public LocalDateTime getRequestedDeliveryDate() {
+        return requestedDeliveryDate;
+    }
+
+    public void setOrderType(OrderType orderType) {
+        if (orderType == null) {
+            throw new OrderDomainException("orderType", "orderType should not be null");
+        }
+        this.orderType = orderType;
+    }
+
+    public void setDeliveryAddress(DeliveryAddress deliveryAddress) {
+        if (deliveryAddress == null) {
+            throw new OrderDomainException("deliveryAddress", "deliveryAddress should not be null");
+        }
+        this.deliveryAddress = deliveryAddress;
+    }
+
+    public void setRequestedDeliveryDate(LocalDateTime requestedDeliveryDate) {
+        if (requestedDeliveryDate == null) {
+            throw new OrderDomainException("requestedDeliveryDate", "requestedDeliveryDate should not be null");
+        }
+        if  (!requestedDeliveryDate.isAfter(orderDate)) {
+            throw new OrderDomainException("requestedDeliveryDate", "requestedDeliveryDate should be after orderDate");
+        }
+        this.requestedDeliveryDate = requestedDeliveryDate;
+    }
+
+    public void setCustomerId(UserId customerId) {
+        if (customerId == null) {
+            throw new OrderDomainException("customerId", "customerId should not be null");
+        }
+        this.customerId = customerId;
+    }
+
+    public void setOrderingBranchId(String orderingBranchId) {
+        if (orderingBranchId == null) {
+            throw new OrderDomainException("orderingBranchId", "orderingBranchId should not be null");
+        }
+        this.orderingBranchId = orderingBranchId;
+    }
+
+    public void setSourceBranchId(String sourceBranchId) {
+        if (sourceBranchId == null) {
+            throw new OrderDomainException("sourceBranchId", "sourceBranchId should not be null");
+        }
+        this.sourceBranchId = sourceBranchId;
+    }
+
+    public void addOrderItem(OrderItem orderItem) {
+        if  (orderItem == null) {
+            throw new OrderDomainException("orderItem", "orderItem should not be null");
+        }
+        orderItems.add(orderItem);
+    }
+
+    public void removeOrderItem(OrderItem orderItem) {
+        if (orderItem == null) {
+            throw new OrderDomainException("orderItem", "orderItem should not be null");
+        }
+        orderItems.remove(orderItem);
+    }
+
+    public void validateOrder() {
+        if (orderType == OrderType.B2C && customerId == null) {
+            throw new OrderDomainException("customerId", "B2C orders must have customerId");
+        }
+        if (orderType == OrderType.B2B && orderingBranchId == null) {
+            throw new OrderDomainException("orderingBranchId", "B2B orders must have orderingBranchId");
+        }
+        if (orderItems.isEmpty()) {
+            throw new OrderDomainException("orderItems", "orderItems should not be empty");
+        }
+    }
 
 }
