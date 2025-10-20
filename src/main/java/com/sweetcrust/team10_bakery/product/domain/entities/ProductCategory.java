@@ -11,7 +11,7 @@ import jakarta.persistence.Table;
 public class ProductCategory {
 
     @EmbeddedId
-    private CategoryId categoryId =  new CategoryId();
+    private CategoryId categoryId;
 
     private String name;
 
@@ -21,6 +21,7 @@ public class ProductCategory {
     }
 
     public ProductCategory(String name, String description) {
+        this.categoryId = new CategoryId();
         setName(name);
         setDescription(description);
     }

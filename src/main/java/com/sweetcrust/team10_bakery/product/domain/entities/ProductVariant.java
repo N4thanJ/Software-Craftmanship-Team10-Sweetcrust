@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 public class ProductVariant {
 
     @EmbeddedId
-    private VariantId variantId = new VariantId();
+    private VariantId variantId;
 
     @Embedded
     @AttributeOverride(name = "id", column = @Column(name = "product_id"))
@@ -26,6 +26,7 @@ public class ProductVariant {
     }
 
     public ProductVariant(String variantName, BigDecimal priceModifier, ProductId productId) {
+        this.variantId = new VariantId();
         setVariantName(variantName);
         setPriceModifier(priceModifier);
         setProductId(productId);
