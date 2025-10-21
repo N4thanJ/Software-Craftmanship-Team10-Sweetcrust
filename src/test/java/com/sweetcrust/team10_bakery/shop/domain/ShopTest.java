@@ -107,7 +107,7 @@ public class ShopTest {
 
         // when
         ShopDomainException exception = assertThrows(ShopDomainException.class,
-                () -> new Shop("The Bread Awakens", address, "berlin@sweetcrust.de"));
+                () -> new Shop("The Bread Awakens", address, "berlinsweetcrust.de"));
 
         // then
         assertEquals("email", exception.getField());
