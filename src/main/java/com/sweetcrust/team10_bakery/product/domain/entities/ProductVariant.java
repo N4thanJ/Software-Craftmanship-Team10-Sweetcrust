@@ -1,7 +1,6 @@
 package com.sweetcrust.team10_bakery.product.domain.entities;
 
 import com.sweetcrust.team10_bakery.product.domain.ProductDomainException;
-import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductId;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.VariantId;
 import jakarta.persistence.*;
 
@@ -14,10 +13,6 @@ public class ProductVariant {
     @EmbeddedId
     private VariantId variantId;
 
-    @Embedded
-    @AttributeOverride(name = "id", column = @Column(name = "product_id"))
-    private ProductId productId;
-
     private String variantName;
 
     private BigDecimal priceModifier;
@@ -25,11 +20,10 @@ public class ProductVariant {
     protected ProductVariant() {
     }
 
-    public ProductVariant(String variantName, BigDecimal priceModifier, ProductId productId) {
+    public ProductVariant(String variantName, BigDecimal priceModifier) {
         this.variantId = new VariantId();
         setVariantName(variantName);
         setPriceModifier(priceModifier);
-        setProductId(productId);
     }
 
     public VariantId getVariantId() {
@@ -42,10 +36,6 @@ public class ProductVariant {
 
     public BigDecimal getPriceModifier() {
         return priceModifier;
-    }
-
-    public ProductId getProductId() {
-        return productId;
     }
 
     public void setVariantName(String variantName) {
@@ -63,13 +53,6 @@ public class ProductVariant {
             throw new ProductDomainException("priceModifier", "priceModifier should not be negative");
         }
         this.priceModifier = priceModifier;
-    }
-
-    public void setProductId(ProductId productId) {
-        if  (productId == null) {
-            throw new ProductDomainException("variant", "productId should not be null");
-        }
-        this.productId = productId;
     }
 
 }
