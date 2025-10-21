@@ -18,14 +18,13 @@ public class ProductVariantTest {
         ProductId productId = new ProductId();
 
         // when
-        ProductVariant variant = new ProductVariant(variantName, priceModifier, productId);
+        ProductVariant variant = new ProductVariant(variantName, priceModifier);
 
         // then
         assertNotNull(variant);
         assertNotNull(variant.getVariantId());
         assertEquals(variantName, variant.getVariantName());
         assertEquals(priceModifier, variant.getPriceModifier());
-        assertEquals(productId, variant.getProductId());
     }
 
     @Test
@@ -36,7 +35,7 @@ public class ProductVariantTest {
 
         // when
         ProductDomainException exception = assertThrows(ProductDomainException.class,
-                () -> new ProductVariant(null, priceModifier, productId));
+                () -> new ProductVariant(null, priceModifier));
 
         // then
         assertEquals("variant", exception.getField());
@@ -51,7 +50,7 @@ public class ProductVariantTest {
 
         // when
         ProductDomainException exception = assertThrows(ProductDomainException.class,
-                () -> new ProductVariant("   ", priceModifier, productId));
+                () -> new ProductVariant("   ", priceModifier));
 
         // then
         assertEquals("variant", exception.getField());
@@ -65,7 +64,7 @@ public class ProductVariantTest {
 
         // when
         ProductDomainException exception = assertThrows(ProductDomainException.class,
-                () -> new ProductVariant("Spicy Surprise", null, productId));
+                () -> new ProductVariant("Spicy Surprise", null));
 
         // then
         assertEquals("priceModifier", exception.getField());
@@ -80,24 +79,10 @@ public class ProductVariantTest {
 
         // when
         ProductDomainException exception = assertThrows(ProductDomainException.class,
-                () -> new ProductVariant("Mega Marshmallow", priceModifier, productId));
+                () -> new ProductVariant("Mega Marshmallow", priceModifier));
 
         // then
         assertEquals("priceModifier", exception.getField());
         assertEquals("priceModifier should not be negative", exception.getMessage());
-    }
-
-    @Test
-    void givenNullProductId_whenCreatingVariant_thenThrowsException() {
-        // given
-        BigDecimal priceModifier = BigDecimal.valueOf(0.75);
-
-        // when
-        ProductDomainException exception = assertThrows(ProductDomainException.class,
-                () -> new ProductVariant("Caramel Crunch", priceModifier, null));
-
-        // then
-        assertEquals("variant", exception.getField());
-        assertEquals("productId should not be null", exception.getMessage());
     }
 }

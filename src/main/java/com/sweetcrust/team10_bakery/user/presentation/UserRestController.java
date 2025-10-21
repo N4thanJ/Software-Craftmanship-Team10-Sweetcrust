@@ -40,9 +40,9 @@ public class UserRestController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody AddUserCommand addUserCommand) {
-        userCommandService.registerUser(addUserCommand);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<User> registerUser(@RequestBody AddUserCommand addUserCommand) {
+        User user = userCommandService.registerUser(addUserCommand);
+        return ResponseEntity.ok(user);
     }
 
 }
