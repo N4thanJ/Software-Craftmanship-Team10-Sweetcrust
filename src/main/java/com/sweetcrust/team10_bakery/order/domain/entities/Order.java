@@ -10,6 +10,7 @@ import com.sweetcrust.team10_bakery.order.domain.valueobjects.DeliveryAddress;
 import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderId;
 import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderStatus;
 import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderType;
+import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopId;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserId;
 import jakarta.persistence.*;
 
@@ -25,8 +26,13 @@ public class Order {
 
     // tijdelijk, branch domain moet eerst toegevoegd worden
     // orderingBranch is bv. SweetCrust Germany die een order plaatst bij de sourceBranch Belgium
-    private String orderingBranchId; // optional enkel gebruiken bij B2B
-    private String sourceBranchId; // optional enkel gebruiken bij B2B
+    @Embedded
+    @AttributeOverride(name = "id", column = @Column(name = "ordering_shop_id"))
+    private ShopId orderingShopId; // optional enkel gebruiken bij B2B
+
+    @Embedded
+    @AttributeOverride(name = "id", column = @Column(name = "source_shop_id"))
+    private ShopId sourceShopId; // optional enkel gebruiken bij B2B
 
     @Embedded
     @AttributeOverride(name = "id", column = @Column(name = "customer_id"))
@@ -66,10 +72,10 @@ public class Order {
     }
 
     // B2B orders (SweetCrust order bij andere SweetCrust)
-    public static Order createB2B(OrderType orderType, LocalDateTime requestedDeliveryDate, String orderingBranchId, String sourceBranchId) {
+    public static Order createB2B(OrderType orderType, LocalDateTime requestedDeliveryDate, ShopId orderingShopId, ShopId sourceShopId) {
         Order order = new Order(orderType, requestedDeliveryDate);
-        order.setOrderingBranchId(orderingBranchId);
-        order.setSourceBranchId(sourceBranchId);
+        order.setOrderingShopId(orderingShopId);
+        order.setSourceShopId(sourceShopId);
         return order;
     }
 
@@ -105,6 +111,14 @@ public class Order {
         return requestedDeliveryDate;
     }
 
+    public ShopId getSourceShopId() {
+        return sourceShopId;
+    }
+
+    public ShopId getOrderingShopId() {
+        return orderingShopId;
+    }
+
     public void setOrderType(OrderType orderType) {
         if (orderType == null) {
             throw new OrderDomainException("orderType", "orderType should not be null");
@@ -136,18 +150,18 @@ public class Order {
         this.customerId = customerId;
     }
 
-    public void setOrderingBranchId(String orderingBranchId) {
-        if (orderingBranchId == null) {
+    public void setOrderingShopId(ShopId orderingShopId) {
+        if (orderingShopId == null) {
             throw new OrderDomainException("orderingBranchId", "orderingBranchId should not be null");
         }
-        this.orderingBranchId = orderingBranchId;
+        this.orderingShopId = orderingShopId;
     }
 
-    public void setSourceBranchId(String sourceBranchId) {
-        if (sourceBranchId == null) {
+    public void setSourceShopId(ShopId sourceShopId) {
+        if (sourceShopId == null) {
             throw new OrderDomainException("sourceBranchId", "sourceBranchId should not be null");
         }
-        this.sourceBranchId = sourceBranchId;
+        this.sourceShopId = sourceShopId;
     }
 
     public void addOrderItem(OrderItem orderItem) {
@@ -168,7 +182,7 @@ public class Order {
         if (orderType == OrderType.B2C && customerId == null) {
             throw new OrderDomainException("customerId", "B2C orders must have customerId");
         }
-        if (orderType == OrderType.B2B && orderingBranchId == null) {
+        if (orderType == OrderType.B2B && orderingShopId == null) {
             throw new OrderDomainException("orderingBranchId", "B2B orders must have orderingBranchId");
         }
         if (orderItems.isEmpty()) {

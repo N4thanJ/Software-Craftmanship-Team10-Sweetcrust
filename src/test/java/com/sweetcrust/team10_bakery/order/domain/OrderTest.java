@@ -5,6 +5,7 @@ import com.sweetcrust.team10_bakery.order.domain.entities.OrderItem;
 import com.sweetcrust.team10_bakery.order.domain.valueobjects.DeliveryAddress;
 import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderType;
 import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderStatus;
+import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopId;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserId;
 import org.junit.jupiter.api.Test;
 
@@ -39,17 +40,19 @@ public class OrderTest {
     void givenValidB2BData_whenCreatingOrder_thenOrderIsCreated() {
         // given
         LocalDateTime requestedDeliveryDate = LocalDateTime.now().plusDays(2);
-        String orderingBranchId = "SweetCrust Wonderland";
-        String sourceBranchId = "SweetCrust Candyland";
+        ShopId orderingShopId = new ShopId();
+        ShopId sourceShopId = new ShopId();
 
         // when
-        Order order = Order.createB2B(OrderType.B2B, requestedDeliveryDate, orderingBranchId, sourceBranchId);
+        Order order = Order.createB2B(OrderType.B2B, requestedDeliveryDate, orderingShopId, sourceShopId);
 
         // then
         assertNotNull(order);
         assertNotNull(order.getOrderId());
         assertEquals(OrderType.B2B, order.getOrderType());
         assertEquals(requestedDeliveryDate, order.getRequestedDeliveryDate());
+        assertEquals(orderingShopId, order.getOrderingShopId());
+        assertEquals(sourceShopId, order.getSourceShopId());
     }
 
     @Test
