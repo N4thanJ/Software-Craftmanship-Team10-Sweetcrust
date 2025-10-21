@@ -17,7 +17,7 @@ public class ProductCommandService {
         boolean existsByName = productRepository.existsByName(addProductCommand.name());
 
         if (existsByName) {
-            throw new ProductServiceException("Name", "Product with name already exists");
+            throw new ProductServiceException("name", "product with name already exists");
         }
 
         Product product = new Product(
