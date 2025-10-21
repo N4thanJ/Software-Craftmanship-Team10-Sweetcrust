@@ -18,7 +18,7 @@ public class UserCommandService {
         this.userRepository = userRepository;
     }
 
-    public void registerUser(AddUserCommand addUserCommand) {
+    public User registerUser(AddUserCommand addUserCommand) {
         boolean existsEmail = userRepository.existsByEmail(addUserCommand.email());
         if (existsEmail) {
             throw new UserServiceException("email", "user with email already exists");
@@ -29,14 +29,14 @@ public class UserCommandService {
             throw new UserServiceException("username", "user with username already exists");
         }
 
-        String hashedPassword =  bCryptPasswordEncoder.encode(addUserCommand.password());
+        String hashedPassword = bCryptPasswordEncoder.encode(addUserCommand.password());
 
         UserRole role;
 
         try {
             role = UserRole.valueOf(addUserCommand.role().toUpperCase());
-        } catch  (IllegalArgumentException e) {
-            throw new  UserServiceException("role", "invalid role: " +  addUserCommand.role() + " available roles: ADMIN, BAKER, CUSTOMER");
+        } catch (IllegalArgumentException e) {
+            throw new UserServiceException("role", "invalid role: " + addUserCommand.role() + " available roles: ADMIN, BAKER, CUSTOMER");
         }
 
         User user = new User(
@@ -46,6 +46,6 @@ public class UserCommandService {
                 role
         );
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 }
