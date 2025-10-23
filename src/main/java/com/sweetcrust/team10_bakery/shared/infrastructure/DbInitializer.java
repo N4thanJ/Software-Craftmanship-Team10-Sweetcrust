@@ -48,18 +48,30 @@ public class DbInitializer {
         clearAll();
 
 
-        ProductCategory productCategory = new ProductCategory("Cakes", "A variety of cakes");
-        ProductVariant productVariant = new ProductVariant("Small", BigDecimal.valueOf(.3));
+        ProductCategory productCategory1 = new ProductCategory("Cakes", "A variety of cakes");
+        ProductCategory productCategory2 = new ProductCategory("Candies", "Sweet candies");
 
-        Product curryCake = new Product("Curry Cake Deluxe", "A very delicious originated from India dish",
-                BigDecimal.valueOf(4.99), true,
-                productCategory.getCategoryId());
+        ProductVariant productVariant1 = new ProductVariant("Small", BigDecimal.valueOf(.3));
+        ProductVariant productVariant2 = new ProductVariant("Medium", BigDecimal.valueOf(.5));
+
+        Product curryCake = new Product(
+                "Curry Cake Delux",
+                "A very delicious originated from India dish",
+                BigDecimal.valueOf(4.99),
+                true,
+                productVariant1.getVariantId(),
+                productCategory1.getCategoryId());
+
+        Product candyBag = new Product("Candy Bag", "A bag full of assorted candies", BigDecimal.valueOf(2.99), true, productVariant2.getVariantId(), productCategory2.getCategoryId());
 
         productRepository.save(curryCake);
+        productRepository.save(candyBag);
 
         User user1 = new User("Curry Lover", "IloveCurry123!", "curry.lover@sweetcrust.in", UserRole.CUSTOMER);
+        User user2 = new User("Candy Lover", "IloveCandy123!", "candy.lover@sweetcrust.in", UserRole.CUSTOMER);
 
         userRepository.save(user1);
+        userRepository.save(user2);
 
         Shop indiaShop = new Shop("SweetCrust New Delhi", new ShopAddress("Currystreet 1", "New Delhi", "110001", "India"), "newdelhi@sweetcrust.com");
         Shop deutscheShop = new Shop("SweetCrust Berlin", new ShopAddress("Brandenburg 1", "Berlin", "10117", "Germany"), "berlin@sweetcrust.com");
@@ -70,13 +82,13 @@ public class DbInitializer {
         Order b2cOrder = Order.createB2C(OrderType.B2C, new DeliveryAddress("CurryStreet", "CurryCity", "12345", "CurryCountry"), LocalDateTime.now().plusDays(2), user1.getUserId());
         Order b2bOrder = Order.createB2B(OrderType.B2B, LocalDateTime.now().plusDays(5), indiaShop.getShopId(), deutscheShop.getShopId());
 
-        OrderItem orderItem1 = new OrderItem(curryCake.getProductId(), null, 2, curryCake.getPrice());
+        OrderItem b2cOrderItem = new OrderItem(curryCake.getProductId(), productVariant1.getVariantId(), 2, BigDecimal.valueOf(4.99));
+        OrderItem b2bOrderItem = new OrderItem(candyBag.getProductId(), productVariant2.getVariantId(), 5, BigDecimal.valueOf(2.99));
 
-        b2bOrder.addOrderItem(curryCake.getProductId(), 100);
+        b2cOrder.addOrderItem(b2cOrderItem);
+        b2bOrder.addOrderItem(b2bOrderItem);
 
         orderRepository.save(b2cOrder);
         orderRepository.save(b2bOrder);
-
-
     }
 }
