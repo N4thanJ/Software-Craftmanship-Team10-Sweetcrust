@@ -1,6 +1,6 @@
 package com.sweetcrust.team10_bakery.order.domain.entities;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,21 +24,20 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderType orderType;
 
-    // tijdelijk, branch domain moet eerst toegevoegd worden
-    // orderingBranch is bv. SweetCrust Germany die een order plaatst bij de sourceBranch Belgium
     @Embedded
     @AttributeOverride(name = "id", column = @Column(name = "ordering_shop_id"))
-    private ShopId orderingShopId; // optional enkel gebruiken bij B2B
+    private ShopId orderingShopId;
 
     @Embedded
     @AttributeOverride(name = "id", column = @Column(name = "source_shop_id"))
-    private ShopId sourceShopId; // optional enkel gebruiken bij B2B
+    private ShopId sourceShopId;
 
     @Embedded
     @AttributeOverride(name = "id", column = @Column(name = "customer_id"))
     private UserId customerId;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "order_id", nullable = false)
     private final List<OrderItem> orderItems = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
@@ -54,9 +53,9 @@ public class Order {
     protected Order() {
     }
 
-    // Factory constructor (private omdat die enkel hier gebruikt moe worden om te scheiden tussen B2B en B2C orders)
+    // Factory constructor (private cause only used inside the class)
     private Order(OrderType orderType, LocalDateTime requestedDeliveryDate) {
-        this.orderId = new  OrderId();
+        this.orderId = new OrderId();
         this.orderDate = LocalDateTime.now();
         this.status = OrderStatus.PENDING;
         setOrderType(orderType);
@@ -137,7 +136,7 @@ public class Order {
         if (requestedDeliveryDate == null) {
             throw new OrderDomainException("requestedDeliveryDate", "requestedDeliveryDate should not be null");
         }
-        if  (!requestedDeliveryDate.isAfter(orderDate)) {
+        if (!requestedDeliveryDate.isAfter(orderDate)) {
             throw new OrderDomainException("requestedDeliveryDate", "requestedDeliveryDate should be after orderDate");
         }
         this.requestedDeliveryDate = requestedDeliveryDate;
@@ -152,20 +151,20 @@ public class Order {
 
     public void setOrderingShopId(ShopId orderingShopId) {
         if (orderingShopId == null) {
-            throw new OrderDomainException("orderingBranchId", "orderingBranchId should not be null");
+            throw new OrderDomainException("orderingShopId", "orderingShopId should not be null");
         }
         this.orderingShopId = orderingShopId;
     }
 
     public void setSourceShopId(ShopId sourceShopId) {
         if (sourceShopId == null) {
-            throw new OrderDomainException("sourceBranchId", "sourceBranchId should not be null");
+            throw new OrderDomainException("sourceShopId", "sourceShopId should not be null");
         }
         this.sourceShopId = sourceShopId;
     }
 
     public void addOrderItem(OrderItem orderItem) {
-        if  (orderItem == null) {
+        if (orderItem == null) {
             throw new OrderDomainException("orderItem", "orderItem should not be null");
         }
         orderItems.add(orderItem);
@@ -183,11 +182,52 @@ public class Order {
             throw new OrderDomainException("customerId", "B2C orders must have customerId");
         }
         if (orderType == OrderType.B2B && orderingShopId == null) {
-            throw new OrderDomainException("orderingBranchId", "B2B orders must have orderingBranchId");
+            throw new OrderDomainException("orderingShopId", "B2B orders must have orderingShopId");
         }
         if (orderItems.isEmpty()) {
             throw new OrderDomainException("orderItems", "orderItems should not be empty");
         }
     }
 
+    public BigDecimal calculateTotalPrice() {
+        return orderItems.stream()
+                .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public void confirm() {
+        validateOrder();
+        if (status != OrderStatus.PENDING) {
+            throw new OrderDomainException("status", "Only pending orders can be confirmed");
+        }
+        this.status = OrderStatus.CONFIRMED;
+    }
+
+    public void startPreparing() {
+        if (status != OrderStatus.CONFIRMED) {
+            throw new OrderDomainException("status", "Only confirmed orders can be prepared");
+        }
+        this.status = OrderStatus.PREPARING;
+    }
+
+    public void markReady() {
+        if (status != OrderStatus.PREPARING) {
+            throw new OrderDomainException("status", "Only preparing orders can be marked as ready");
+        }
+        this.status = OrderStatus.READY;
+    }
+
+    public void deliver() {
+        if (status != OrderStatus.READY) {
+            throw new OrderDomainException("status", "Only ready orders can be delivered");
+        }
+        this.status = OrderStatus.DELIVERED;
+    }
+
+    public void cancel() {
+        if (status == OrderStatus.DELIVERED) {
+            throw new OrderDomainException("status", "Delivered orders cannot be cancelled");
+        }
+        this.status = OrderStatus.CANCELLED;
+    }
 }

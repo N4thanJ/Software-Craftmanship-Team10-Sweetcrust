@@ -17,6 +17,7 @@ import com.sweetcrust.team10_bakery.product.application.commands.AddProductComma
 import com.sweetcrust.team10_bakery.product.domain.entities.Product;
 import com.sweetcrust.team10_bakery.product.domain.entities.ProductCategory;
 import com.sweetcrust.team10_bakery.product.domain.entities.ProductVariant;
+import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductSize;
 import com.sweetcrust.team10_bakery.product.infrastructure.ProductRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,7 +32,7 @@ public class ProductCommandServiceTest {
     void givenValidData_whenCreatingProduct_thenProductIsCreated() {
         // given
 
-        ProductVariant productVariant = new ProductVariant("Normal", BigDecimal.valueOf(.3));
+        ProductVariant productVariant = new ProductVariant(ProductSize.REGULAR, "Regular", BigDecimal.valueOf(.3));
         ProductCategory productCategory = new ProductCategory("Koffiekoeken", "Het hele assortiment van chocokoeken");
         AddProductCommand addProductCommand = new AddProductCommand(
                 "Chocokoeken",
@@ -51,7 +52,7 @@ public class ProductCommandServiceTest {
     @Test
     void givenAlreadyCreatedProductName_whenCreatingProduct_thenExceptionIsThrown() {
         // given
-        ProductVariant productVariant = new ProductVariant("Normal", BigDecimal.valueOf(.3));
+        ProductVariant productVariant = new ProductVariant(ProductSize.REGULAR, "Regular", BigDecimal.valueOf(.3));
         ProductCategory productCategory = new ProductCategory("Koffiekoeken", "Het hele assortiment van chocokoeken");
         AddProductCommand addProductCommand = new AddProductCommand(
                 "Chocokoeken",

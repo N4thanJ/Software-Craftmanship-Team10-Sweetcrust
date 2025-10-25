@@ -4,9 +4,9 @@ import com.sweetcrust.team10_bakery.shop.application.ShopCommandService;
 import com.sweetcrust.team10_bakery.shop.application.ShopQueryService;
 import com.sweetcrust.team10_bakery.shop.domain.entities.Shop;
 import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopId;
-import com.sweetcrust.team10_bakery.user.domain.entities.User;
-import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserId;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +18,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/shop")
+@Tag(name = "Shop Management", description = "Endpoints related to shop management and fetching")
 public class ShopRestController {
     private final ShopCommandService shopCommandService;
     private final ShopQueryService shopQueryService;

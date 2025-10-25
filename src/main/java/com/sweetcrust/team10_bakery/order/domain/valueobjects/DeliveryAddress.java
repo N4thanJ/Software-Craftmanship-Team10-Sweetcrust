@@ -21,8 +21,5 @@ public record DeliveryAddress(
         if (country == null || country.isBlank()) {
             throw new OrderDomainException("deliveryAddress", "country should not be blank or null");
         }
-        if (!postalCode.matches("\\d{3,10}")) {
-            throw new OrderDomainException("deliveryAddress", "valid postalCode are 3-10 numbers");
-        }
     }
 }

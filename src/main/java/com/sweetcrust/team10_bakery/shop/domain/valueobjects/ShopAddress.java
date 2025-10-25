@@ -21,8 +21,5 @@ public record ShopAddress(
         if (country == null || country.isBlank()) {
             throw new ShopDomainException("shopAddress", "country should not be blank or null");
         }
-        if (!postalCode.matches("\\d{3,10}")) {
-            throw new ShopDomainException("shopAddress", "valid postalCode are 3-10 numbers");
-        }
     }
 }
