@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import com.sweetcrust.team10_bakery.product.domain.entities.Product;
 import com.sweetcrust.team10_bakery.product.domain.entities.ProductCategory;
 import com.sweetcrust.team10_bakery.product.domain.entities.ProductVariant;
+import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductSize;
 import com.sweetcrust.team10_bakery.product.infrastructure.ProductRepository;
 
 import jakarta.annotation.PostConstruct;
@@ -32,7 +33,8 @@ public class DbInitializer {
     private final UserRepository userRepository;
     private final ShopRepository shopRepository;
 
-    public DbInitializer(ProductRepository productRepository, OrderRepository orderRepository, UserRepository userRepository, ShopRepository shopRepository) {
+    public DbInitializer(ProductRepository productRepository, OrderRepository orderRepository,
+            UserRepository userRepository, ShopRepository shopRepository) {
         this.productRepository = productRepository;
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
@@ -47,12 +49,15 @@ public class DbInitializer {
     public void init() {
         clearAll();
 
+        ProductCategory cakes = new ProductCategory("Cakes", "A slice of heaven in every bite");
+        ProductCategory pastries = new ProductCategory("Pastries", "Flaky, buttery happiness");
+        ProductCategory donuts = new ProductCategory("Donuts", "Round perfection with a hole lotta love");
+        ProductCategory cookies = new ProductCategory("Cookies", "Sweet little circles of joy");
+        ProductCategory bread = new ProductCategory("Bread", "The daily loaf that keeps you going");
+        ProductCategory cupcakes = new ProductCategory("Cupcakes", "Tiny treats with big flavor");
 
-        ProductCategory productCategory1 = new ProductCategory("Cakes", "A variety of cakes");
-        ProductCategory productCategory2 = new ProductCategory("Candies", "Sweet candies");
-
-        ProductVariant productVariant1 = new ProductVariant("Small", BigDecimal.valueOf(.3));
-        ProductVariant productVariant2 = new ProductVariant("Medium", BigDecimal.valueOf(.5));
+        ProductVariant productVariant1 = new ProductVariant(ProductSize.MINI, BigDecimal.valueOf(.3));
+        ProductVariant productVariant2 = new ProductVariant(ProductSize.REGULAR, BigDecimal.valueOf(.5));
 
         Product curryCake = new Product(
                 "Curry Cake Delux",
@@ -60,9 +65,10 @@ public class DbInitializer {
                 BigDecimal.valueOf(4.99),
                 true,
                 productVariant1.getVariantId(),
-                productCategory1.getCategoryId());
+                cakes.getCategoryId());
 
-        Product candyBag = new Product("Candy Bag", "A bag full of assorted candies", BigDecimal.valueOf(2.99), true, productVariant2.getVariantId(), productCategory2.getCategoryId());
+        Product candyBag = new Product("Candy Bag", "A bag full of assorted candies", BigDecimal.valueOf(2.99), true,
+                productVariant2.getVariantId(), pastries.getCategoryId());
 
         productRepository.save(curryCake);
         productRepository.save(candyBag);
@@ -73,17 +79,24 @@ public class DbInitializer {
         userRepository.save(user1);
         userRepository.save(user2);
 
-        Shop indiaShop = new Shop("SweetCrust New Delhi", new ShopAddress("Currystreet 1", "New Delhi", "110001", "India"), "newdelhi@sweetcrust.com");
-        Shop deutscheShop = new Shop("SweetCrust Berlin", new ShopAddress("Brandenburg 1", "Berlin", "10117", "Germany"), "berlin@sweetcrust.com");
+        Shop indiaShop = new Shop("SweetCrust New Delhi",
+                new ShopAddress("Currystreet 1", "New Delhi", "110001", "India"), "newdelhi@sweetcrust.com");
+        Shop deutscheShop = new Shop("SweetCrust Berlin",
+                new ShopAddress("Brandenburg 1", "Berlin", "10117", "Germany"), "berlin@sweetcrust.com");
 
         shopRepository.save(indiaShop);
         shopRepository.save(deutscheShop);
 
-        Order b2cOrder = Order.createB2C(OrderType.B2C, new DeliveryAddress("CurryStreet", "CurryCity", "12345", "CurryCountry"), LocalDateTime.now().plusDays(2), user1.getUserId());
-        Order b2bOrder = Order.createB2B(OrderType.B2B, LocalDateTime.now().plusDays(5), indiaShop.getShopId(), deutscheShop.getShopId());
+        Order b2cOrder = Order.createB2C(OrderType.B2C,
+                new DeliveryAddress("CurryStreet", "CurryCity", "12345", "CurryCountry"),
+                LocalDateTime.now().plusDays(2), user1.getUserId());
+        Order b2bOrder = Order.createB2B(OrderType.B2B, LocalDateTime.now().plusDays(5), indiaShop.getShopId(),
+                deutscheShop.getShopId());
 
-        OrderItem b2cOrderItem = new OrderItem(curryCake.getProductId(), productVariant1.getVariantId(), 2, BigDecimal.valueOf(4.99));
-        OrderItem b2bOrderItem = new OrderItem(candyBag.getProductId(), productVariant2.getVariantId(), 5, BigDecimal.valueOf(2.99));
+        OrderItem b2cOrderItem = new OrderItem(curryCake.getProductId(), productVariant1.getVariantId(), 2,
+                BigDecimal.valueOf(4.99));
+        OrderItem b2bOrderItem = new OrderItem(candyBag.getProductId(), productVariant2.getVariantId(), 5,
+                BigDecimal.valueOf(2.99));
 
         b2cOrder.addOrderItem(b2cOrderItem);
         b2bOrder.addOrderItem(b2bOrderItem);

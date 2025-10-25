@@ -1,6 +1,7 @@
 package com.sweetcrust.team10_bakery.product.domain.entities;
 
 import com.sweetcrust.team10_bakery.product.domain.ProductDomainException;
+import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductSize;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.VariantId;
 import jakarta.persistence.*;
 
@@ -13,36 +14,40 @@ public class ProductVariant {
     @EmbeddedId
     private VariantId variantId;
 
-    private String variantName;
+    @Enumerated(EnumType.STRING)
+    private ProductSize size;
+
+    private String flavour;
 
     private BigDecimal priceModifier;
 
     protected ProductVariant() {
     }
 
-    public ProductVariant(String variantName, BigDecimal priceModifier) {
+    public ProductVariant(ProductSize size, BigDecimal priceModifier) {
         this.variantId = new VariantId();
-        setVariantName(variantName);
         setPriceModifier(priceModifier);
+        setSize(size);
     }
 
     public VariantId getVariantId() {
         return variantId;
     }
 
-    public String getVariantName() {
-        return variantName;
+    public ProductSize getSize() {
+        return size;
+    }
+
+    public String getFlavour() {
+        return flavour;
     }
 
     public BigDecimal getPriceModifier() {
         return priceModifier;
     }
 
-    public void setVariantName(String variantName) {
-        if (variantName == null || variantName.isBlank()) {
-            throw new ProductDomainException("variant", "variantName should not be null or blank");
-        }
-        this.variantName = variantName.trim();
+    public void setFlavour(String flavour) {
+
     }
 
     public void setPriceModifier(BigDecimal priceModifier) {
@@ -53,6 +58,13 @@ public class ProductVariant {
             throw new ProductDomainException("priceModifier", "priceModifier should not be negative");
         }
         this.priceModifier = priceModifier;
+    }
+
+    public void setSize(ProductSize size) {
+        if (size == null) {
+            throw new ProductDomainException("size", "size should not be null");
+        }
+        this.size = size;
     }
 
 }
