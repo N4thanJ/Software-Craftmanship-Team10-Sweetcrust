@@ -58,8 +58,12 @@ public class OrderItem {
         return unitPrice;
     }
 
+    public BigDecimal getTotalPrice() {
+        return unitPrice.multiply(BigDecimal.valueOf(quantity));
+    }
+
     public void setProductId(ProductId productId) {
-        if  (productId == null) {
+        if (productId == null) {
             throw new OrderDomainException("productId", "productId must not be null");
         }
         this.productId = productId;
@@ -73,8 +77,8 @@ public class OrderItem {
     }
 
     public void setQuantity(int quantity) {
-        if  (quantity < 0) {
-            throw new OrderDomainException("quantity", "quantity must not be negative");
+        if (quantity <= 0) {
+            throw new OrderDomainException("quantity", "quantity must be positive");
         }
         this.quantity = quantity;
     }
@@ -83,12 +87,9 @@ public class OrderItem {
         if (unitPrice == null) {
             throw new OrderDomainException("unitPrice", "unitPrice must not be null");
         }
-        if  (unitPrice.compareTo(BigDecimal.ZERO) < 0) {
+        if (unitPrice.compareTo(BigDecimal.ZERO) < 0) {
             throw new OrderDomainException("unitPrice", "unitPrice must not be negative");
         }
         this.unitPrice = unitPrice;
     }
-
 }
-
-

@@ -18,8 +18,7 @@ import com.sweetcrust.team10_bakery.product.domain.entities.ProductCategory;
 import com.sweetcrust.team10_bakery.product.domain.entities.ProductVariant;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductSize;
 import com.sweetcrust.team10_bakery.product.infrastructure.ProductRepository;
-import com.sweetcrust.team10_bakery.user.domain.entities.User;
-import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserRole;
+
 
 @ExtendWith(MockitoExtension.class)
 public class ProductQueryServiceTest {
@@ -32,7 +31,7 @@ public class ProductQueryServiceTest {
     @Test
     void givenGetAllProducts_whenGettingAllProducts_thenAlProductsAreReturned() {
         // given
-        ProductVariant productVariant = new ProductVariant(ProductSize.REGULAR, BigDecimal.valueOf(.3));
+        ProductVariant productVariant = new ProductVariant(ProductSize.REGULAR, "Regular", BigDecimal.valueOf(.3));
         ProductCategory productCategory = new ProductCategory("Koffiekoeken", "Het hele assortiment van chocokoeken");
 
         List<Product> allProducts = List.of(

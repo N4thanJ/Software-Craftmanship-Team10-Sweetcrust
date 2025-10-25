@@ -76,7 +76,7 @@ public class OrderItemTest {
 
         // then
         assertEquals("quantity", exception.getField());
-        assertEquals("quantity must not be negative", exception.getMessage());
+        assertEquals("quantity must be positive", exception.getMessage());
     }
 
     @Test

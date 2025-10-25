@@ -17,17 +17,18 @@ public class ProductVariant {
     @Enumerated(EnumType.STRING)
     private ProductSize size;
 
-    private String flavour;
+    private String variantName;
 
     private BigDecimal priceModifier;
 
     protected ProductVariant() {
     }
 
-    public ProductVariant(ProductSize size, BigDecimal priceModifier) {
+    public ProductVariant(ProductSize size, String variantName, BigDecimal priceModifier) {
         this.variantId = new VariantId();
-        setPriceModifier(priceModifier);
         setSize(size);
+        setVariantName(variantName);
+        setPriceModifier(priceModifier);
     }
 
     public VariantId getVariantId() {
@@ -38,16 +39,12 @@ public class ProductVariant {
         return size;
     }
 
-    public String getFlavour() {
-        return flavour;
+    public String getVariantName() {
+        return variantName;
     }
 
     public BigDecimal getPriceModifier() {
         return priceModifier;
-    }
-
-    public void setFlavour(String flavour) {
-
     }
 
     public void setPriceModifier(BigDecimal priceModifier) {
@@ -67,4 +64,10 @@ public class ProductVariant {
         this.size = size;
     }
 
+    public void setVariantName(String variantName) {
+        if (variantName == null || variantName.isBlank()) {
+            throw new ProductDomainException("variantName", "variantName should not be null or blank");
+        }
+        this.variantName = variantName;
+    }
 }

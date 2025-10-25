@@ -6,7 +6,6 @@ import com.sweetcrust.team10_bakery.user.application.commands.AddUserCommand;
 import com.sweetcrust.team10_bakery.user.domain.entities.User;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserId;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,13 +20,12 @@ public class UserRestController {
     private final UserCommandService userCommandService;
     private final UserQueryService userQueryService;
 
-    @Autowired
     public UserRestController(UserCommandService userCommandService, UserQueryService userQueryService) {
         this.userCommandService = userCommandService;
         this.userQueryService = userQueryService;
     }
 
-    @GetMapping("/all")
+    @GetMapping()
     public ResponseEntity<Iterable<User>> getAllUsers() {
         List<User> users = userQueryService.getAllUsers();
         return ResponseEntity.ok(users);

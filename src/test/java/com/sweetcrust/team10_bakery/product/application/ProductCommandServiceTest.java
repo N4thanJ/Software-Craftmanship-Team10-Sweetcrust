@@ -32,7 +32,7 @@ public class ProductCommandServiceTest {
     void givenValidData_whenCreatingProduct_thenProductIsCreated() {
         // given
 
-        ProductVariant productVariant = new ProductVariant(ProductSize.REGULAR, BigDecimal.valueOf(.3));
+        ProductVariant productVariant = new ProductVariant(ProductSize.REGULAR, "Regular", BigDecimal.valueOf(.3));
         ProductCategory productCategory = new ProductCategory("Koffiekoeken", "Het hele assortiment van chocokoeken");
         AddProductCommand addProductCommand = new AddProductCommand(
                 "Chocokoeken",
@@ -52,7 +52,7 @@ public class ProductCommandServiceTest {
     @Test
     void givenAlreadyCreatedProductName_whenCreatingProduct_thenExceptionIsThrown() {
         // given
-        ProductVariant productVariant = new ProductVariant(ProductSize.REGULAR, BigDecimal.valueOf(.3));
+        ProductVariant productVariant = new ProductVariant(ProductSize.REGULAR, "Regular", BigDecimal.valueOf(.3));
         ProductCategory productCategory = new ProductCategory("Koffiekoeken", "Het hele assortiment van chocokoeken");
         AddProductCommand addProductCommand = new AddProductCommand(
                 "Chocokoeken",

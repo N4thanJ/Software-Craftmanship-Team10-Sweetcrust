@@ -1,7 +1,6 @@
 package com.sweetcrust.team10_bakery.product.domain;
 
 import com.sweetcrust.team10_bakery.product.domain.entities.ProductVariant;
-import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductId;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductSize;
 import org.junit.jupiter.api.Test;
 
@@ -16,10 +15,9 @@ public class ProductVariantTest {
         // given
         ProductSize size = ProductSize.LARGE;
         BigDecimal priceModifier = BigDecimal.valueOf(1.25);
-        ProductId productId = new ProductId();
 
         // when
-        ProductVariant variant = new ProductVariant(size, priceModifier);
+        ProductVariant variant = new ProductVariant(size, "Large", priceModifier);
 
         // then
         assertNotNull(variant);
@@ -32,11 +30,10 @@ public class ProductVariantTest {
     void givenNullVariantName_whenCreatingVariant_thenThrowsException() {
         // given
         BigDecimal priceModifier = BigDecimal.valueOf(0.50);
-        ProductId productId = new ProductId();
 
         // when
         ProductDomainException exception = assertThrows(ProductDomainException.class,
-                () -> new ProductVariant(null, priceModifier));
+                () -> new ProductVariant(null, "Small", priceModifier));
 
         // then
         assertEquals("size", exception.getField());
@@ -47,12 +44,11 @@ public class ProductVariantTest {
     void givenBlankVariantName_whenCreatingVariant_thenThrowsException() {
         // given
         BigDecimal priceModifier = BigDecimal.valueOf(0.50);
-        ProductId productId = new ProductId();
 
         // when - This test is no longer applicable since ProductSize is an enum
         // Testing with null instead
         ProductDomainException exception = assertThrows(ProductDomainException.class,
-                () -> new ProductVariant(null, priceModifier));
+                () -> new ProductVariant(null, "Small", priceModifier));
 
         // then
         assertEquals("size", exception.getField());
@@ -62,11 +58,10 @@ public class ProductVariantTest {
     @Test
     void givenNullPriceModifier_whenCreatingVariant_thenThrowsException() {
         // given
-        ProductId productId = new ProductId();
 
         // when
         ProductDomainException exception = assertThrows(ProductDomainException.class,
-                () -> new ProductVariant(ProductSize.MINI, null));
+                () -> new ProductVariant(ProductSize.MINI, "Mini", null));
 
         // then
         assertEquals("priceModifier", exception.getField());
@@ -76,12 +71,11 @@ public class ProductVariantTest {
     @Test
     void givenNegativePriceModifier_whenCreatingVariant_thenThrowsException() {
         // given
-        ProductId productId = new ProductId();
         BigDecimal priceModifier = BigDecimal.valueOf(-1.00);
 
         // when
         ProductDomainException exception = assertThrows(ProductDomainException.class,
-                () -> new ProductVariant(ProductSize.REGULAR, priceModifier));
+                () -> new ProductVariant(ProductSize.REGULAR, "Regular", priceModifier));
 
         // then
         assertEquals("priceModifier", exception.getField());
