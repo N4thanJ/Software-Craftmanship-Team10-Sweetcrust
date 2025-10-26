@@ -1,15 +1,10 @@
 package com.sweetcrust.team10_bakery.shop.application;
 
-public class ShopServiceException extends RuntimeException {
+import com.sweetcrust.team10_bakery.shared.application.ServiceException;
 
-    private final String field;
+public class ShopServiceException extends ServiceException {
 
     public ShopServiceException(String field, String message) {
-        super(message);
-        this.field = field;
-    }
-
-    public String getField() {
-        return this.field;
+        super(field, message);
     }
 }

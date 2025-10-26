@@ -1,15 +1,10 @@
 package com.sweetcrust.team10_bakery.order.domain;
 
-public class OrderDomainException extends RuntimeException {
+import com.sweetcrust.team10_bakery.shared.domain.DomainException;
 
-    private final String field;
+public class OrderDomainException extends DomainException {
 
     public OrderDomainException(String field, String message) {
-        super(message);
-        this.field = field;
-    }
-
-    public String  getField() {
-        return this.field;
+        super(field, message);
     }
 }

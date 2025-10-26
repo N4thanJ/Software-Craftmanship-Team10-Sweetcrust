@@ -1,15 +1,10 @@
 package com.sweetcrust.team10_bakery.shop.domain;
 
-public class ShopDomainException extends RuntimeException {
+import com.sweetcrust.team10_bakery.shared.domain.DomainException;
 
-    private final String field;
+public class ShopDomainException extends DomainException {
 
     public ShopDomainException(String field, String message) {
-        super(message);
-        this.field = field;
-    }
-
-    public String getField() {
-        return this.field;
+        super(field, message);
     }
 }
