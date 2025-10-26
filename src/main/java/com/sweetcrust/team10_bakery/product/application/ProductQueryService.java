@@ -1,6 +1,8 @@
 package com.sweetcrust.team10_bakery.product.application;
 
+import com.sweetcrust.team10_bakery.order.application.OrderServiceException;
 import com.sweetcrust.team10_bakery.product.domain.entities.Product;
+import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductId;
 import com.sweetcrust.team10_bakery.product.infrastructure.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,5 +18,10 @@ public class ProductQueryService {
 
     public List<Product> getAllProducts() {
         return productRepository.findAll();
+    }
+
+    public Product getProductById(ProductId productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new OrderServiceException("product", "product not found"));
     }
 }

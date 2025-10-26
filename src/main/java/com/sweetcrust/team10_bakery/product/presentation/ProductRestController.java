@@ -4,11 +4,13 @@ import com.sweetcrust.team10_bakery.product.application.ProductCommandService;
 import com.sweetcrust.team10_bakery.product.application.ProductQueryService;
 import com.sweetcrust.team10_bakery.product.application.commands.AddProductCommand;
 import com.sweetcrust.team10_bakery.product.domain.entities.Product;
+import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductId;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/product")
@@ -26,6 +28,12 @@ public class ProductRestController {
     public ResponseEntity<Iterable<Product>> getAllProducts() {
         List<Product> products = productQueryService.getAllProducts();
         return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/{productId}")
+    public ResponseEntity<Product> getProductById(@PathVariable UUID productId) {
+        Product product = productQueryService.getProductById(new ProductId(productId));
+        return ResponseEntity.ok(product);
     }
 
     @PostMapping("/add")

@@ -9,6 +9,7 @@ import java.util.List;
 
 @Service
 public class ShopQueryService {
+
     private final ShopRepository shopRepository;
 
     public ShopQueryService(ShopRepository shopRepository) {
@@ -20,6 +21,7 @@ public class ShopQueryService {
     }
 
     public Shop getShopById(ShopId shopId) {
-        return shopRepository.findById(shopId).orElseThrow(() -> new ShopServiceException("shop", "shop not found"));
+        return shopRepository.findById(shopId)
+                .orElseThrow(() -> new ShopServiceException("shop", "shop not found"));
     }
 }
