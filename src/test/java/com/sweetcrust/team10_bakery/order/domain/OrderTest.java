@@ -2,9 +2,9 @@ package com.sweetcrust.team10_bakery.order.domain;
 
 import com.sweetcrust.team10_bakery.order.domain.entities.Order;
 import com.sweetcrust.team10_bakery.order.domain.entities.OrderItem;
-import com.sweetcrust.team10_bakery.order.domain.valueobjects.DeliveryAddress;
 import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderType;
 import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderStatus;
+import com.sweetcrust.team10_bakery.shared.domain.valueobjects.Address;
 import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopId;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserId;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ public class OrderTest {
     @Test
     void givenValidB2CData_whenCreatingOrder_thenOrderIsCreated() {
         // given
-        DeliveryAddress address = new DeliveryAddress("Bakery Lane 13", "Donutville", "12345", "Sweetland");
+        Address address = new Address("Bakery Lane 13", "Donutville", "12345", "Sweetland");
         UserId customerId = new UserId();
         LocalDateTime requestedDeliveryDate = LocalDateTime.now().plusDays(1);
 
@@ -73,7 +73,7 @@ public class OrderTest {
     @Test
     void givenNullRequestedDeliveryDateForB2C_whenCreatingOrder_thenThrowsException() {
         // given
-        DeliveryAddress address = new DeliveryAddress("Cupcake Crescent 99", "Frostingtown", "54321", "Sweetland");
+        Address address = new Address("Cupcake Crescent 99", "Frostingtown", "54321", "Sweetland");
         UserId customerId = new UserId();
 
         // when
@@ -88,7 +88,7 @@ public class OrderTest {
     @Test
     void givenRequestedDeliveryDateBeforeOrderDate_whenCreatingB2COrder_thenThrowsException() {
         // given
-        DeliveryAddress address = new DeliveryAddress("Pie Street 7", "Tartville", "11111", "Sweetland");
+        Address address = new Address("Pie Street 7", "Tartville", "11111", "Sweetland");
         UserId customerId = new UserId();
         LocalDateTime requestedDeliveryDate = LocalDateTime.now().minusDays(1);
 
@@ -104,7 +104,7 @@ public class OrderTest {
     @Test
     void givenNullCustomerIdForB2C_whenCreatingOrder_thenThrowsException() {
         // given
-        DeliveryAddress address = new DeliveryAddress("Muffin Avenue 42", "Bakerville", "67890", "Sweetland");
+        Address address = new Address("Muffin Avenue 42", "Bakerville", "67890", "Sweetland");
         LocalDateTime requestedDeliveryDate = LocalDateTime.now().plusDays(1);
 
         // when
@@ -120,7 +120,7 @@ public class OrderTest {
     void givenNullOrderItem_whenAddingOrderItem_thenThrowsException() {
         // given
         Order order = Order.createB2C(OrderType.B2C,
-                new DeliveryAddress("Bread Boulevard 1", "Loaf City", "10101", "Sweetland"),
+                new Address("Bread Boulevard 1", "Loaf City", "10101", "Sweetland"),
                 LocalDateTime.now().plusDays(1),
                 new UserId()
         );
@@ -138,7 +138,7 @@ public class OrderTest {
     void givenOrderWithItems_whenRemovingOrderItem_thenItemIsRemoved() {
         // given
         Order order = Order.createB2C(OrderType.B2C,
-                new DeliveryAddress("Bagel Boulevard 17", "Cheesetown", "20202", "Sweetland"),
+                new Address("Bagel Boulevard 17", "Cheesetown", "20202", "Sweetland"),
                 LocalDateTime.now().plusDays(1),
                 new UserId()
         );
@@ -156,7 +156,7 @@ public class OrderTest {
     void givenEmptyOrder_whenValidatingOrder_thenThrowsException() {
         // given
         Order order = Order.createB2C(OrderType.B2C,
-                new DeliveryAddress("Croissant Court 5", "Pastryville", "30303", "Sweetland"),
+                new Address("Croissant Court 5", "Pastryville", "30303", "Sweetland"),
                 LocalDateTime.now().plusDays(1),
                 new UserId()
         );

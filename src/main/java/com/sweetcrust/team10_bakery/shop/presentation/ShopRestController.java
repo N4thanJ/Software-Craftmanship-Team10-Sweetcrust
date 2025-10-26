@@ -20,6 +20,7 @@ import java.util.UUID;
 @RequestMapping("/shop")
 @Tag(name = "Shop Management", description = "Endpoints related to shop management and fetching")
 public class ShopRestController {
+
     private final ShopCommandService shopCommandService;
     private final ShopQueryService shopQueryService;
 

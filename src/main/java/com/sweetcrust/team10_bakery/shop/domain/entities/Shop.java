@@ -1,8 +1,8 @@
 package com.sweetcrust.team10_bakery.shop.domain.entities;
 
+import com.sweetcrust.team10_bakery.shared.domain.valueobjects.Address;
 import com.sweetcrust.team10_bakery.shop.domain.ShopDomainException;
 import com.sweetcrust.team10_bakery.shop.domain.valueobjects.CountryCode;
-import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopAddress;
 import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopId;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.EmbeddedId;
@@ -20,7 +20,7 @@ public class Shop {
     private String name;
 
     @Embedded
-    private ShopAddress address;
+    private Address address;
 
     private String email;
 
@@ -30,7 +30,7 @@ public class Shop {
     protected Shop() {
     }
 
-    public Shop(String name, ShopAddress address, String email) {
+    public Shop(String name, Address address, String email) {
         this.shopId = new ShopId();
         setName(name);
         setAddress(address);
@@ -45,7 +45,7 @@ public class Shop {
         return name;
     }
 
-    public ShopAddress getAddress() {
+    public Address getAddress() {
         return address;
     }
 
@@ -64,7 +64,7 @@ public class Shop {
         this.name = name;
     }
 
-    public void setAddress(ShopAddress address) {
+    public void setAddress(Address address) {
         if (address == null) {
             throw new ShopDomainException("shopAddress", "address should not be null");
         }
