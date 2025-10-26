@@ -1,8 +1,8 @@
 package com.sweetcrust.team10_bakery.shop.domain;
 
+import com.sweetcrust.team10_bakery.shared.domain.valueobjects.Address;
 import com.sweetcrust.team10_bakery.shop.domain.entities.Shop;
 import com.sweetcrust.team10_bakery.shop.domain.valueobjects.CountryCode;
-import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopAddress;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,7 +13,7 @@ public class ShopTest {
     void givenValidData_whenCreatingShop_thenShopIsCreated() {
         // given
         String name = "The Rolling Scones";
-        ShopAddress address = new ShopAddress("42 Doughnut Drive", "Crumbsville", "12345", "Bakeland");
+        Address address = new Address("42 Doughnut Drive", "Crumbsville", "12345", "Bakeland");
         String email = "amsterdam@sweetcrust.nl";
 
         // when
@@ -30,7 +30,7 @@ public class ShopTest {
     @Test
     void givenNullName_whenCreatingShop_thenThrowsException() {
         // given
-        ShopAddress address = new ShopAddress("10 Croissant Crescent", "Pastrytown", "54321", "Bakeland");
+        Address address = new Address("10 Croissant Crescent", "Pastrytown", "54321", "Bakeland");
         String email = "rome@sweetcrust.it";
 
         // when
@@ -45,7 +45,7 @@ public class ShopTest {
     @Test
     void givenBlankName_whenCreatingShop_thenThrowsException() {
         // given
-        ShopAddress address = new ShopAddress("9 Pretzel Place", "Twistopolis", "67890", "Bakeland");
+        Address address = new Address("9 Pretzel Place", "Twistopolis", "67890", "Bakeland");
         String email = "athens@sweetcrust.gr";
 
         // when
@@ -75,7 +75,7 @@ public class ShopTest {
     @Test
     void givenNullEmail_whenCreatingShop_thenThrowsException() {
         // given
-        ShopAddress address = new ShopAddress("7 Bagel Boulevard", "Yeast City", "99999", "Bakeland");
+        Address address = new Address("7 Bagel Boulevard", "Yeast City", "99999", "Bakeland");
 
         // when
         ShopDomainException exception = assertThrows(ShopDomainException.class,
@@ -89,7 +89,7 @@ public class ShopTest {
     @Test
     void givenBlankEmail_whenCreatingShop_thenThrowsException() {
         // given
-        ShopAddress address = new ShopAddress("13 Cruller Court", "Dough City", "11223", "Bakeland");
+        Address address = new Address("13 Cruller Court", "Dough City", "11223", "Bakeland");
 
         // when
         ShopDomainException exception = assertThrows(ShopDomainException.class,
@@ -103,7 +103,7 @@ public class ShopTest {
     @Test
     void givenInvalidEmailWithoutAtSymbol_whenCreatingShop_thenThrowsException() {
         // given
-        ShopAddress address = new ShopAddress("15 Biscuit Boulevard", "Butterburg", "45678", "Bakeland");
+        Address address = new Address("15 Biscuit Boulevard", "Butterburg", "45678", "Bakeland");
 
         // when
         ShopDomainException exception = assertThrows(ShopDomainException.class,
@@ -117,7 +117,7 @@ public class ShopTest {
     @Test
     void givenInvalidEmailWithoutDomain_whenCreatingShop_thenThrowsException() {
         // given
-        ShopAddress address = new ShopAddress("21 Scone Street", "Jamestown", "55555", "Bakeland");
+        Address address = new Address("21 Scone Street", "Jamestown", "55555", "Bakeland");
 
         // when
         ShopDomainException exception = assertThrows(ShopDomainException.class,
@@ -131,7 +131,7 @@ public class ShopTest {
     @Test
     void givenValidEmail_whenCreatingShop_thenShopIsCreated() {
         // given
-        ShopAddress address = new ShopAddress("88 Tart Terrace", "Pufftown", "20202", "Bakeland");
+        Address address = new Address("88 Tart Terrace", "Pufftown", "20202", "Bakeland");
         String email = "barcelona@sweetcrust.es";
 
         // when
@@ -145,7 +145,7 @@ public class ShopTest {
     @Test
     void givenValidCountryCode_whenSettingCountryCode_thenCountryCodeIsSet() {
         // given
-        ShopAddress address = new ShopAddress("100 Donut Drive", "Sprinkleville", "60606", "Bakeland");
+        Address address = new Address("100 Donut Drive", "Sprinkleville", "60606", "Bakeland");
         Shop shop = new Shop("Holy Sheet Cakes", address, "newdelhi@sweetcrust.in");
         CountryCode countryCode = new CountryCode("US");
 
@@ -159,7 +159,7 @@ public class ShopTest {
     @Test
     void givenNullCountryCode_whenSettingCountryCode_thenThrowsException() {
         // given
-        ShopAddress address = new ShopAddress("22 Muffin Mile", "Cupcake City", "80808", "Bakeland");
+        Address address = new Address("22 Muffin Mile", "Cupcake City", "80808", "Bakeland");
         Shop shop = new Shop("Dough My Gosh", address, "miami@sweetcrust.us");
 
         // when
@@ -174,7 +174,7 @@ public class ShopTest {
     @Test
     void givenShopWithValidAddress_whenAccessingValues_thenTheyMatch() {
         // given
-        ShopAddress address = new ShopAddress("123 Cupcake Avenue", "Frostville", "34567", "Bakeland");
+        Address address = new Address("123 Cupcake Avenue", "Frostville", "34567", "Bakeland");
         Shop shop = new Shop("Bake Street Boys", address, "leuven@sweetcrust.be");
 
         // then

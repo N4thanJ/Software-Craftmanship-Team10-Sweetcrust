@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sweetcrust.team10_bakery.order.domain.OrderDomainException;
-import com.sweetcrust.team10_bakery.order.domain.valueobjects.DeliveryAddress;
 import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderId;
 import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderStatus;
 import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderType;
+import com.sweetcrust.team10_bakery.shared.domain.valueobjects.Address;
 import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopId;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserId;
 import jakarta.persistence.*;
@@ -44,7 +44,7 @@ public class Order {
     private OrderStatus status;
 
     @Embedded
-    private DeliveryAddress deliveryAddress;
+    private Address deliveryAddress;
 
     private LocalDateTime orderDate;
 
@@ -63,7 +63,7 @@ public class Order {
     }
 
     // B2C orders (klant order)
-    public static Order createB2C(OrderType orderType, DeliveryAddress deliveryAddress, LocalDateTime requestedDeliveryDate, UserId customerId) {
+    public static Order createB2C(OrderType orderType, Address deliveryAddress, LocalDateTime requestedDeliveryDate, UserId customerId) {
         Order order = new Order(orderType, requestedDeliveryDate);
         order.setDeliveryAddress(deliveryAddress);
         order.setCustomerId(customerId);
@@ -98,7 +98,7 @@ public class Order {
         return status;
     }
 
-    public DeliveryAddress getDeliveryAddress() {
+    public Address getDeliveryAddress() {
         return deliveryAddress;
     }
 
@@ -125,7 +125,7 @@ public class Order {
         this.orderType = orderType;
     }
 
-    public void setDeliveryAddress(DeliveryAddress deliveryAddress) {
+    public void setDeliveryAddress(Address deliveryAddress) {
         if (deliveryAddress == null) {
             throw new OrderDomainException("deliveryAddress", "deliveryAddress should not be null");
         }
