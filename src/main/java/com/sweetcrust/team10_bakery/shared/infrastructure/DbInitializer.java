@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 
 import com.sweetcrust.team10_bakery.order.domain.entities.Order;
 import com.sweetcrust.team10_bakery.order.domain.entities.OrderItem;
-import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderType;
 import com.sweetcrust.team10_bakery.order.infrastructure.OrderRepository;
 import com.sweetcrust.team10_bakery.shared.domain.valueobjects.Address;
 import com.sweetcrust.team10_bakery.shop.domain.entities.Shop;
@@ -410,7 +409,6 @@ public class DbInitializer {
 
         // B2C
         Order donutOrder = Order.createB2C(
-                OrderType.B2C,
                 new Address("Donut Drive 15", "Glazeville", "12345", "Donutland"),
                 LocalDateTime.now().plusDays(1),
                 donutDan.getUserId());
@@ -419,7 +417,6 @@ public class DbInitializer {
         donutOrder.addOrderItem(new OrderItem(mapleDonut.getProductId(), regularVariant.getVariantId(), 6, mapleDonut.getBasePrice()));
 
         Order cupcakeOrder = Order.createB2C(
-                OrderType.B2C,
                 new Address("Cupcake Lane 8", "Frostington", "23456", "Sweetland"),
                 LocalDateTime.now().plusDays(2),
                 cupcakeClaire.getUserId());
@@ -427,7 +424,6 @@ public class DbInitializer {
         cupcakeOrder.addOrderItem(new OrderItem(chocolateCupcake.getProductId(), regularVariant.getVariantId(), 24, chocolateCupcake.getBasePrice()));
 
         Order pieOrder = Order.createB2C(
-                OrderType.B2C,
                 new Address("Pie Place 99", "Crustville", "34567", "Pieland"),
                 LocalDateTime.now().plusDays(3),
                 piePatrick.getUserId());
@@ -435,7 +431,6 @@ public class DbInitializer {
         pieOrder.addOrderItem(new OrderItem(pumpkinPie.getProductId(), largeVariant.getVariantId(), 1, pumpkinPie.getBasePrice()));
 
         Order cookieOrder = Order.createB2C(
-                OrderType.B2C,
                 new Address("Cookie Court 7", "Chocochip City", "45678", "Cookieland"),
                 LocalDateTime.now().plusDays(1),
                 cookieConnie.getUserId());
@@ -443,7 +438,6 @@ public class DbInitializer {
         cookieOrder.addOrderItem(new OrderItem(macadamiaCookie.getProductId(), regularVariant.getVariantId(), 24, macadamiaCookie.getBasePrice()));
 
         Order cakeOrder = Order.createB2C(
-                OrderType.B2C,
                 new Address("Cake Circle 3", "Velvetville", "56789", "Cakeland"),
                 LocalDateTime.now().plusDays(4),
                 cakeCathy.getUserId());
@@ -451,7 +445,6 @@ public class DbInitializer {
         cakeOrder.addOrderItem(new OrderItem(chocolateLavaCake.getProductId(), regularVariant.getVariantId(), 4, chocolateLavaCake.getBasePrice()));
 
         Order breadOrder = Order.createB2C(
-                OrderType.B2C,
                 new Address("Bread Boulevard 21", "Sourdough Springs", "67890", "Breadland"),
                 LocalDateTime.now().plusDays(1),
                 breadBob.getUserId());
@@ -459,7 +452,6 @@ public class DbInitializer {
         breadOrder.addOrderItem(new OrderItem(baguette.getProductId(), largeVariant.getVariantId(), 5, baguette.getBasePrice()));
 
         Order croissantOrder = Order.createB2C(
-                OrderType.B2C,
                 new Address("Flaky Street 18", "Buttertown", "78901", "Pastryville"),
                 LocalDateTime.now().plusDays(2),
                 croissantCarl.getUserId());
@@ -467,7 +459,6 @@ public class DbInitializer {
         croissantOrder.addOrderItem(new OrderItem(painAuChocolat.getProductId(), regularVariant.getVariantId(), 8, painAuChocolat.getBasePrice()));
 
         Order muffinOrder = Order.createB2C(
-                OrderType.B2C,
                 new Address("Muffin Manor 44", "Blueberry Hills", "89012", "Muffinland"),
                 LocalDateTime.now().plusDays(1),
                 muffinMary.getUserId());
@@ -476,7 +467,6 @@ public class DbInitializer {
 
         // B2B
         Order parisToLondon = Order.createB2B(
-                OrderType.B2B,
                 LocalDateTime.now().plusDays(5),
                 londonShop.getShopId(),
                 parisShop.getShopId());
@@ -485,7 +475,6 @@ public class DbInitializer {
         parisToLondon.addOrderItem(new OrderItem(baguette.getProductId(), largeVariant.getVariantId(), 50, baguette.getBasePrice()));
 
         Order tokyoToNewYork = Order.createB2B(
-                OrderType.B2B,
                 LocalDateTime.now().plusDays(7),
                 newYorkShop.getShopId(),
                 tokyoShop.getShopId());
@@ -493,7 +482,6 @@ public class DbInitializer {
         tokyoToNewYork.addOrderItem(new OrderItem(sprinkleDonut.getProductId(), regularVariant.getVariantId(), 150, sprinkleDonut.getBasePrice()));
 
         Order romeToBarcelona = Order.createB2B(
-                OrderType.B2B,
                 LocalDateTime.now().plusDays(4),
                 barcelonaShop.getShopId(),
                 romeShop.getShopId());
@@ -501,7 +489,6 @@ public class DbInitializer {
         romeToBarcelona.addOrderItem(new OrderItem(applePie.getProductId(), largeVariant.getVariantId(), 20, applePie.getBasePrice()));
 
         Order berlinToAmsterdam = Order.createB2B(
-                OrderType.B2B,
                 LocalDateTime.now().plusDays(3),
                 amsterdamShop.getShopId(),
                 berlinShop.getShopId());
@@ -509,7 +496,6 @@ public class DbInitializer {
         berlinToAmsterdam.addOrderItem(new OrderItem(cinnamonBread.getProductId(), regularVariant.getVariantId(), 35, cinnamonBread.getBasePrice()));
 
         Order newYorkToParis = Order.createB2B(
-                OrderType.B2B,
                 LocalDateTime.now().plusDays(6),
                 parisShop.getShopId(),
                 newYorkShop.getShopId());

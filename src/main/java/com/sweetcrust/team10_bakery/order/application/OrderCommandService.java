@@ -31,7 +31,6 @@ public class OrderCommandService {
         }
 
         Order order = Order.createB2C(
-                createB2COrderCommand.orderType(),
                 createB2COrderCommand.deliveryAddress(),
                 createB2COrderCommand.requestedDeliveryDate(),
                 createB2COrderCommand.customerId()
@@ -49,7 +48,6 @@ public class OrderCommandService {
                 .orElseThrow(() -> new OrderServiceException("orderingShopId", "Shop id cannot be null"));
 
         Order order = Order.createB2B(
-                createB2BOrderCommand.orderType(),
                 createB2BOrderCommand.requestedDeliveryDate(),
                 createB2BOrderCommand.orderingShopId(),
                 createB2BOrderCommand.sourceShopId()

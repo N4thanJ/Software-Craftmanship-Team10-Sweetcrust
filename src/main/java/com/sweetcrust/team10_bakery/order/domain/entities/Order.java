@@ -54,25 +54,26 @@ public class Order {
     }
 
     // Factory constructor (private cause only used inside the class)
-    private Order(OrderType orderType, LocalDateTime requestedDeliveryDate) {
+    private Order(LocalDateTime requestedDeliveryDate) {
         this.orderId = new OrderId();
         this.orderDate = LocalDateTime.now();
         this.status = OrderStatus.PENDING;
-        setOrderType(orderType);
         setRequestedDeliveryDate(requestedDeliveryDate);
     }
 
     // B2C orders (klant order)
-    public static Order createB2C(OrderType orderType, Address deliveryAddress, LocalDateTime requestedDeliveryDate, UserId customerId) {
-        Order order = new Order(orderType, requestedDeliveryDate);
+    public static Order createB2C(Address deliveryAddress, LocalDateTime requestedDeliveryDate, UserId customerId) {
+        Order order = new Order(requestedDeliveryDate);
+        order.setOrderType(OrderType.B2C);
         order.setDeliveryAddress(deliveryAddress);
         order.setCustomerId(customerId);
         return order;
     }
 
     // B2B orders (SweetCrust order bij andere SweetCrust)
-    public static Order createB2B(OrderType orderType, LocalDateTime requestedDeliveryDate, ShopId orderingShopId, ShopId sourceShopId) {
-        Order order = new Order(orderType, requestedDeliveryDate);
+    public static Order createB2B(LocalDateTime requestedDeliveryDate, ShopId orderingShopId, ShopId sourceShopId) {
+        Order order = new Order(requestedDeliveryDate);
+        order.setOrderType(OrderType.B2B);
         order.setOrderingShopId(orderingShopId);
         order.setSourceShopId(sourceShopId);
         return order;
