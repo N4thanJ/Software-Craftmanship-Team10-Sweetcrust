@@ -45,13 +45,17 @@ public class OrderCommandServiceTest {
     void givenValidData_whenCreateB2COrder_thenOrderIsCreated() {
         // given
         UserId customerId = new UserId();
-        Address address = new Address("123 Sourdough Street", "Bread City", "12345", "Baguette Kingdom");
+        Address address = Address.builder()
+                .setStreet("123 Sourdough Street")
+                .setCity("Bread City")
+                .setPostalCode("12345")
+                .setCountry("Baguette Kingdom")
+                .build();
         LocalDateTime futureDate = LocalDateTime.now().plusDays(2);
         CreateB2COrderCommand command = new CreateB2COrderCommand(
                 address,
                 futureDate,
-                customerId
-        );
+                customerId);
 
         User customer = mock(User.class);
         when(customer.getRole()).thenReturn(UserRole.CUSTOMER);
@@ -67,15 +71,20 @@ public class OrderCommandServiceTest {
     @Test
     void givenNullDeliveryDate_whenCreateB2COrder_thenExceptionIsThrown() {
         // given
-        Address address = new Address("456 Baguette Boulevard", "Croissant City", "67890", "Pastry Land");
+        Address address = Address.builder()
+                .setStreet("456 Baguette Boulevard")
+                .setCity("Croissant City")
+                .setPostalCode("67890")
+                .setCountry("Pastry Land")
+                .build();
         CreateB2COrderCommand command = new CreateB2COrderCommand(
                 address,
                 null,
-                new UserId()
-        );
+                new UserId());
 
         // when
-        OrderServiceException exception = assertThrows(OrderServiceException.class, () -> orderCommandService.createB2COrder(command));
+        OrderServiceException exception = assertThrows(OrderServiceException.class,
+                () -> orderCommandService.createB2COrder(command));
 
         // then
         assertEquals("requestedDeliveryDate", exception.getField());
@@ -85,16 +94,21 @@ public class OrderCommandServiceTest {
     @Test
     void givenPastDeliveryDate_whenCreateB2COrder_thenExceptionIsThrown() {
         // given
-        Address address = new Address("789 Croissant Corner", "Muffin Town", "11111", "Doughnut Nation");
+        Address address = Address.builder()
+                .setStreet("789 Croissant Corner")
+                .setCity("Muffin Town")
+                .setPostalCode("11111")
+                .setCountry("Doughnut Nation")
+                .build();
         LocalDateTime pastDate = LocalDateTime.now().minusDays(1);
         CreateB2COrderCommand command = new CreateB2COrderCommand(
                 address,
                 pastDate,
-                new UserId()
-        );
+                new UserId());
 
         // when
-        OrderServiceException exception = assertThrows(OrderServiceException.class, () -> orderCommandService.createB2COrder(command));
+        OrderServiceException exception = assertThrows(OrderServiceException.class,
+                () -> orderCommandService.createB2COrder(command));
 
         // then
         assertEquals("requestedDeliveryDate", exception.getField());
@@ -105,18 +119,23 @@ public class OrderCommandServiceTest {
     void givenNonExistentCustomer_whenCreateB2COrder_thenExceptionIsThrown() {
         // given
         UserId customerId = new UserId();
-        Address address = new Address("321 Pumpernickel Plaza", "Rye City", "22222", "Flour Republic");
+        Address address = Address.builder()
+                .setStreet("321 Pumpernickel Plaza")
+                .setCity("Rye City")
+                .setPostalCode("22222")
+                .setCountry("Flour Republic")
+                .build();
         LocalDateTime futureDate = LocalDateTime.now().plusDays(3);
         CreateB2COrderCommand command = new CreateB2COrderCommand(
                 address,
                 futureDate,
-                customerId
-        );
+                customerId);
 
         when(userRepository.findById(customerId)).thenReturn(Optional.empty());
 
         // when
-        OrderServiceException exception = assertThrows(OrderServiceException.class, () -> orderCommandService.createB2COrder(command));
+        OrderServiceException exception = assertThrows(OrderServiceException.class,
+                () -> orderCommandService.createB2COrder(command));
 
         // then
         assertEquals("customerId", exception.getField());
@@ -127,20 +146,25 @@ public class OrderCommandServiceTest {
     void givenBakerRole_whenCreateB2COrder_thenExceptionIsThrown() {
         // given
         UserId bakerId = new UserId();
-        Address address = new Address("555 Rye Road", "Wheat Village", "33333", "Grain Empire");
+        Address address = Address.builder()
+                .setStreet("555 Rye Road")
+                .setCity("Wheat Village")
+                .setPostalCode("33333")
+                .setCountry("Grain Empire")
+                .build();
         LocalDateTime futureDate = LocalDateTime.now().plusDays(1);
         CreateB2COrderCommand command = new CreateB2COrderCommand(
                 address,
                 futureDate,
-                bakerId
-        );
+                bakerId);
 
         User baker = mock(User.class);
         when(baker.getRole()).thenReturn(UserRole.BAKER);
         when(userRepository.findById(bakerId)).thenReturn(Optional.of(baker));
 
         // when
-        OrderServiceException exception = assertThrows(OrderServiceException.class, () -> orderCommandService.createB2COrder(command));
+        OrderServiceException exception = assertThrows(OrderServiceException.class,
+                () -> orderCommandService.createB2COrder(command));
 
         // then
         assertEquals("customerId", exception.getField());
@@ -158,11 +182,15 @@ public class OrderCommandServiceTest {
                 futureDate,
                 orderingShopId,
                 sourceShopId,
-                bakerId
-        );
+                bakerId);
 
         Shop shop = mock(Shop.class);
-        Address shopAddress = new Address("42 Flour Power Lane", "Yeast Heights", "44444", "Levain Land");
+        Address shopAddress = Address.builder()
+                .setStreet("42 Flour Power Lane")
+                .setCity("Yeast Heights")
+                .setPostalCode("44444")
+                .setCountry("Levain Land")
+                .build();
         when(shop.getAddress()).thenReturn(shopAddress);
         when(shopRepository.findById(orderingShopId)).thenReturn(Optional.of(shop));
 
@@ -185,11 +213,11 @@ public class OrderCommandServiceTest {
                 pastDate,
                 new ShopId(),
                 new ShopId(),
-                new UserId()
-        );
+                new UserId());
 
         // when
-        OrderServiceException exception = assertThrows(OrderServiceException.class, () -> orderCommandService.createB2BOrder(command));
+        OrderServiceException exception = assertThrows(OrderServiceException.class,
+                () -> orderCommandService.createB2BOrder(command));
 
         // then
         assertEquals("requestedDeliveryDate", exception.getField());
@@ -205,13 +233,13 @@ public class OrderCommandServiceTest {
                 futureDate,
                 nonExistentShopId,
                 new ShopId(),
-                new UserId()
-        );
+                new UserId());
 
         when(shopRepository.findById(nonExistentShopId)).thenReturn(Optional.empty());
 
         // when
-        OrderServiceException exception = assertThrows(OrderServiceException.class, () -> orderCommandService.createB2BOrder(command));
+        OrderServiceException exception = assertThrows(OrderServiceException.class,
+                () -> orderCommandService.createB2BOrder(command));
 
         // then
         assertEquals("orderingShopId", exception.getField());
@@ -228,15 +256,15 @@ public class OrderCommandServiceTest {
                 futureDate,
                 orderingShopId,
                 new ShopId(),
-                nonExistentUserId
-        );
+                nonExistentUserId);
 
         Shop shop = mock(Shop.class);
         when(shopRepository.findById(orderingShopId)).thenReturn(Optional.of(shop));
         when(userRepository.findById(nonExistentUserId)).thenReturn(Optional.empty());
 
         // when
-        OrderServiceException exception = assertThrows(OrderServiceException.class, () -> orderCommandService.createB2BOrder(command));
+        OrderServiceException exception = assertThrows(OrderServiceException.class,
+                () -> orderCommandService.createB2BOrder(command));
 
         // then
         assertEquals("userId", exception.getField());
@@ -253,8 +281,7 @@ public class OrderCommandServiceTest {
                 futureDate,
                 orderingShopId,
                 new ShopId(),
-                customerId
-        );
+                customerId);
 
         Shop shop = mock(Shop.class);
         when(shopRepository.findById(orderingShopId)).thenReturn(Optional.of(shop));
@@ -264,7 +291,8 @@ public class OrderCommandServiceTest {
         when(userRepository.findById(customerId)).thenReturn(Optional.of(customer));
 
         // when
-        OrderServiceException exception = assertThrows(OrderServiceException.class, () -> orderCommandService.createB2BOrder(command));
+        OrderServiceException exception = assertThrows(OrderServiceException.class,
+                () -> orderCommandService.createB2BOrder(command));
 
         // then
         assertEquals("userId", exception.getField());

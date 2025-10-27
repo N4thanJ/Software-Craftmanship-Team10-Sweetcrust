@@ -13,7 +13,12 @@ public class ShopTest {
     void givenValidData_whenCreatingShop_thenShopIsCreated() {
         // given
         String name = "The Rolling Scones";
-        Address address = new Address("42 Doughnut Drive", "Crumbsville", "12345", "Bakeland");
+        Address address = Address.builder()
+                .setStreet("42 Doughnut Drive")
+                .setCity("Crumbsville")
+                .setPostalCode("12345")
+                .setCountry("Bakeland")
+                .build();
         String email = "amsterdam@sweetcrust.nl";
 
         // when
@@ -30,7 +35,12 @@ public class ShopTest {
     @Test
     void givenNullName_whenCreatingShop_thenThrowsException() {
         // given
-        Address address = new Address("10 Croissant Crescent", "Pastrytown", "54321", "Bakeland");
+        Address address = Address.builder()
+                .setStreet("10 Croissant Crescent")
+                .setCity("Pastrytown")
+                .setPostalCode("54321")
+                .setCountry("Bakeland")
+                .build();
         String email = "rome@sweetcrust.it";
 
         // when
@@ -45,7 +55,12 @@ public class ShopTest {
     @Test
     void givenBlankName_whenCreatingShop_thenThrowsException() {
         // given
-        Address address = new Address("9 Pretzel Place", "Twistopolis", "67890", "Bakeland");
+        Address address = Address.builder()
+                .setStreet("9 Pretzel Place")
+                .setCity("Twistopolis")
+                .setPostalCode("67890")
+                .setCountry("Bakeland")
+                .build();
         String email = "athens@sweetcrust.gr";
 
         // when
@@ -75,7 +90,12 @@ public class ShopTest {
     @Test
     void givenNullEmail_whenCreatingShop_thenThrowsException() {
         // given
-        Address address = new Address("7 Bagel Boulevard", "Yeast City", "99999", "Bakeland");
+        Address address = Address.builder()
+                .setStreet("7 Bagel Boulevard")
+                .setCity("Yeast City")
+                .setPostalCode("99999")
+                .setCountry("Bakeland")
+                .build();
 
         // when
         ShopDomainException exception = assertThrows(ShopDomainException.class,
@@ -89,7 +109,12 @@ public class ShopTest {
     @Test
     void givenBlankEmail_whenCreatingShop_thenThrowsException() {
         // given
-        Address address = new Address("13 Cruller Court", "Dough City", "11223", "Bakeland");
+        Address address = Address.builder()
+                .setStreet("13 Cruller Court")
+                .setCity("Dough City")
+                .setPostalCode("11223")
+                .setCountry("Bakeland")
+                .build();
 
         // when
         ShopDomainException exception = assertThrows(ShopDomainException.class,
@@ -103,7 +128,12 @@ public class ShopTest {
     @Test
     void givenInvalidEmailWithoutAtSymbol_whenCreatingShop_thenThrowsException() {
         // given
-        Address address = new Address("15 Biscuit Boulevard", "Butterburg", "45678", "Bakeland");
+        Address address = Address.builder()
+                .setStreet("15 Biscuit Boulevard")
+                .setCity("Butterburg")
+                .setPostalCode("45678")
+                .setCountry("Bakeland")
+                .build();
 
         // when
         ShopDomainException exception = assertThrows(ShopDomainException.class,
@@ -117,7 +147,12 @@ public class ShopTest {
     @Test
     void givenInvalidEmailWithoutDomain_whenCreatingShop_thenThrowsException() {
         // given
-        Address address = new Address("21 Scone Street", "Jamestown", "55555", "Bakeland");
+        Address address = Address.builder()
+                .setStreet("21 Scone Street")
+                .setCity("Jamestown")
+                .setPostalCode("55555")
+                .setCountry("Bakeland")
+                .build();
 
         // when
         ShopDomainException exception = assertThrows(ShopDomainException.class,
@@ -131,7 +166,12 @@ public class ShopTest {
     @Test
     void givenValidEmail_whenCreatingShop_thenShopIsCreated() {
         // given
-        Address address = new Address("88 Tart Terrace", "Pufftown", "20202", "Bakeland");
+        Address address = Address.builder()
+                .setStreet("88 Tart Terrace")
+                .setCity("Pufftown")
+                .setPostalCode("20202")
+                .setCountry("Bakeland")
+                .build();
         String email = "barcelona@sweetcrust.es";
 
         // when
@@ -145,7 +185,12 @@ public class ShopTest {
     @Test
     void givenValidCountryCode_whenSettingCountryCode_thenCountryCodeIsSet() {
         // given
-        Address address = new Address("100 Donut Drive", "Sprinkleville", "60606", "Bakeland");
+        Address address = Address.builder()
+                .setStreet("100 Donut Drive")
+                .setCity("Sprinkleville")
+                .setPostalCode("60606")
+                .setCountry("Bakeland")
+                .build();
         Shop shop = new Shop("Holy Sheet Cakes", address, "newdelhi@sweetcrust.in");
         CountryCode countryCode = new CountryCode("US");
 
@@ -159,7 +204,12 @@ public class ShopTest {
     @Test
     void givenNullCountryCode_whenSettingCountryCode_thenThrowsException() {
         // given
-        Address address = new Address("22 Muffin Mile", "Cupcake City", "80808", "Bakeland");
+        Address address = Address.builder()
+                .setStreet("22 Muffin Mile")
+                .setCity("Cupcake City")
+                .setPostalCode("80808")
+                .setCountry("Bakeland")
+                .build();
         Shop shop = new Shop("Dough My Gosh", address, "miami@sweetcrust.us");
 
         // when
@@ -174,13 +224,18 @@ public class ShopTest {
     @Test
     void givenShopWithValidAddress_whenAccessingValues_thenTheyMatch() {
         // given
-        Address address = new Address("123 Cupcake Avenue", "Frostville", "34567", "Bakeland");
+        Address address = Address.builder()
+                .setStreet("123 Cupcake Avenue")
+                .setCity("Frostville")
+                .setPostalCode("34567")
+                .setCountry("Bakeland")
+                .build();
         Shop shop = new Shop("Bake Street Boys", address, "leuven@sweetcrust.be");
 
         // then
-        assertEquals("123 Cupcake Avenue", shop.getAddress().street());
-        assertEquals("Frostville", shop.getAddress().city());
-        assertEquals("34567", shop.getAddress().postalCode());
-        assertEquals("Bakeland", shop.getAddress().country());
+        assertEquals("123 Cupcake Avenue", shop.getAddress().getStreet());
+        assertEquals("Frostville", shop.getAddress().getCity());
+        assertEquals("34567", shop.getAddress().getPostalCode());
+        assertEquals("Bakeland", shop.getAddress().getCountry());
     }
 }
