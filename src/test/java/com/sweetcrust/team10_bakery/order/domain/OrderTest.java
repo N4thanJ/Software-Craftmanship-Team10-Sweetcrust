@@ -24,7 +24,7 @@ public class OrderTest {
         LocalDateTime requestedDeliveryDate = LocalDateTime.now().plusDays(1);
 
         // when
-        Order order = Order.createB2C(OrderType.B2C, address, requestedDeliveryDate, customerId);
+        Order order = Order.createB2C(address, requestedDeliveryDate, customerId);
 
         // then
         assertNotNull(order);
@@ -44,7 +44,7 @@ public class OrderTest {
         ShopId sourceShopId = new ShopId();
 
         // when
-        Order order = Order.createB2B(OrderType.B2B, requestedDeliveryDate, orderingShopId, sourceShopId);
+        Order order = Order.createB2B(requestedDeliveryDate, orderingShopId, sourceShopId);
 
         // then
         assertNotNull(order);
@@ -63,7 +63,7 @@ public class OrderTest {
 
         // when
         OrderDomainException exception = assertThrows(OrderDomainException.class,
-                () -> Order.createB2C(OrderType.B2C, null, requestedDeliveryDate, customerId));
+                () -> Order.createB2C(null, requestedDeliveryDate, customerId));
 
         // then
         assertEquals("deliveryAddress", exception.getField());
@@ -78,7 +78,7 @@ public class OrderTest {
 
         // when
         OrderDomainException exception = assertThrows(OrderDomainException.class,
-                () -> Order.createB2C(OrderType.B2C, address, null, customerId));
+                () -> Order.createB2C(address, null, customerId));
 
         // then
         assertEquals("requestedDeliveryDate", exception.getField());
@@ -94,7 +94,7 @@ public class OrderTest {
 
         // when
         OrderDomainException exception = assertThrows(OrderDomainException.class,
-                () -> Order.createB2C(OrderType.B2C, address, requestedDeliveryDate, customerId));
+                () -> Order.createB2C(address, requestedDeliveryDate, customerId));
 
         // then
         assertEquals("requestedDeliveryDate", exception.getField());
@@ -109,7 +109,7 @@ public class OrderTest {
 
         // when
         OrderDomainException exception = assertThrows(OrderDomainException.class,
-                () -> Order.createB2C(OrderType.B2C, address, requestedDeliveryDate, null));
+                () -> Order.createB2C(address, requestedDeliveryDate, null));
 
         // then
         assertEquals("customerId", exception.getField());
@@ -119,7 +119,7 @@ public class OrderTest {
     @Test
     void givenNullOrderItem_whenAddingOrderItem_thenThrowsException() {
         // given
-        Order order = Order.createB2C(OrderType.B2C,
+        Order order = Order.createB2C(
                 new Address("Bread Boulevard 1", "Loaf City", "10101", "Sweetland"),
                 LocalDateTime.now().plusDays(1),
                 new UserId()
@@ -137,7 +137,7 @@ public class OrderTest {
     @Test
     void givenOrderWithItems_whenRemovingOrderItem_thenItemIsRemoved() {
         // given
-        Order order = Order.createB2C(OrderType.B2C,
+        Order order = Order.createB2C(
                 new Address("Bagel Boulevard 17", "Cheesetown", "20202", "Sweetland"),
                 LocalDateTime.now().plusDays(1),
                 new UserId()
@@ -155,7 +155,7 @@ public class OrderTest {
     @Test
     void givenEmptyOrder_whenValidatingOrder_thenThrowsException() {
         // given
-        Order order = Order.createB2C(OrderType.B2C,
+        Order order = Order.createB2C(
                 new Address("Croissant Court 5", "Pastryville", "30303", "Sweetland"),
                 LocalDateTime.now().plusDays(1),
                 new UserId()
