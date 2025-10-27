@@ -1,5 +1,7 @@
 package com.sweetcrust.team10_bakery.product.domain.valueobjects;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import org.springframework.util.Assert;
 
 import java.util.UUID;
@@ -12,5 +14,15 @@ public record ProductId(UUID id) {
 
     public ProductId() {
         this(UUID.randomUUID());
+    }
+
+    @JsonCreator
+    public ProductId(String id) {
+        this(UUID.fromString(id));
+    }
+
+    @JsonValue
+    public String asString() {
+        return id.toString();
     }
 }
