@@ -19,7 +19,12 @@ public class OrderTest {
     @Test
     void givenValidB2CData_whenCreatingOrder_thenOrderIsCreated() {
         // given
-        Address address = new Address("Bakery Lane 13", "Donutville", "12345", "Sweetland");
+        Address address = Address.builder()
+                .setStreet("Bakery Lane 13")
+                .setCity("Donutville")
+                .setPostalCode("12345")
+                .setCountry("Sweetland")
+                .build();
         UserId customerId = new UserId();
         LocalDateTime requestedDeliveryDate = LocalDateTime.now().plusDays(1);
 
@@ -73,7 +78,12 @@ public class OrderTest {
     @Test
     void givenNullRequestedDeliveryDateForB2C_whenCreatingOrder_thenThrowsException() {
         // given
-        Address address = new Address("Cupcake Crescent 99", "Frostingtown", "54321", "Sweetland");
+        Address address = Address.builder()
+                .setStreet("Cupcake Crescent 99")
+                .setCity("Frostingtown")
+                .setPostalCode("54321")
+                .setCountry("Sweetland")
+                .build();
         UserId customerId = new UserId();
 
         // when
@@ -88,7 +98,12 @@ public class OrderTest {
     @Test
     void givenRequestedDeliveryDateBeforeOrderDate_whenCreatingB2COrder_thenThrowsException() {
         // given
-        Address address = new Address("Pie Street 7", "Tartville", "11111", "Sweetland");
+        Address address = Address.builder()
+                .setStreet("Pie Street 7")
+                .setCity("Tartville")
+                .setPostalCode("11111")
+                .setCountry("Sweetland")
+                .build();
         UserId customerId = new UserId();
         LocalDateTime requestedDeliveryDate = LocalDateTime.now().minusDays(1);
 
@@ -104,7 +119,12 @@ public class OrderTest {
     @Test
     void givenNullCustomerIdForB2C_whenCreatingOrder_thenThrowsException() {
         // given
-        Address address = new Address("Muffin Avenue 42", "Bakerville", "67890", "Sweetland");
+        Address address = Address.builder()
+                .setStreet("Muffin Avenue 42")
+                .setCity("Bakerville")
+                .setPostalCode("67890")
+                .setCountry("Sweetland")
+                .build();
         LocalDateTime requestedDeliveryDate = LocalDateTime.now().plusDays(1);
 
         // when
@@ -120,10 +140,14 @@ public class OrderTest {
     void givenNullOrderItem_whenAddingOrderItem_thenThrowsException() {
         // given
         Order order = Order.createB2C(
-                new Address("Bread Boulevard 1", "Loaf City", "10101", "Sweetland"),
+                Address.builder()
+                        .setStreet("Bread Boulevard 1")
+                        .setCity("Loaf City")
+                        .setPostalCode("10101")
+                        .setCountry("Sweetland")
+                        .build(),
                 LocalDateTime.now().plusDays(1),
-                new UserId()
-        );
+                new UserId());
 
         // when
         OrderDomainException exception = assertThrows(OrderDomainException.class,
@@ -138,10 +162,14 @@ public class OrderTest {
     void givenOrderWithItems_whenRemovingOrderItem_thenItemIsRemoved() {
         // given
         Order order = Order.createB2C(
-                new Address("Bagel Boulevard 17", "Cheesetown", "20202", "Sweetland"),
+                Address.builder()
+                        .setStreet("Bagel Boulevard 17")
+                        .setCity("Cheesetown")
+                        .setPostalCode("20202")
+                        .setCountry("Sweetland")
+                        .build(),
                 LocalDateTime.now().plusDays(1),
-                new UserId()
-        );
+                new UserId());
 
         // when
         OrderItem item = mock(OrderItem.class);
@@ -156,10 +184,14 @@ public class OrderTest {
     void givenEmptyOrder_whenValidatingOrder_thenThrowsException() {
         // given
         Order order = Order.createB2C(
-                new Address("Croissant Court 5", "Pastryville", "30303", "Sweetland"),
+                Address.builder()
+                        .setStreet("Croissant Court 5")
+                        .setCity("Pastryville")
+                        .setPostalCode("30303")
+                        .setCountry("Sweetland")
+                        .build(),
                 LocalDateTime.now().plusDays(1),
-                new UserId()
-        );
+                new UserId());
 
         // when
         OrderDomainException exception = assertThrows(OrderDomainException.class,

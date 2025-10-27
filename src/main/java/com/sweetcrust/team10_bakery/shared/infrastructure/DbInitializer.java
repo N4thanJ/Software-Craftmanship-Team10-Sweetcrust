@@ -367,36 +367,78 @@ public class DbInitializer {
 
         // Shops
         Shop parisShop = new Shop("SweetCrust Paris",
-                new Address("Rue de la Baguette 42", "Paris", "75001", "France"),
+                Address.builder()
+                        .setStreet("Rue de la Baguette 42")
+                        .setCity("Paris")
+                        .setPostalCode("75001")
+                        .setCountry("France")
+                        .build(),
                 "bonjour@sweetcrust.com");
 
         Shop tokyoShop = new Shop("SweetCrust Tokyo",
-                new Address("Shibuya Crossing 1", "Tokyo", "1500001", "Japan"),
+                Address.builder()
+                        .setStreet("Shibuya Crossing 1")
+                        .setCity("Tokyo")
+                        .setPostalCode("1500001")
+                        .setCountry("Japan")
+                        .build(),
                 "konnichiwa@sweetcrust.com");
 
         Shop newYorkShop = new Shop("SweetCrust New York",
-                new Address("Broadway 123", "New York", "10001", "United States"),
+                Address.builder()
+                        .setStreet("Broadway 123")
+                        .setCity("New York")
+                        .setPostalCode("10001")
+                        .setCountry("United States")
+                        .build(),
                 "bigapple@sweetcrust.com");
 
         Shop londonShop = new Shop("SweetCrust London",
-                new Address("Baker Street 221B", "London", "NW16XE", "United Kingdom"),
+                Address.builder()
+                        .setStreet("Baker Street 221B")
+                        .setCity("London")
+                        .setPostalCode("NW16XE")
+                        .setCountry("United Kingdom")
+                        .build(),
                 "cheerio@sweetcrust.com");
 
         Shop berlinShop = new Shop("SweetCrust Berlin",
-                new Address("Alexanderplatz 5", "Berlin", "10178", "Germany"),
+                Address.builder()
+                        .setStreet("Alexanderplatz 5")
+                        .setCity("Berlin")
+                        .setPostalCode("10178")
+                        .setCountry("Germany")
+                        .build(),
                 "gutentag@sweetcrust.com");
 
         Shop romeShop = new Shop("SweetCrust Rome",
-                new Address("Via del Corso 99", "Rome", "00186", "Italy"),
+                Address.builder()
+                        .setStreet("Via del Corso 99")
+                        .setCity("Rome")
+                        .setPostalCode("00186")
+                        .setCountry("Italy")
+                        .build(),
                 "ciao@sweetcrust.com");
 
         Shop barcelonaShop = new Shop("SweetCrust Barcelona",
-                new Address("La Rambla 88", "Barcelona", "08002", "Spain"),
+                Address.builder()
+                        .setStreet("La Rambla 88")
+                        .setCity("Barcelona")
+                        .setPostalCode("08002")
+                        .setCountry("Spain")
+                        .build(),
                 "hola@sweetcrust.com");
 
         Shop amsterdamShop = new Shop("SweetCrust Amsterdam",
-                new Address("Damrak 12", "Amsterdam", "1012LG", "Netherlands"),
+                Address.builder()
+                        .setStreet("Damrak 12")
+                        .setCity("Amsterdam")
+                        .setPostalCode("1012LG")
+                        .setCountry("Netherlands")
+                        .build(),
                 "hallo@sweetcrust.com");
+
+
 
         shopRepository.save(parisShop);
         shopRepository.save(tokyoShop);
@@ -409,7 +451,12 @@ public class DbInitializer {
 
         // B2C
         Order donutOrder = Order.createB2C(
-                new Address("Donut Drive 15", "Glazeville", "12345", "Donutland"),
+                Address.builder()
+                        .setStreet("Donut Drive 15")
+                        .setCity("Glazeville")
+                        .setPostalCode("12345")
+                        .setCountry("Donutland")
+                        .build(),
                 LocalDateTime.now().plusDays(1),
                 donutDan.getUserId());
         donutOrder.addOrderItem(new OrderItem(glazedDonut.getProductId(), regularVariant.getVariantId(), 12, glazedDonut.getBasePrice()));
@@ -417,53 +464,86 @@ public class DbInitializer {
         donutOrder.addOrderItem(new OrderItem(mapleDonut.getProductId(), regularVariant.getVariantId(), 6, mapleDonut.getBasePrice()));
 
         Order cupcakeOrder = Order.createB2C(
-                new Address("Cupcake Lane 8", "Frostington", "23456", "Sweetland"),
+                Address.builder()
+                        .setStreet("Cupcake Lane 8")
+                        .setCity("Frostington")
+                        .setPostalCode("23456")
+                        .setCountry("Sweetland")
+                        .build(),
                 LocalDateTime.now().plusDays(2),
                 cupcakeClaire.getUserId());
         cupcakeOrder.addOrderItem(new OrderItem(vanillaCupcake.getProductId(), regularVariant.getVariantId(), 24, vanillaCupcake.getBasePrice()));
         cupcakeOrder.addOrderItem(new OrderItem(chocolateCupcake.getProductId(), regularVariant.getVariantId(), 24, chocolateCupcake.getBasePrice()));
 
         Order pieOrder = Order.createB2C(
-                new Address("Pie Place 99", "Crustville", "34567", "Pieland"),
+                Address.builder()
+                        .setStreet("Pie Place 99")
+                        .setCity("Crustville")
+                        .setPostalCode("34567")
+                        .setCountry("Pieland")
+                        .build(),
                 LocalDateTime.now().plusDays(3),
                 piePatrick.getUserId());
         pieOrder.addOrderItem(new OrderItem(applePie.getProductId(), largeVariant.getVariantId(), 2, applePie.getBasePrice()));
         pieOrder.addOrderItem(new OrderItem(pumpkinPie.getProductId(), largeVariant.getVariantId(), 1, pumpkinPie.getBasePrice()));
 
         Order cookieOrder = Order.createB2C(
-                new Address("Cookie Court 7", "Chocochip City", "45678", "Cookieland"),
+                Address.builder()
+                        .setStreet("Cookie Court 7")
+                        .setCity("Chocochip City")
+                        .setPostalCode("45678")
+                        .setCountry("Cookieland")
+                        .build(),
                 LocalDateTime.now().plusDays(1),
                 cookieConnie.getUserId());
         cookieOrder.addOrderItem(new OrderItem(chocolateChipCookie.getProductId(), regularVariant.getVariantId(), 36, chocolateChipCookie.getBasePrice()));
         cookieOrder.addOrderItem(new OrderItem(macadamiaCookie.getProductId(), regularVariant.getVariantId(), 24, macadamiaCookie.getBasePrice()));
 
         Order cakeOrder = Order.createB2C(
-                new Address("Cake Circle 3", "Velvetville", "56789", "Cakeland"),
+                Address.builder()
+                        .setStreet("Cake Circle 3")
+                        .setCity("Velvetville")
+                        .setPostalCode("56789")
+                        .setCountry("Cakeland")
+                        .build(),
                 LocalDateTime.now().plusDays(4),
                 cakeCathy.getUserId());
         cakeOrder.addOrderItem(new OrderItem(redVelvetCake.getProductId(), largeVariant.getVariantId(), 1, redVelvetCake.getBasePrice()));
         cakeOrder.addOrderItem(new OrderItem(chocolateLavaCake.getProductId(), regularVariant.getVariantId(), 4, chocolateLavaCake.getBasePrice()));
 
         Order breadOrder = Order.createB2C(
-                new Address("Bread Boulevard 21", "Sourdough Springs", "67890", "Breadland"),
+                Address.builder()
+                        .setStreet("Bread Boulevard 21")
+                        .setCity("Sourdough Springs")
+                        .setPostalCode("67890")
+                        .setCountry("Breadland")
+                        .build(),
                 LocalDateTime.now().plusDays(1),
                 breadBob.getUserId());
         breadOrder.addOrderItem(new OrderItem(sourdoughBread.getProductId(), largeVariant.getVariantId(), 3, sourdoughBread.getBasePrice()));
         breadOrder.addOrderItem(new OrderItem(baguette.getProductId(), largeVariant.getVariantId(), 5, baguette.getBasePrice()));
 
         Order croissantOrder = Order.createB2C(
-                new Address("Flaky Street 18", "Buttertown", "78901", "Pastryville"),
+                Address.builder()
+                        .setStreet("Flaky Street 18")
+                        .setCity("Buttertown")
+                        .setPostalCode("78901")
+                        .setCountry("Pastryville")
+                        .build(),
                 LocalDateTime.now().plusDays(2),
                 croissantCarl.getUserId());
         croissantOrder.addOrderItem(new OrderItem(croissant.getProductId(), regularVariant.getVariantId(), 10, croissant.getBasePrice()));
         croissantOrder.addOrderItem(new OrderItem(painAuChocolat.getProductId(), regularVariant.getVariantId(), 8, painAuChocolat.getBasePrice()));
 
         Order muffinOrder = Order.createB2C(
-                new Address("Muffin Manor 44", "Blueberry Hills", "89012", "Muffinland"),
+                Address.builder()
+                        .setStreet("Muffin Manor 44")
+                        .setCity("Blueberry Hills")
+                        .setPostalCode("89012")
+                        .setCountry("Muffinland")
+                        .build(),
                 LocalDateTime.now().plusDays(1),
                 muffinMary.getUserId());
-        muffinOrder.addOrderItem(new OrderItem(blueberryMuffin.getProductId(), regularVariant.getVariantId(), 12, blueberryMuffin.getBasePrice()));
-        muffinOrder.addOrderItem(new OrderItem(bananaMuffin.getProductId(), regularVariant.getVariantId(), 12, bananaMuffin.getBasePrice()));
 
         // B2B
         Order parisToLondon = Order.createB2B(
