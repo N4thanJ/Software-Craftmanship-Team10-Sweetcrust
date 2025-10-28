@@ -1,10 +1,7 @@
 package com.sweetcrust.team10_bakery.order.domain.entities;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.sweetcrust.team10_bakery.cart.domain.valueobjects.CartId;
 import com.sweetcrust.team10_bakery.order.domain.OrderDomainException;
 import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderId;
 import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderStatus;
@@ -36,9 +33,9 @@ public class Order {
     @AttributeOverride(name = "id", column = @Column(name = "customer_id"))
     private UserId customerId;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "order_id", nullable = false)
-    private final List<OrderItem> orderItems = new ArrayList<>();
+    @Embedded
+    @AttributeOverride(name = "id", column = @Column(name = "cart_id"))
+    private CartId cartId;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
@@ -62,20 +59,24 @@ public class Order {
     }
 
     // B2C orders (klant order)
-    public static Order createB2C(Address deliveryAddress, LocalDateTime requestedDeliveryDate, UserId customerId) {
+    public static Order createB2C(Address deliveryAddress, LocalDateTime requestedDeliveryDate, UserId customerId,
+            CartId cartId) {
         Order order = new Order(requestedDeliveryDate);
         order.setOrderType(OrderType.B2C);
         order.setDeliveryAddress(deliveryAddress);
         order.setCustomerId(customerId);
+        order.setCartId(cartId);
         return order;
     }
 
     // B2B orders (SweetCrust order bij andere SweetCrust)
-    public static Order createB2B(LocalDateTime requestedDeliveryDate, ShopId orderingShopId, ShopId sourceShopId) {
+    public static Order createB2B(LocalDateTime requestedDeliveryDate, ShopId orderingShopId, ShopId sourceShopId,
+            CartId cartId) {
         Order order = new Order(requestedDeliveryDate);
         order.setOrderType(OrderType.B2B);
         order.setOrderingShopId(orderingShopId);
         order.setSourceShopId(sourceShopId);
+        order.setCartId(cartId);
         return order;
     }
 
@@ -89,10 +90,6 @@ public class Order {
 
     public UserId getCustomerId() {
         return customerId;
-    }
-
-    public List<OrderItem> getOrderItems() {
-        return List.copyOf(orderItems);
     }
 
     public OrderStatus getStatus() {
@@ -117,6 +114,10 @@ public class Order {
 
     public ShopId getOrderingShopId() {
         return orderingShopId;
+    }
+
+    public CartId getCartId() {
+        return cartId;
     }
 
     public void setOrderType(OrderType orderType) {
@@ -164,18 +165,11 @@ public class Order {
         this.sourceShopId = sourceShopId;
     }
 
-    public void addOrderItem(OrderItem orderItem) {
-        if (orderItem == null) {
-            throw new OrderDomainException("orderItem", "orderItem should not be null");
+    public void setCartId(CartId cartId) {
+        if (cartId == null) {
+            throw new OrderDomainException("cartId", "cartId should not be null");
         }
-        orderItems.add(orderItem);
-    }
-
-    public void removeOrderItem(OrderItem orderItem) {
-        if (orderItem == null) {
-            throw new OrderDomainException("orderItem", "orderItem should not be null");
-        }
-        orderItems.remove(orderItem);
+        this.cartId = cartId;
     }
 
     public void validateOrder() {
@@ -185,15 +179,9 @@ public class Order {
         if (orderType == OrderType.B2B && orderingShopId == null) {
             throw new OrderDomainException("orderingShopId", "B2B orders must have orderingShopId");
         }
-        if (orderItems.isEmpty()) {
-            throw new OrderDomainException("orderItems", "orderItems should not be empty");
+        if (cartId == null) {
+            throw new OrderDomainException("cartId", "cartId should not be empty");
         }
-    }
-
-    public BigDecimal calculateTotalPrice() {
-        return orderItems.stream()
-                .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public void confirm() {
