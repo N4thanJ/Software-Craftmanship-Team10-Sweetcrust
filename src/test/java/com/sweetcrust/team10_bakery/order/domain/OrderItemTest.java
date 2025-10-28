@@ -1,6 +1,6 @@
 package com.sweetcrust.team10_bakery.order.domain;
 
-import com.sweetcrust.team10_bakery.order.domain.entities.OrderItem;
+import com.sweetcrust.team10_bakery.cart.domain.entities.CartItem;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductId;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.VariantId;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ public class OrderItemTest {
         BigDecimal unitPrice = BigDecimal.valueOf(3.50);
 
         // when
-        OrderItem item = new OrderItem(productId, variantId, quantity, unitPrice);
+        CartItem item = new CartItem(productId, variantId, quantity, unitPrice);
 
         // then
         assertNotNull(item);
@@ -40,7 +40,7 @@ public class OrderItemTest {
 
         // when
         OrderDomainException exception = assertThrows(OrderDomainException.class,
-                () -> new OrderItem(null, variantId, quantity, unitPrice));
+                () -> new CartItem(null, variantId, quantity, unitPrice));
 
         // then
         assertEquals("productId", exception.getField());
@@ -56,7 +56,7 @@ public class OrderItemTest {
 
         // when
         OrderDomainException exception = assertThrows(OrderDomainException.class,
-                () -> new OrderItem(productId, null, quantity, unitPrice));
+                () -> new CartItem(productId, null, quantity, unitPrice));
 
         // then
         assertEquals("variantId", exception.getField());
@@ -72,7 +72,7 @@ public class OrderItemTest {
 
         //w when
         OrderDomainException exception = assertThrows(OrderDomainException.class,
-                () -> new OrderItem(productId, variantId, -1, unitPrice));
+                () -> new CartItem(productId, variantId, -1, unitPrice));
 
         // then
         assertEquals("quantity", exception.getField());
@@ -88,7 +88,7 @@ public class OrderItemTest {
 
         // when
         OrderDomainException exception = assertThrows(OrderDomainException.class,
-                () -> new OrderItem(productId, variantId, quantity, null));
+                () -> new CartItem(productId, variantId, quantity, null));
 
         // then
         assertEquals("unitPrice", exception.getField());
@@ -105,7 +105,7 @@ public class OrderItemTest {
 
         // when
         OrderDomainException exception = assertThrows(OrderDomainException.class,
-                () -> new OrderItem(productId, variantId, quantity, unitPrice));
+                () -> new CartItem(productId, variantId, quantity, unitPrice));
 
         // then
         assertEquals("unitPrice", exception.getField());

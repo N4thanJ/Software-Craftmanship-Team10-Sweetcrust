@@ -1,7 +1,7 @@
 package com.sweetcrust.team10_bakery.order.domain;
 
+import com.sweetcrust.team10_bakery.cart.domain.entities.CartItem;
 import com.sweetcrust.team10_bakery.order.domain.entities.Order;
-import com.sweetcrust.team10_bakery.order.domain.entities.OrderItem;
 import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderType;
 import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderStatus;
 import com.sweetcrust.team10_bakery.shared.domain.valueobjects.Address;
@@ -172,7 +172,7 @@ public class OrderTest {
                 new UserId());
 
         // when
-        OrderItem item = mock(OrderItem.class);
+        CartItem item = mock(CartItem.class);
         order.addOrderItem(item);
         order.removeOrderItem(item);
 

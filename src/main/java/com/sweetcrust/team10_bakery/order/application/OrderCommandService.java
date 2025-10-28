@@ -20,7 +20,8 @@ public class OrderCommandService {
     private final ShopRepository shopRepository;
     private final UserRepository userRepository;
 
-    public OrderCommandService(OrderRepository orderRepository, ShopRepository shopRepository, UserRepository userRepository) {
+    public OrderCommandService(OrderRepository orderRepository, ShopRepository shopRepository,
+            UserRepository userRepository) {
         this.orderRepository = orderRepository;
         this.shopRepository = shopRepository;
         this.userRepository = userRepository;
@@ -45,8 +46,8 @@ public class OrderCommandService {
         Order order = Order.createB2C(
                 createB2COrderCommand.deliveryAddress(),
                 createB2COrderCommand.requestedDeliveryDate(),
-                createB2COrderCommand.customerId()
-        );
+                createB2COrderCommand.customerId(),
+                createB2COrderCommand.cartId());
 
         return orderRepository.save(order);
     }
@@ -69,8 +70,8 @@ public class OrderCommandService {
         Order order = Order.createB2B(
                 createB2BOrderCommand.requestedDeliveryDate(),
                 createB2BOrderCommand.orderingShopId(),
-                createB2BOrderCommand.sourceShopId()
-        );
+                createB2BOrderCommand.sourceShopId(),
+                createB2BOrderCommand.cartId());
 
         order.setDeliveryAddress(orderingShop.getAddress());
 
