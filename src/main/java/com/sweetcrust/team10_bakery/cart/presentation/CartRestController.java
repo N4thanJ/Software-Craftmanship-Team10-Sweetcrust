@@ -55,10 +55,9 @@ public class CartRestController {
     }
 
     @DeleteMapping("/removeItem/{cardId}")
-    public ResponseEntity<Cart> removeItemFromCart(@PathVariable CartId cartId,
+    public void removeItemFromCart(@PathVariable CartId cartId,
             @RequestBody DeleteCartItemCommand deleteCardItemCommand) {
-        Cart cart = cartCommandService.removeCardItem(cartId, deleteCardItemCommand);
-        return ResponseEntity.ok(cart);
+        cartCommandService.removeCardItem(cartId, deleteCardItemCommand);
     }
 
 }

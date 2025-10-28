@@ -78,7 +78,7 @@ public class CartCommandService {
         return cartRepository.save(cart);
     }
 
-    public Cart removeCardItem(CartId cartId, DeleteCartItemCommand deleteCardItemCommand) {
+    public void removeCardItem(CartId cartId, DeleteCartItemCommand deleteCardItemCommand) {
         if (cartId == null) {
             throw new CartDomainException("cartId", "cart id cannot be null");
         }
@@ -97,12 +97,13 @@ public class CartCommandService {
             throw new CartDomainException("productId", "Item not found in cart");
         }
 
-        if (cart.getCartItems().size() <= 1) {
-            throw new CartDomainException("cart", "Cart must have at least one item; cannot remove the last item");
-        }
-
         cart.removeCartItem(deleteCardItemCommand.productId());
-        return cartRepository.save(cart);
+
+        if (cart.getCartItems().isEmpty()) {
+            cartRepository.delete(cart);
+        } else {
+            cartRepository.save(cart);
+        }
     }
 
 }
