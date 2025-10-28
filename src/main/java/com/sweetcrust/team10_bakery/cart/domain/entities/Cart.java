@@ -1,5 +1,6 @@
 package com.sweetcrust.team10_bakery.cart.domain.entities;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,18 +79,16 @@ public class Cart {
         cartItems.removeIf(item -> item.getProductId().equals(productId));
     }
 
-    public void updateCartItem(ProductId productId, int quantity) {
-        if (productId == null) {
-            throw new CartDomainException("productId", "productId should not be null");
-        }
-
-        if (quantity < 1) {
-            throw new CartDomainException("quantity", "quantity should be greater then 0");
+    public void updateCartItem(CartItem cartItem) {
+        if (cartItem == null) {
+            throw new CartDomainException("cartItem", "cartItem should not be null");
         }
 
         cartItems.stream()
-                .filter(item -> item.getProductId().equals(productId))
+                .filter(item -> item.getProductId().equals(cartItem.getProductId()))
                 .findFirst()
-                .ifPresent(item -> item.setQuantity(quantity));
+                .ifPresentOrElse(
+                        item -> item.setQuantity(cartItem.getQuantity()),
+                        () -> cartItems.add(cartItem));
     }
 }

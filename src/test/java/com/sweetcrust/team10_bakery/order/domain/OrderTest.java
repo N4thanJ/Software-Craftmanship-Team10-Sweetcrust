@@ -34,9 +34,12 @@ public class OrderTest {
                 assertNotNull(order);
                 assertNotNull(order.getOrderId());
                 assertEquals(OrderType.B2C, order.getOrderType());
-                assertEquals(address, order.getDeliveryAddress());
+                assertEquals(null, order.getOrderingShopId());
+                assertEquals(null, order.getSourceShopId());
                 assertEquals(customerId, order.getCustomerId());
+                assertEquals(cartId, order.getCartId());
                 assertEquals(OrderStatus.PENDING, order.getStatus());
+                assertEquals(address, order.getDeliveryAddress());
                 assertEquals(requestedDeliveryDate, order.getRequestedDeliveryDate());
         }
 
@@ -55,9 +58,13 @@ public class OrderTest {
                 assertNotNull(order);
                 assertNotNull(order.getOrderId());
                 assertEquals(OrderType.B2B, order.getOrderType());
-                assertEquals(requestedDeliveryDate, order.getRequestedDeliveryDate());
                 assertEquals(orderingShopId, order.getOrderingShopId());
                 assertEquals(sourceShopId, order.getSourceShopId());
+                assertEquals(null, order.getCustomerId());
+                assertEquals(cartId, order.getCartId());
+                assertEquals(OrderStatus.PENDING, order.getStatus());
+                assertEquals(null, order.getDeliveryAddress());
+                assertEquals(requestedDeliveryDate, order.getRequestedDeliveryDate());
         }
 
         @Test

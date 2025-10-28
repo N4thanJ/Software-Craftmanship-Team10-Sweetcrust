@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import com.sweetcrust.team10_bakery.cart.application.commands.AddCartItemCommand;
 import com.sweetcrust.team10_bakery.cart.application.commands.CreateCartCommand;
 import com.sweetcrust.team10_bakery.cart.application.commands.DeleteCartItemCommand;
-import com.sweetcrust.team10_bakery.cart.domain.CartDomainException;
 import com.sweetcrust.team10_bakery.cart.domain.entities.Cart;
 import com.sweetcrust.team10_bakery.cart.domain.entities.CartItem;
 import com.sweetcrust.team10_bakery.cart.domain.valueobjects.CartId;
@@ -27,11 +26,11 @@ public class CartCommandService {
 
     public Cart createCart(CreateCartCommand createCartCommand) {
         if (createCartCommand.productId() == null) {
-            throw new CartDomainException("productId", "Product id cannot be null");
+            throw new CartServiceException("productId", "Product id cannot be null");
         }
 
         if (createCartCommand.quantity() <= 0) {
-            throw new CartDomainException("quantity", "Quantity must be greater than 0");
+            throw new CartServiceException("quantity", "Quantity must be greater than 0");
         }
 
         Product product = productRepository.findById(createCartCommand.productId())
@@ -48,15 +47,15 @@ public class CartCommandService {
     public Cart addCardItem(CartId cartId, AddCartItemCommand addCardItemCommand) {
 
         if (cartId == null) {
-            throw new CartDomainException("cartId", "cart id cannot be null");
+            throw new CartServiceException("cartId", "cart id cannot be null");
         }
 
         if (addCardItemCommand.productId() == null) {
-            throw new CartDomainException("productId", "Product id cannot be null");
+            throw new CartServiceException("productId", "Product id cannot be null");
         }
 
         if (addCardItemCommand.quantity() <= 0) {
-            throw new CartDomainException("quantity", "Quantity must be greater than 0");
+            throw new CartServiceException("quantity", "Quantity must be greater than 0");
         }
 
         Product product = productRepository.findById(addCardItemCommand.productId())
@@ -66,25 +65,22 @@ public class CartCommandService {
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new CartServiceException("cart", "Cart with id " + cartId + " could not be found"));
 
-        if (cart.getCartItems().stream().anyMatch(item -> item.getProductId().equals(product.getProductId()))) {
-            cart.updateCartItem(product.getProductId(), addCardItemCommand.quantity());
-        } else {
-            CartItem cartItem = new CartItem(product.getProductId(), product.getVariantId(),
-                    addCardItemCommand.quantity(),
-                    product.getBasePrice());
-            cart.addCartItem(cartItem);
-        }
+        CartItem cartItem = new CartItem(product.getProductId(), product.getVariantId(),
+                addCardItemCommand.quantity(),
+                product.getBasePrice());
+
+        cart.updateCartItem(cartItem);
 
         return cartRepository.save(cart);
     }
 
     public void removeCardItem(CartId cartId, DeleteCartItemCommand deleteCardItemCommand) {
         if (cartId == null) {
-            throw new CartDomainException("cartId", "cart id cannot be null");
+            throw new CartServiceException("cartId", "cart id cannot be null");
         }
 
         if (deleteCardItemCommand.productId() == null) {
-            throw new CartDomainException("productId", "product id cannot be null");
+            throw new CartServiceException("productId", "product id cannot be null");
         }
 
         Cart cart = cartRepository.findById(cartId)
@@ -94,7 +90,7 @@ public class CartCommandService {
                 .anyMatch(item -> item.getProductId().equals(deleteCardItemCommand.productId()));
 
         if (!itemExists) {
-            throw new CartDomainException("productId", "Item not found in cart");
+            throw new CartServiceException("productId", "Item not found in cart");
         }
 
         cart.removeCartItem(deleteCardItemCommand.productId());
