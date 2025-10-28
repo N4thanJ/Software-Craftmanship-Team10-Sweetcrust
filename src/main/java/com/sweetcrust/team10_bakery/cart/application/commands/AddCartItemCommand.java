@@ -2,7 +2,7 @@ package com.sweetcrust.team10_bakery.cart.application.commands;
 
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductId;
 
-public record CreateCartCommand(
-        ProductId productId,
-        int quantity) {
+public record AddCartItemCommand(
+                ProductId productId,
+                int quantity) {
 }

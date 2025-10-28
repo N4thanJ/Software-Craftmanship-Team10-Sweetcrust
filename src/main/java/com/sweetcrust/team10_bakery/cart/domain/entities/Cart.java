@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.sweetcrust.team10_bakery.cart.domain.CartDomainException;
 import com.sweetcrust.team10_bakery.cart.domain.valueobjects.CartId;
+import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductId;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.EmbeddedId;
@@ -63,17 +64,32 @@ public class Cart {
         return List.copyOf(cartItems);
     }
 
-    public void addCartItem(CartItem cardItem) {
-        if (cardItem == null) {
+    public void addCartItem(CartItem cartItem) {
+        if (cartItem == null) {
             throw new CartDomainException("cartItem", "cartItem should not be null");
         }
-        cartItems.add(cardItem);
+        cartItems.add(cartItem);
     }
 
-    public void removeCartItem(CartItem cardItem) {
-        if (cardItem == null) {
-            throw new CartDomainException("cartItem", "cartItem should not be null");
+    public void removeCartItem(ProductId productId) {
+        if (productId == null) {
+            throw new CartDomainException("productId", "productId should not be null");
         }
-        cartItems.remove(cardItem);
+        cartItems.removeIf(item -> item.getProductId().equals(productId));
+    }
+
+    public void updateCartItem(ProductId productId, int quantity) {
+        if (productId == null) {
+            throw new CartDomainException("productId", "productId should not be null");
+        }
+
+        if (quantity < 1) {
+            throw new CartDomainException("quantity", "quantity should be greater then 0");
+        }
+
+        cartItems.stream()
+                .filter(item -> item.getProductId().equals(productId))
+                .findFirst()
+                .ifPresent(item -> item.setQuantity(quantity));
     }
 }

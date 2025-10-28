@@ -1,6 +1,5 @@
 package com.sweetcrust.team10_bakery.order.domain;
 
-import com.sweetcrust.team10_bakery.cart.domain.entities.CartItem;
 import com.sweetcrust.team10_bakery.cart.domain.valueobjects.CartId;
 import com.sweetcrust.team10_bakery.order.domain.entities.Order;
 import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderType;
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 
 public class OrderTest {
         @Test
