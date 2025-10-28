@@ -9,13 +9,10 @@ import com.sweetcrust.team10_bakery.cart.infrastructure.CartRepository;
 
 @Service
 public class CartQueryService {
-
-    private final CartCommandService cartCommandService;
     private CartRepository cartRepository;
 
-    public CartQueryService(CartRepository cartRepository, CartCommandService cartCommandService) {
+    public CartQueryService(CartRepository cartRepository) {
         this.cartRepository = cartRepository;
-        this.cartCommandService = cartCommandService;
     }
 
     public List<Cart> getAllCarts() {
