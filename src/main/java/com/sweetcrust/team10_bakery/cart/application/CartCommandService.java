@@ -1,105 +1,82 @@
 package com.sweetcrust.team10_bakery.cart.application;
 
-import java.time.LocalDateTime;
-
-import org.springframework.stereotype.Service;
-
-import com.sweetcrust.team10_bakery.cart.application.commands.AddCartItemCommand;
+import com.sweetcrust.team10_bakery.cart.application.commands.AddItemToCartCommand;
 import com.sweetcrust.team10_bakery.cart.application.commands.CreateCartCommand;
-import com.sweetcrust.team10_bakery.cart.application.commands.DeleteCartItemCommand;
+import com.sweetcrust.team10_bakery.cart.application.commands.RemoveItemFromCartCommand;
 import com.sweetcrust.team10_bakery.cart.domain.entities.Cart;
 import com.sweetcrust.team10_bakery.cart.domain.entities.CartItem;
-import com.sweetcrust.team10_bakery.cart.domain.valueobjects.CartId;
+import com.sweetcrust.team10_bakery.cart.domain.valueobjects.CartItemId;
+import com.sweetcrust.team10_bakery.product.domain.entities.ProductVariant;
+import com.sweetcrust.team10_bakery.product.domain.valueobjects.VariantId;
+import com.sweetcrust.team10_bakery.product.infrastructure.ProductVariantRepository;
+import org.springframework.stereotype.Service;
 import com.sweetcrust.team10_bakery.cart.infrastructure.CartRepository;
-import com.sweetcrust.team10_bakery.product.domain.entities.Product;
-import com.sweetcrust.team10_bakery.product.infrastructure.ProductRepository;
+
+import java.util.Optional;
 
 @Service
 public class CartCommandService {
+
     private final CartRepository cartRepository;
-    private final ProductRepository productRepository;
+    private final ProductVariantRepository productVariantRepository;
 
-    public CartCommandService(CartRepository cartRepository, ProductRepository productRepository) {
+    public CartCommandService(CartRepository cartRepository, ProductVariantRepository productVariantRepository) {
         this.cartRepository = cartRepository;
-        this.productRepository = productRepository;
+        this.productVariantRepository = productVariantRepository;
     }
 
-    public Cart createCart(CreateCartCommand createCartCommand) {
-        if (createCartCommand.productId() == null) {
-            throw new CartServiceException("productId", "Product id cannot be null");
-        }
+    public Cart createCart(CreateCartCommand command) {
+        ProductVariant variant = getVariantOrThrow(command.variantId());
 
-        if (createCartCommand.quantity() <= 0) {
-            throw new CartServiceException("quantity", "Quantity must be greater than 0");
-        }
+        CartItem cartItem = CartItem.fromVariant(variant, command.quantity());
 
-        Product product = productRepository.findById(createCartCommand.productId())
-                .orElseThrow(() -> new CartServiceException("product",
-                        "Product with id " + createCartCommand.productId() + " could not be found"));
+        Cart cart = cartRepository.findByOwnerId(command.ownerId())
+                .orElseGet(() -> {
+                    Cart newCart = new Cart();
+                    newCart.setOwnerId(command.ownerId());
+                    return newCart;
+                });
 
-        Cart cart = new Cart(LocalDateTime.now());
-        cart.addCartItem(new CartItem(product.getProductId(), product.getVariantId(), createCartCommand.quantity(),
-                product.getBasePrice()));
-
+        cart.addCartItem(cartItem);
         return cartRepository.save(cart);
     }
 
-    public Cart addCardItem(CartId cartId, AddCartItemCommand addCardItemCommand) {
+    public Cart addItemToCart(AddItemToCartCommand command) {
+        Cart cart = cartRepository.findByOwnerId(command.ownerId())
+                .orElseThrow(() -> new CartServiceException("ownerId", "User does not have a cart"));
 
-        if (cartId == null) {
-            throw new CartServiceException("cartId", "cart id cannot be null");
-        }
+        ProductVariant variant = getVariantOrThrow(command.variantId());
+        CartItem cartItem = CartItem.fromVariant(variant, command.quantity());
 
-        if (addCardItemCommand.productId() == null) {
-            throw new CartServiceException("productId", "Product id cannot be null");
-        }
-
-        if (addCardItemCommand.quantity() <= 0) {
-            throw new CartServiceException("quantity", "Quantity must be greater than 0");
-        }
-
-        Product product = productRepository.findById(addCardItemCommand.productId())
-                .orElseThrow(() -> new CartServiceException("product",
-                        "Product with id " + addCardItemCommand.productId() + " could not be found"));
-
-        Cart cart = cartRepository.findById(cartId)
-                .orElseThrow(() -> new CartServiceException("cart", "Cart with id " + cartId + " could not be found"));
-
-        CartItem cartItem = new CartItem(product.getProductId(), product.getVariantId(),
-                addCardItemCommand.quantity(),
-                product.getBasePrice());
-
-        cart.updateCartItem(cartItem);
-
+        cart.addCartItem(cartItem);
         return cartRepository.save(cart);
     }
 
-    public void removeCardItem(CartId cartId, DeleteCartItemCommand deleteCardItemCommand) {
-        if (cartId == null) {
-            throw new CartServiceException("cartId", "cart id cannot be null");
-        }
+    public Optional<Cart> removeItemFromCart(RemoveItemFromCartCommand cmd, CartItemId cartItemId) {
+        Cart cart = cartRepository.findByOwnerId(cmd.ownerId())
+                .orElseThrow(() -> new CartServiceException("ownerId", "User does not have a cart"));
 
-        if (deleteCardItemCommand.productId() == null) {
-            throw new CartServiceException("productId", "product id cannot be null");
-        }
+        CartItem cartItem = cart.getCartItems().stream()
+                .filter(item -> item.getCartItemId().equals(cartItemId))
+                .findFirst()
+                .orElseThrow(() -> new CartServiceException("cartItemId", "Item does not exist"));
 
-        Cart cart = cartRepository.findById(cartId)
-                .orElseThrow(() -> new CartServiceException("cart", "Cart with id " + cartId + " could not be found"));
-
-        boolean itemExists = cart.getCartItems().stream()
-                .anyMatch(item -> item.getProductId().equals(deleteCardItemCommand.productId()));
-
-        if (!itemExists) {
-            throw new CartServiceException("productId", "Item not found in cart");
-        }
-
-        cart.removeCartItem(deleteCardItemCommand.productId());
-
-        if (cart.getCartItems().isEmpty()) {
-            cartRepository.delete(cart);
+        if (cmd.quantity() >= cartItem.getQuantity()) {
+            cart.removeCartItem(cartItemId);
         } else {
-            cartRepository.save(cart);
+            cartItem.decreaseQuantity(cmd.quantity());
         }
+
+        if (cart.isEmpty()) {
+            cartRepository.delete(cart);
+            return Optional.empty();
+        }
+
+        return Optional.of(cartRepository.save(cart));
     }
 
+    private ProductVariant getVariantOrThrow(VariantId variantId) {
+        return productVariantRepository.findById(variantId)
+                .orElseThrow(() -> new CartServiceException("variantId", "Variant not found"));
+    }
 }

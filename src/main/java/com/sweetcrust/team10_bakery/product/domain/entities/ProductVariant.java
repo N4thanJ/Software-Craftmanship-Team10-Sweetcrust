@@ -1,6 +1,7 @@
 package com.sweetcrust.team10_bakery.product.domain.entities;
 
 import com.sweetcrust.team10_bakery.product.domain.ProductDomainException;
+import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductId;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductSize;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.VariantId;
 import jakarta.persistence.*;
@@ -21,14 +22,19 @@ public class ProductVariant {
 
     private BigDecimal priceModifier;
 
+    @Embedded
+    @AttributeOverride(name = "id", column = @Column(name = "product_id"))
+    private ProductId productId;
+
     protected ProductVariant() {
     }
 
-    public ProductVariant(ProductSize size, String variantName, BigDecimal priceModifier) {
+    public ProductVariant(ProductSize size, String variantName, BigDecimal priceModifier, ProductId productId) {
         this.variantId = new VariantId();
         setSize(size);
         setVariantName(variantName);
         setPriceModifier(priceModifier);
+        setProductId(productId);
     }
 
     public VariantId getVariantId() {
@@ -41,6 +47,10 @@ public class ProductVariant {
 
     public String getVariantName() {
         return variantName;
+    }
+
+    public ProductId getProductId() {
+        return productId;
     }
 
     public BigDecimal getPriceModifier() {
@@ -69,5 +79,12 @@ public class ProductVariant {
             throw new ProductDomainException("variantName", "variantName should not be null or blank");
         }
         this.variantName = variantName;
+    }
+
+    public void setProductId(ProductId productId) {
+        if  (productId == null) {
+            throw new ProductDomainException("productId", "productId should not be null");
+        }
+        this.productId = productId;
     }
 }
