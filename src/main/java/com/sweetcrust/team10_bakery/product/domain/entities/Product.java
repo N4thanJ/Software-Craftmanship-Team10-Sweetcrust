@@ -3,10 +3,11 @@ package com.sweetcrust.team10_bakery.product.domain.entities;
 import com.sweetcrust.team10_bakery.product.domain.ProductDomainException;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.CategoryId;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductId;
-import com.sweetcrust.team10_bakery.product.domain.valueobjects.VariantId;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -24,24 +25,22 @@ public class Product {
     private boolean available;
 
     @Embedded
-    @AttributeOverride(name = "id", column = @Column(name = "variant_id"))
-    private VariantId variantId;
-
-    @Embedded
     @AttributeOverride(name = "id", column = @Column(name = "category_id"))
     private CategoryId categoryId;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "product_id")
+    private List<ProductVariant> variants = new ArrayList<>();
 
     protected Product() {
     }
 
-    public Product(String name, String description, BigDecimal basePrice, boolean available, VariantId variantId,
-            CategoryId categoryId) {
+    public Product(String name, String description, BigDecimal basePrice, boolean available, CategoryId categoryId) {
         this.productId = new ProductId();
         setName(name);
         setDescription(description);
         setBasePrice(basePrice);
         setAvailable(available);
-        setVariantId(variantId);
         setCategoryId(categoryId);
     }
 
@@ -65,8 +64,8 @@ public class Product {
         return available;
     }
 
-    public VariantId getVariantId() {
-        return variantId;
+    public List<ProductVariant> getVariants() {
+        return List.copyOf(variants);
     }
 
     public CategoryId getCategoryId() {
@@ -101,11 +100,11 @@ public class Product {
         this.available = available;
     }
 
-    public void setVariantId(VariantId variantId) {
-        if (variantId == null) {
-            throw new ProductDomainException("variant", "variantId should not be null");
+    public void addVariant(ProductVariant variant) {
+        if (variant == null) {
+            throw new ProductDomainException("variant", "variant cannot be null");
         }
-        this.variantId = variantId;
+        variants.add(variant);
     }
 
     public void setCategoryId(CategoryId categoryId) {

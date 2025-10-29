@@ -2,12 +2,15 @@ package com.sweetcrust.team10_bakery.shared.infrastructure;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.sweetcrust.team10_bakery.cart.domain.entities.Cart;
 import com.sweetcrust.team10_bakery.cart.domain.entities.CartItem;
 import com.sweetcrust.team10_bakery.cart.infrastructure.CartRepository;
 import com.sweetcrust.team10_bakery.order.domain.entities.Order;
 import com.sweetcrust.team10_bakery.order.infrastructure.OrderRepository;
+import com.sweetcrust.team10_bakery.product.infrastructure.ProductCategoryRepository;
+import com.sweetcrust.team10_bakery.product.infrastructure.ProductVariantRepository;
 import com.sweetcrust.team10_bakery.shared.domain.valueobjects.Address;
 import com.sweetcrust.team10_bakery.shop.domain.entities.Shop;
 import com.sweetcrust.team10_bakery.user.domain.entities.User;
@@ -27,14 +30,18 @@ import jakarta.annotation.PostConstruct;
 @Component
 public class DbInitializer {
         private final ProductRepository productRepository;
+        private final ProductVariantRepository productVariantRepository;
+        private final ProductCategoryRepository categoryRepository;
         private final OrderRepository orderRepository;
         private final UserRepository userRepository;
         private final ShopRepository shopRepository;
         private final CartRepository cartRepository;
 
         public DbInitializer(ProductRepository productRepository, OrderRepository orderRepository,
-                        UserRepository userRepository, ShopRepository shopRepository, CartRepository cartRepository) {
+                        UserRepository userRepository, ShopRepository shopRepository, CartRepository cartRepository, ProductVariantRepository productVariantRepository, ProductCategoryRepository categoryRepository) {
                 this.productRepository = productRepository;
+                this.productVariantRepository = productVariantRepository;
+                this.categoryRepository = categoryRepository;
                 this.orderRepository = orderRepository;
                 this.userRepository = userRepository;
                 this.shopRepository = shopRepository;
@@ -53,286 +60,241 @@ public class DbInitializer {
         public void init() {
                 clearAll();
 
-                // Categories
-                ProductCategory cakes = new ProductCategory("Cakes", "A slice of heaven in every bite");
-                ProductCategory pastries = new ProductCategory("Pastries", "Flaky, buttery happiness");
-                ProductCategory donuts = new ProductCategory("Donuts", "Round perfection with a hole lotta love");
-                ProductCategory cookies = new ProductCategory("Cookies", "Sweet little circles of joy");
-                ProductCategory bread = new ProductCategory("Bread", "The daily loaf that keeps you going");
-                ProductCategory cupcakes = new ProductCategory("Cupcakes", "Tiny treats with big flavor");
-                ProductCategory pies = new ProductCategory("Pies", "Slice of life, literally");
-                ProductCategory muffins = new ProductCategory("Muffins", "Breakfast champions in paper cups");
 
-                // Varianten
-                ProductVariant miniVariant = new ProductVariant(ProductSize.MINI, "Bite-Sized",
-                                BigDecimal.valueOf(0.3));
-                ProductVariant regularVariant = new ProductVariant(ProductSize.REGULAR, "Classic Size",
-                                BigDecimal.valueOf(0.5));
-                ProductVariant largeVariant = new ProductVariant(ProductSize.LARGE, "Sharing Size",
-                                BigDecimal.valueOf(0.7));
+            ProductCategory cakes = new ProductCategory("Cakes", "A slice of heaven in every bite");
+            ProductCategory pastries = new ProductCategory("Pastries", "Flaky, buttery happiness");
+            ProductCategory donuts = new ProductCategory("Donuts", "Round perfection with a hole lotta love");
+            ProductCategory cookies = new ProductCategory("Cookies", "Sweet little circles of joy");
+            ProductCategory bread = new ProductCategory("Bread", "The daily loaf that keeps you going");
+            ProductCategory cupcakes = new ProductCategory("Cupcakes", "Tiny treats with big flavor");
+            ProductCategory pies = new ProductCategory("Pies", "Slice of life, literally");
+            ProductCategory muffins = new ProductCategory("Muffins", "Breakfast champions in paper cups");
 
-                // Producten
-                Product chocolateLavaCake = new Product(
-                                "Chocolate Lava Explosion",
-                                "Molten chocolate center that erupts with every bite - volcanic levels of deliciousness",
-                                BigDecimal.valueOf(6.99),
-                                true,
-                                regularVariant.getVariantId(),
-                                cakes.getCategoryId());
+            categoryRepository.saveAll(List.of(cakes, pastries, donuts, cookies, bread, cupcakes, pies, muffins));
 
-                Product redVelvetCake = new Product(
-                                "Red Velvet Romance",
-                                "Velvety smooth with cream cheese frosting - like a hug from grandma",
-                                BigDecimal.valueOf(7.49),
-                                true,
-                                largeVariant.getVariantId(),
-                                cakes.getCategoryId());
+            Product chocolateLavaCake = new Product("Chocolate Lava Explosion",
+                    "Molten chocolate center that erupts with every bite - volcanic levels of deliciousness",
+                    BigDecimal.valueOf(6.99), true, cakes.getCategoryId());
+            ProductVariant miniChocolateLavaCake = new ProductVariant(ProductSize.MINI, "Chocolate Lava Mini", BigDecimal.valueOf(0.0), chocolateLavaCake.getProductId());
+            ProductVariant regularChocolateLavaCake = new ProductVariant(ProductSize.REGULAR, "Chocolate Lava Regular", BigDecimal.valueOf(0.5), chocolateLavaCake.getProductId());
+            ProductVariant largeChocolateLavaCake = new ProductVariant(ProductSize.LARGE, "Chocolate Lava Large", BigDecimal.valueOf(0.7), chocolateLavaCake.getProductId());
+            productRepository.save(chocolateLavaCake);
+            productVariantRepository.save(miniChocolateLavaCake);
+            productVariantRepository.save(regularChocolateLavaCake);
+            productVariantRepository.save(largeChocolateLavaCake);
 
-                Product carrotCake = new Product(
-                                "Carrot Cake Conspiracy",
-                                "Vegetables never tasted this good - we won't tell if you won't",
-                                BigDecimal.valueOf(5.99),
-                                true,
-                                regularVariant.getVariantId(),
-                                cakes.getCategoryId());
+            Product redVelvetCake = new Product("Red Velvet Romance",
+                    "Velvety smooth with cream cheese frosting - like a hug from grandma",
+                    BigDecimal.valueOf(7.49), true, cakes.getCategoryId());
+            ProductVariant miniRedVelvetCake = new ProductVariant(ProductSize.MINI, "Red Velvet Mini", BigDecimal.valueOf(0.0), redVelvetCake.getProductId());
+            ProductVariant regularRedVelvetCake = new ProductVariant(ProductSize.REGULAR, "Red Velvet Regular", BigDecimal.valueOf(0.5), redVelvetCake.getProductId());
+            ProductVariant largeRedVelvetCake = new ProductVariant(ProductSize.LARGE, "Red Velvet Large", BigDecimal.valueOf(0.7), redVelvetCake.getProductId());
+            productRepository.save(redVelvetCake);
+            productVariantRepository.save(miniRedVelvetCake);
+            productVariantRepository.save(regularRedVelvetCake);
+            productVariantRepository.save(largeRedVelvetCake);
 
-                Product tiramisu = new Product(
-                                "Tiramisu Dream",
-                                "Italian coffee-soaked layers of pure bliss - pick-me-up in dessert form",
-                                BigDecimal.valueOf(8.49),
-                                true,
-                                regularVariant.getVariantId(),
-                                cakes.getCategoryId());
+            Product carrotCake = new Product("Carrot Cake Conspiracy",
+                    "Vegetables never tasted this good - we won't tell if you won't",
+                    BigDecimal.valueOf(5.99), true, cakes.getCategoryId());
+            ProductVariant miniCarrotCake = new ProductVariant(ProductSize.MINI, "Carrot Cake Mini", BigDecimal.valueOf(0.0), carrotCake.getProductId());
+            ProductVariant regularCarrotCake = new ProductVariant(ProductSize.REGULAR, "Carrot Cake Regular", BigDecimal.valueOf(0.5), carrotCake.getProductId());
+            ProductVariant largeCarrotCake = new ProductVariant(ProductSize.LARGE, "Carrot Cake Large", BigDecimal.valueOf(0.7), carrotCake.getProductId());
+            productRepository.save(carrotCake);
+            productVariantRepository.save(miniCarrotCake);
+            productVariantRepository.save(regularCarrotCake);
+            productVariantRepository.save(largeCarrotCake);
 
-                Product croissant = new Product(
-                                "Butter Croissant Supreme",
-                                "1000 layers of buttery goodness - made by hand, destroyed in seconds",
-                                BigDecimal.valueOf(3.49),
-                                true,
-                                regularVariant.getVariantId(),
-                                pastries.getCategoryId());
+            Product tiramisu = new Product("Tiramisu Dream",
+                    "Italian coffee-soaked layers of pure bliss - pick-me-up in dessert form",
+                    BigDecimal.valueOf(8.49), true, cakes.getCategoryId());
+            ProductVariant miniTiramisu = new ProductVariant(ProductSize.MINI, "Tiramisu Mini", BigDecimal.valueOf(0.0), tiramisu.getProductId());
+            ProductVariant regularTiramisu = new ProductVariant(ProductSize.REGULAR, "Tiramisu Regular", BigDecimal.valueOf(0.5), tiramisu.getProductId());
+            ProductVariant largeTiramisu = new ProductVariant(ProductSize.LARGE, "Tiramisu Large", BigDecimal.valueOf(0.7), tiramisu.getProductId());
+            productRepository.save(tiramisu);
+            productVariantRepository.save(miniTiramisu);
+            productVariantRepository.save(regularTiramisu);
+            productVariantRepository.save(largeTiramisu);
 
-                Product painAuChocolat = new Product(
-                                "Pain au Chocolat Paradise",
-                                "Chocolate wrapped in pastry perfection - the French know what's up",
-                                BigDecimal.valueOf(3.99),
-                                true,
-                                regularVariant.getVariantId(),
-                                pastries.getCategoryId());
+            Product croissant = new Product("Butter Croissant Supreme",
+                    "1000 layers of buttery goodness - made by hand, destroyed in seconds",
+                    BigDecimal.valueOf(3.49), true, pastries.getCategoryId());
+            ProductVariant miniCroissant = new ProductVariant(ProductSize.MINI, "Croissant Mini", BigDecimal.valueOf(0.0), croissant.getProductId());
+            ProductVariant regularCroissant = new ProductVariant(ProductSize.REGULAR, "Croissant Regular", BigDecimal.valueOf(0.5), croissant.getProductId());
+            ProductVariant largeCroissant = new ProductVariant(ProductSize.LARGE, "Croissant Large", BigDecimal.valueOf(0.7), croissant.getProductId());
+            productRepository.save(croissant);
+            productVariantRepository.save(miniCroissant);
+            productVariantRepository.save(regularCroissant);
+            productVariantRepository.save(largeCroissant);
 
-                Product danishPastry = new Product(
-                                "Danish Delight",
-                                "Cream cheese filling nestled in flaky layers - Copenhagen approved",
-                                BigDecimal.valueOf(4.29),
-                                true,
-                                regularVariant.getVariantId(),
-                                pastries.getCategoryId());
+            Product painAuChocolat = new Product("Pain au Chocolat Paradise",
+                    "Chocolate wrapped in pastry perfection - the French know what's up",
+                    BigDecimal.valueOf(3.99), true, pastries.getCategoryId());
+            ProductVariant regularPainAuChocolat = new ProductVariant(ProductSize.REGULAR, "Pain au Chocolat Regular", BigDecimal.valueOf(0.5), painAuChocolat.getProductId());
+            productRepository.save(painAuChocolat);
+            productVariantRepository.save(regularPainAuChocolat);
 
-                Product appleTurnover = new Product(
-                                "Apple Turnover Twist",
-                                "Caramelized apples in a golden crust - autumn in every bite",
-                                BigDecimal.valueOf(3.79),
-                                true,
-                                regularVariant.getVariantId(),
-                                pastries.getCategoryId());
+            Product danishPastry = new Product("Danish Delight",
+                    "Cream cheese filling nestled in flaky layers - Copenhagen approved",
+                    BigDecimal.valueOf(4.29), true, pastries.getCategoryId());
+            ProductVariant regularDanish = new ProductVariant(ProductSize.REGULAR, "Danish Regular", BigDecimal.valueOf(0.5), danishPastry.getProductId());
+            productRepository.save(danishPastry);
+            productVariantRepository.save(regularDanish);
 
-                Product glazedDonut = new Product(
-                                "Glazed Glory",
-                                "Classic glazed perfection - shiny, sweet, and absolutely essential",
-                                BigDecimal.valueOf(2.49),
-                                true,
-                                regularVariant.getVariantId(),
-                                donuts.getCategoryId());
+            Product appleTurnover = new Product("Apple Turnover Twist",
+                    "Caramelized apples in a golden crust - autumn in every bite",
+                    BigDecimal.valueOf(3.79), true, pastries.getCategoryId());
+            ProductVariant regularAppleTurnover = new ProductVariant(ProductSize.REGULAR, "Apple Turnover Regular", BigDecimal.valueOf(0.5), appleTurnover.getProductId());
+            productRepository.save(appleTurnover);
+            productVariantRepository.save(regularAppleTurnover);
 
-                Product bostonCreamDonut = new Product(
-                                "Boston Cream Dream",
-                                "Cream-filled heaven with chocolate ganache - double the indulgence",
-                                BigDecimal.valueOf(3.29),
-                                true,
-                                regularVariant.getVariantId(),
-                                donuts.getCategoryId());
+            Product glazedDonut = new Product("Glazed Glory",
+                    "Classic glazed perfection - shiny, sweet, and absolutely essential",
+                    BigDecimal.valueOf(2.49), true, donuts.getCategoryId());
+            ProductVariant regularGlazedDonut = new ProductVariant(ProductSize.REGULAR, "Glazed Donut Regular", BigDecimal.valueOf(0.5), glazedDonut.getProductId());
+            productRepository.save(glazedDonut);
+            productVariantRepository.save(regularGlazedDonut);
 
-                Product sprinkleDonut = new Product(
-                                "Rainbow Sprinkle Spectacular",
-                                "Covered in happiness sprinkles - because life needs more color",
-                                BigDecimal.valueOf(2.79),
-                                true,
-                                regularVariant.getVariantId(),
-                                donuts.getCategoryId());
+            Product bostonCreamDonut = new Product("Boston Cream Dream",
+                    "Cream-filled heaven with chocolate ganache - double the indulgence",
+                    BigDecimal.valueOf(3.29), true, donuts.getCategoryId());
+            ProductVariant regularBostonCreamDonut = new ProductVariant(ProductSize.REGULAR, "Boston Cream Donut Regular", BigDecimal.valueOf(0.5), bostonCreamDonut.getProductId());
+            productRepository.save(bostonCreamDonut);
+            productVariantRepository.save(regularBostonCreamDonut);
 
-                Product mapleDonut = new Product(
-                                "Maple Bacon Madness",
-                                "Sweet maple glaze meets crispy bacon - the ultimate sweet-savory combo",
-                                BigDecimal.valueOf(3.99),
-                                true,
-                                regularVariant.getVariantId(),
-                                donuts.getCategoryId());
+            Product sprinkleDonut = new Product("Rainbow Sprinkle Spectacular",
+                    "Covered in happiness sprinkles - because life needs more color",
+                    BigDecimal.valueOf(2.79), true, donuts.getCategoryId());
+            ProductVariant regularSprinkleDonut = new ProductVariant(ProductSize.REGULAR, "Sprinkle Donut Regular", BigDecimal.valueOf(0.5), sprinkleDonut.getProductId());
+            productRepository.save(sprinkleDonut);
+            productVariantRepository.save(regularSprinkleDonut);
 
-                Product chocolateChipCookie = new Product(
-                                "Chunky Chocolate Chip",
-                                "Loaded with chocolate chunks - still warm from the oven vibes",
-                                BigDecimal.valueOf(2.99),
-                                true,
-                                regularVariant.getVariantId(),
-                                cookies.getCategoryId());
+            Product mapleDonut = new Product("Maple Bacon Madness",
+                    "Sweet maple glaze meets crispy bacon - the ultimate sweet-savory combo",
+                    BigDecimal.valueOf(3.99), true, donuts.getCategoryId());
+            ProductVariant regularMapleDonut = new ProductVariant(ProductSize.REGULAR, "Maple Donut Regular", BigDecimal.valueOf(0.5), mapleDonut.getProductId());
+            productRepository.save(mapleDonut);
+            productVariantRepository.save(regularMapleDonut);
 
-                Product macadamiaCookie = new Product(
-                                "White Chocolate Macadamia Magic",
-                                "Premium macadamia nuts and white chocolate - fancy cookie energy",
-                                BigDecimal.valueOf(3.49),
-                                true,
-                                regularVariant.getVariantId(),
-                                cookies.getCategoryId());
+            Product chocolateChipCookie = new Product("Chunky Chocolate Chip",
+                    "Loaded with chocolate chunks - still warm from the oven vibes",
+                    BigDecimal.valueOf(2.99), true, cookies.getCategoryId());
+            ProductVariant regularChocolateChipCookie = new ProductVariant(ProductSize.REGULAR, "Chocolate Chip Cookie Regular", BigDecimal.valueOf(0.5), chocolateChipCookie.getProductId());
+            productRepository.save(chocolateChipCookie);
+            productVariantRepository.save(regularChocolateChipCookie);
 
-                Product oatmealRaisinCookie = new Product(
-                                "Oatmeal Raisin Redemption",
-                                "Not chocolate chips but still amazing - trust us on this one",
-                                BigDecimal.valueOf(2.79),
-                                true,
-                                regularVariant.getVariantId(),
-                                cookies.getCategoryId());
+            Product macadamiaCookie = new Product("White Chocolate Macadamia Magic",
+                    "Premium macadamia nuts and white chocolate - fancy cookie energy",
+                    BigDecimal.valueOf(3.49), true, cookies.getCategoryId());
+            ProductVariant regularMacadamiaCookie = new ProductVariant(ProductSize.REGULAR, "Macadamia Cookie Regular", BigDecimal.valueOf(0.5), macadamiaCookie.getProductId());
+            productRepository.save(macadamiaCookie);
+            productVariantRepository.save(regularMacadamiaCookie);
 
-                Product sugarCookie = new Product(
-                                "Sugar Cookie Celebration",
-                                "Decorated with festive frosting - party in cookie form",
-                                BigDecimal.valueOf(2.49),
-                                true,
-                                miniVariant.getVariantId(),
-                                cookies.getCategoryId());
+            Product oatmealRaisinCookie = new Product("Oatmeal Raisin Redemption",
+                    "Not chocolate chips but still amazing - trust us on this one",
+                    BigDecimal.valueOf(2.79), true, cookies.getCategoryId());
+            ProductVariant regularOatmealRaisinCookie = new ProductVariant(ProductSize.REGULAR, "Oatmeal Cookie Regular", BigDecimal.valueOf(0.5), oatmealRaisinCookie.getProductId());
+            productRepository.save(oatmealRaisinCookie);
+            productVariantRepository.save(regularOatmealRaisinCookie);
 
-                Product sourdoughBread = new Product(
-                                "Sourdough Sensation",
-                                "Tangy, crusty, and absolutely artisan - bread for bread snobs",
-                                BigDecimal.valueOf(5.49),
-                                true,
-                                largeVariant.getVariantId(),
-                                bread.getCategoryId());
+            Product sugarCookie = new Product("Sugar Cookie Celebration",
+                    "Decorated with festive frosting - party in cookie form",
+                    BigDecimal.valueOf(2.49), true, cookies.getCategoryId());
+            ProductVariant miniSugarCookie = new ProductVariant(ProductSize.MINI, "Sugar Cookie Mini", BigDecimal.valueOf(0.0), sugarCookie.getProductId());
+            productRepository.save(sugarCookie);
+            productVariantRepository.save(miniSugarCookie);
 
-                Product baguette = new Product(
-                                "French Baguette Authentique",
-                                "Crusty outside, fluffy inside - ooh la la worthy",
-                                BigDecimal.valueOf(4.29),
-                                true,
-                                largeVariant.getVariantId(),
-                                bread.getCategoryId());
+            Product sourdoughBread = new Product("Sourdough Sensation",
+                    "Tangy, crusty, and absolutely artisan - bread for bread snobs",
+                    BigDecimal.valueOf(5.49), true, bread.getCategoryId());
+            ProductVariant largeSourdoughBread = new ProductVariant(ProductSize.LARGE, "Sourdough Large", BigDecimal.valueOf(0.7), sourdoughBread.getProductId());
+            productRepository.save(sourdoughBread);
+            productVariantRepository.save(largeSourdoughBread);
 
-                Product cinnamonBread = new Product(
-                                "Cinnamon Swirl Wonder",
-                                "Ribbons of cinnamon sugar throughout - makes the best toast ever",
-                                BigDecimal.valueOf(6.49),
-                                true,
-                                regularVariant.getVariantId(),
-                                bread.getCategoryId());
+            Product baguette = new Product("French Baguette Authentique",
+                    "Crusty outside, fluffy inside - ooh la la worthy",
+                    BigDecimal.valueOf(4.29), true, bread.getCategoryId());
+            ProductVariant largeBaguette = new ProductVariant(ProductSize.LARGE, "Baguette Large", BigDecimal.valueOf(0.7), baguette.getProductId());
+            productRepository.save(baguette);
+            productVariantRepository.save(largeBaguette);
 
-                Product vanillaCupcake = new Product(
-                                "Vanilla Bean Bliss",
-                                "Classic vanilla with buttercream swirl - simple but never boring",
-                                BigDecimal.valueOf(3.99),
-                                true,
-                                regularVariant.getVariantId(),
-                                cupcakes.getCategoryId());
+            Product cinnamonBread = new Product("Cinnamon Swirl Wonder",
+                    "Ribbons of cinnamon sugar throughout - makes the best toast ever",
+                    BigDecimal.valueOf(6.49), true, bread.getCategoryId());
+            ProductVariant regularCinnamonBread = new ProductVariant(ProductSize.REGULAR, "Cinnamon Bread Regular", BigDecimal.valueOf(0.5), cinnamonBread.getProductId());
+            productRepository.save(cinnamonBread);
+            productVariantRepository.save(regularCinnamonBread);
 
-                Product chocolateCupcake = new Product(
-                                "Triple Chocolate Thunder",
-                                "Chocolate cake, chocolate filling, chocolate frosting - chocoholics only",
-                                BigDecimal.valueOf(4.29),
-                                true,
-                                regularVariant.getVariantId(),
-                                cupcakes.getCategoryId());
+            Product vanillaCupcake = new Product("Vanilla Bean Bliss",
+                    "Classic vanilla with buttercream swirl - simple but never boring",
+                    BigDecimal.valueOf(3.99), true, cupcakes.getCategoryId());
+            ProductVariant regularVanillaCupcake = new ProductVariant(ProductSize.REGULAR, "Vanilla Cupcake Regular", BigDecimal.valueOf(0.5), vanillaCupcake.getProductId());
+            productRepository.save(vanillaCupcake);
+            productVariantRepository.save(regularVanillaCupcake);
 
-                Product lemonCupcake = new Product(
-                                "Lemon Zest Zing",
-                                "Tangy lemon cake with cream cheese frosting - sunshine in a wrapper",
-                                BigDecimal.valueOf(3.79),
-                                true,
-                                regularVariant.getVariantId(),
-                                cupcakes.getCategoryId());
+            Product chocolateCupcake = new Product("Triple Chocolate Thunder",
+                    "Chocolate cake, chocolate filling, chocolate frosting - chocoholics only",
+                    BigDecimal.valueOf(4.29), true, cupcakes.getCategoryId());
+            ProductVariant regularChocolateCupcake = new ProductVariant(ProductSize.REGULAR, "Chocolate Cupcake Regular", BigDecimal.valueOf(0.5), chocolateCupcake.getProductId());
+            productRepository.save(chocolateCupcake);
+            productVariantRepository.save(regularChocolateCupcake);
 
-                Product redVelvetCupcake = new Product(
-                                "Red Velvet Mini Romance",
-                                "All the velvet love in cupcake form - perfect for romantic gestures",
-                                BigDecimal.valueOf(4.49),
-                                true,
-                                miniVariant.getVariantId(),
-                                cupcakes.getCategoryId());
+            Product lemonCupcake = new Product("Lemon Zest Zing",
+                    "Tangy lemon cake with cream cheese frosting - sunshine in a wrapper",
+                    BigDecimal.valueOf(3.79), true, cupcakes.getCategoryId());
+            ProductVariant regularLemonCupcake = new ProductVariant(ProductSize.REGULAR, "Lemon Cupcake Regular", BigDecimal.valueOf(0.5), lemonCupcake.getProductId());
+            productRepository.save(lemonCupcake);
+            productVariantRepository.save(regularLemonCupcake);
 
-                Product applePie = new Product(
-                                "Classic Apple Pie",
-                                "Grandma's recipe with a SweetCrust twist - as American as it gets",
-                                BigDecimal.valueOf(12.99),
-                                true,
-                                largeVariant.getVariantId(),
-                                pies.getCategoryId());
+            Product redVelvetCupcake = new Product("Red Velvet Mini Romance",
+                    "All the velvet love in cupcake form - perfect for romantic gestures",
+                    BigDecimal.valueOf(4.49), true, cupcakes.getCategoryId());
+            ProductVariant miniRedVelvetCupcake = new ProductVariant(ProductSize.MINI, "Red Velvet Cupcake Mini", BigDecimal.valueOf(0.0), redVelvetCupcake.getProductId());
+            productRepository.save(redVelvetCupcake);
+            productVariantRepository.save(miniRedVelvetCupcake);
 
-                Product pumpkinPie = new Product(
-                                "Pumpkin Spice Paradise",
-                                "Smooth pumpkin filling with whipped cream - fall in a slice",
-                                BigDecimal.valueOf(11.99),
-                                true,
-                                largeVariant.getVariantId(),
-                                pies.getCategoryId());
+            Product applePie = new Product("Classic Apple Pie",
+                    "Grandma's recipe with a SweetCrust twist - as American as it gets",
+                    BigDecimal.valueOf(12.99), true, pies.getCategoryId());
+            ProductVariant largeApplePie = new ProductVariant(ProductSize.LARGE, "Apple Pie Large", BigDecimal.valueOf(0.7), applePie.getProductId());
+            productRepository.save(applePie);
+            productVariantRepository.save(largeApplePie);
 
-                Product cherryPie = new Product(
-                                "Cherry Bomb Pie",
-                                "Tart cherries in a buttery crust - cherry on top not included",
-                                BigDecimal.valueOf(13.49),
-                                true,
-                                largeVariant.getVariantId(),
-                                pies.getCategoryId());
+            Product pumpkinPie = new Product("Pumpkin Spice Paradise",
+                    "Smooth pumpkin filling with whipped cream - fall in a slice",
+                    BigDecimal.valueOf(11.99), true, pies.getCategoryId());
+            ProductVariant largePumpkinPie = new ProductVariant(ProductSize.LARGE, "Pumpkin Pie Large", BigDecimal.valueOf(0.7), pumpkinPie.getProductId());
+            productRepository.save(pumpkinPie);
+            productVariantRepository.save(largePumpkinPie);
 
-                Product blueberryMuffin = new Product(
-                                "Blueberry Burst Muffin",
-                                "Bursting with fresh blueberries - practically a health food",
-                                BigDecimal.valueOf(3.49),
-                                true,
-                                regularVariant.getVariantId(),
-                                muffins.getCategoryId());
+            Product cherryPie = new Product("Cherry Bomb Pie",
+                    "Tart cherries in a buttery crust - cherry on top not included",
+                    BigDecimal.valueOf(13.49), true, pies.getCategoryId());
+            ProductVariant largeCherryPie = new ProductVariant(ProductSize.LARGE, "Cherry Pie Large", BigDecimal.valueOf(0.7), cherryPie.getProductId());
+            productRepository.save(cherryPie);
+            productVariantRepository.save(largeCherryPie);
 
-                Product bananaMuffin = new Product(
-                                "Banana Nut Bonanza",
-                                "Moist banana goodness with walnuts - the breakfast of champions",
-                                BigDecimal.valueOf(3.29),
-                                true,
-                                regularVariant.getVariantId(),
-                                muffins.getCategoryId());
+            Product blueberryMuffin = new Product("Blueberry Burst Muffin",
+                    "Bursting with fresh blueberries - practically a health food",
+                    BigDecimal.valueOf(3.49), true, muffins.getCategoryId());
+            ProductVariant regularBlueberryMuffin = new ProductVariant(ProductSize.REGULAR, "Blueberry Muffin Regular", BigDecimal.valueOf(0.5), blueberryMuffin.getProductId());
+            productRepository.save(blueberryMuffin);
+            productVariantRepository.save(regularBlueberryMuffin);
 
-                Product chocolateChipMuffin = new Product(
-                                "Double Chocolate Chip Morning",
-                                "Chocolate muffin with chocolate chips - yes you can have cake for breakfast",
-                                BigDecimal.valueOf(3.79),
-                                true,
-                                regularVariant.getVariantId(),
-                                muffins.getCategoryId());
+            Product bananaMuffin = new Product("Banana Nut Bonanza",
+                    "Moist banana goodness with walnuts - the breakfast of champions",
+                    BigDecimal.valueOf(3.29), true, muffins.getCategoryId());
+            ProductVariant regularBananaMuffin = new ProductVariant(ProductSize.REGULAR, "Banana Muffin Regular", BigDecimal.valueOf(0.5), bananaMuffin.getProductId());
+            productRepository.save(bananaMuffin);
+            productVariantRepository.save(regularBananaMuffin);
 
-                productRepository.save(chocolateLavaCake);
-                productRepository.save(redVelvetCake);
-                productRepository.save(carrotCake);
-                productRepository.save(tiramisu);
-                productRepository.save(croissant);
-                productRepository.save(painAuChocolat);
-                productRepository.save(danishPastry);
-                productRepository.save(appleTurnover);
-                productRepository.save(glazedDonut);
-                productRepository.save(bostonCreamDonut);
-                productRepository.save(sprinkleDonut);
-                productRepository.save(mapleDonut);
-                productRepository.save(chocolateChipCookie);
-                productRepository.save(macadamiaCookie);
-                productRepository.save(oatmealRaisinCookie);
-                productRepository.save(sugarCookie);
-                productRepository.save(sourdoughBread);
-                productRepository.save(baguette);
-                productRepository.save(cinnamonBread);
-                productRepository.save(vanillaCupcake);
-                productRepository.save(chocolateCupcake);
-                productRepository.save(lemonCupcake);
-                productRepository.save(redVelvetCupcake);
-                productRepository.save(applePie);
-                productRepository.save(pumpkinPie);
-                productRepository.save(cherryPie);
-                productRepository.save(blueberryMuffin);
-                productRepository.save(bananaMuffin);
-                productRepository.save(chocolateChipMuffin);
+            Product chocolateChipMuffin = new Product("Double Chocolate Chip Morning",
+                    "Chocolate muffin with chocolate chips - yes you can have cake for breakfast",
+                    BigDecimal.valueOf(3.79), true, muffins.getCategoryId());
+            ProductVariant regularChocolateChipMuffin = new ProductVariant(ProductSize.REGULAR, "Chocolate Chip Muffin Regular", BigDecimal.valueOf(0.5), chocolateChipMuffin.getProductId());
+            productRepository.save(chocolateChipMuffin);
+            productVariantRepository.save(regularChocolateChipMuffin);
+
 
                 // Customers
                 User donutDan = new User("DonutDan", "Glazed4Life!", "donut.dan@sweetcrust.com", UserRole.CUSTOMER);
@@ -464,58 +426,48 @@ public class DbInitializer {
                 shopRepository.save(amsterdamShop);
 
                 // B2C
-                Cart donutCart = new Cart(LocalDateTime.now());
-                donutCart.addCartItem(new CartItem(glazedDonut.getProductId(), regularVariant.getVariantId(), 12,
-                                glazedDonut.getBasePrice()));
-                donutCart.addCartItem(new CartItem(bostonCreamDonut.getProductId(), regularVariant.getVariantId(), 6,
-                                bostonCreamDonut.getBasePrice()));
-                donutCart.addCartItem(new CartItem(mapleDonut.getProductId(), regularVariant.getVariantId(), 6,
-                                mapleDonut.getBasePrice()));
+            Cart donutCart = new Cart();
+            donutCart.addCartItem(CartItem.fromVariant(regularGlazedDonut, 2));
+            donutCart.addCartItem(CartItem.fromVariant(regularBostonCreamDonut, 5));
+            donutCart.addCartItem(CartItem.fromVariant(regularMapleDonut, 3));
+            donutCart.setOwnerId(donutDan.getUserId());
 
-                Cart cupcakeCart = new Cart(LocalDateTime.now());
-                cupcakeCart.addCartItem(new CartItem(vanillaCupcake.getProductId(), regularVariant.getVariantId(),
-                                24, vanillaCupcake.getBasePrice()));
-                cupcakeCart.addCartItem(new CartItem(chocolateCupcake.getProductId(), regularVariant.getVariantId(),
-                                24, chocolateCupcake.getBasePrice()));
+            Cart cupcakeCart = new Cart();
+            cupcakeCart.addCartItem(CartItem.fromVariant(regularChocolateCupcake, 10));
+            cupcakeCart.addCartItem(CartItem.fromVariant(regularLemonCupcake, 5));
+            cupcakeCart.setOwnerId(cupcakeClaire.getUserId());
 
-                Cart pieCart = new Cart(LocalDateTime.now());
-                pieCart.addCartItem(new CartItem(applePie.getProductId(), largeVariant.getVariantId(), 2,
-                                applePie.getBasePrice()));
-                pieCart.addCartItem(new CartItem(pumpkinPie.getProductId(), largeVariant.getVariantId(), 1,
-                                pumpkinPie.getBasePrice()));
+            Cart pieCart = new Cart();
+            pieCart.addCartItem(CartItem.fromVariant(largeApplePie, 1));
+            pieCart.addCartItem(CartItem.fromVariant(largeApplePie, 2));
+            pieCart.setOwnerId(piePatrick.getUserId());
 
-                Cart cookieCart = new Cart(LocalDateTime.now());
-                cookieCart.addCartItem(new CartItem(chocolateChipCookie.getProductId(),
-                                regularVariant.getVariantId(), 36, chocolateChipCookie.getBasePrice()));
-                cookieCart.addCartItem(new CartItem(macadamiaCookie.getProductId(), regularVariant.getVariantId(),
-                                24, macadamiaCookie.getBasePrice()));
+            Cart cookieCart = new Cart();
+            cookieCart.addCartItem(CartItem.fromVariant(regularChocolateChipCookie, 20));
+            cookieCart.addCartItem(CartItem.fromVariant(regularMacadamiaCookie, 5));
+            cookieCart.setOwnerId(cookieConnie.getUserId());
 
-                Cart cakeCart = new Cart(LocalDateTime.now());
-                cakeCart.addCartItem(new CartItem(redVelvetCake.getProductId(), largeVariant.getVariantId(), 1,
-                                redVelvetCake.getBasePrice()));
-                cakeCart.addCartItem(new CartItem(chocolateLavaCake.getProductId(), regularVariant.getVariantId(), 4,
-                                chocolateLavaCake.getBasePrice()));
+            Cart cakeCart = new Cart();
+            cakeCart.addCartItem(CartItem.fromVariant(largeRedVelvetCake, 2));
+            cakeCart.addCartItem(CartItem.fromVariant(largeChocolateLavaCake, 5));
+            cakeCart.setOwnerId(cakeCathy.getUserId());
 
-                Cart breadCart = new Cart(LocalDateTime.now());
-                breadCart.addCartItem(new CartItem(sourdoughBread.getProductId(), largeVariant.getVariantId(), 3,
-                                sourdoughBread.getBasePrice()));
-                breadCart.addCartItem(new CartItem(baguette.getProductId(), largeVariant.getVariantId(), 5,
-                                baguette.getBasePrice()));
+            Cart breadCart = new Cart();
+            breadCart.addCartItem(CartItem.fromVariant(largeSourdoughBread, 2));
+            breadCart.addCartItem(CartItem.fromVariant(largeBaguette, 5));
+            breadCart.setOwnerId(breadBob.getUserId());
 
-                Cart croissantCart = new Cart(LocalDateTime.now());
-                croissantCart.addCartItem(new CartItem(croissant.getProductId(), regularVariant.getVariantId(), 10,
-                                croissant.getBasePrice()));
-                croissantCart.addCartItem(new CartItem(painAuChocolat.getProductId(), regularVariant.getVariantId(),
-                                8, painAuChocolat.getBasePrice()));
+            Cart croissantCart = new Cart();
+            croissantCart.addCartItem(CartItem.fromVariant(largeCroissant, 7));
+            croissantCart.addCartItem(CartItem.fromVariant(largeTiramisu, 10));
+            croissantCart.setOwnerId(croissantCarl.getUserId());
 
-                Cart muffinCart = new Cart(LocalDateTime.now());
-                muffinCart.addCartItem(new CartItem(blueberryMuffin.getProductId(), regularVariant.getVariantId(), 48,
-                                blueberryMuffin.getBasePrice()));
-                muffinCart.addCartItem(new CartItem(bananaMuffin.getProductId(), regularVariant.getVariantId(), 36,
-                                bananaMuffin.getBasePrice()));
-                muffinCart.addCartItem(
-                                new CartItem(chocolateChipMuffin.getProductId(), regularVariant.getVariantId(), 24,
-                                                chocolateChipMuffin.getBasePrice()));
+            Cart muffinCart = new Cart();
+            muffinCart.addCartItem(CartItem.fromVariant(regularBananaMuffin, 4));
+            muffinCart.addCartItem(CartItem.fromVariant(regularBlueberryMuffin, 10));
+            muffinCart.addCartItem(CartItem.fromVariant(regularChocolateChipMuffin, 3));
+            muffinCart.setOwnerId(muffinMary.getUserId());
+
 
                 cartRepository.save(donutCart);
                 cartRepository.save(cupcakeCart);
@@ -620,45 +572,31 @@ public class DbInitializer {
                 orderRepository.save(muffinOrder);
 
                 // B2B
-                Cart parisToLondonCart = new Cart(LocalDateTime.now());
-                parisToLondonCart.addCartItem(new CartItem(croissant.getProductId(), regularVariant.getVariantId(), 100,
-                                croissant.getBasePrice()));
-                parisToLondonCart.addCartItem(new CartItem(painAuChocolat.getProductId(), regularVariant.getVariantId(),
-                                75, painAuChocolat.getBasePrice()));
-                parisToLondonCart.addCartItem(new CartItem(baguette.getProductId(), largeVariant.getVariantId(), 50,
-                                baguette.getBasePrice()));
+            Cart parisToLondonCart = new Cart();
+            parisToLondonCart.addCartItem(CartItem.fromVariant(regularCarrotCake, 10));
+            parisToLondonCart.addCartItem(CartItem.fromVariant(miniCroissant, 50));
+            parisToLondonCart.addCartItem(CartItem.fromVariant(regularCinnamonBread, 15));
+            parisToLondonCart.setOwnerId(bakerBenny.getUserId());
 
-                Cart tokyoToNewYorkCart = new Cart(LocalDateTime.now());
-                tokyoToNewYorkCart.addCartItem(new CartItem(glazedDonut.getProductId(), regularVariant.getVariantId(),
-                                200, glazedDonut.getBasePrice()));
-                tokyoToNewYorkCart.addCartItem(new CartItem(sprinkleDonut.getProductId(), regularVariant.getVariantId(),
-                                150, sprinkleDonut.getBasePrice()));
+            Cart tokyoToNewYorkCart = new Cart();
+            tokyoToNewYorkCart.addCartItem(CartItem.fromVariant(miniCroissant, 50));
+            tokyoToNewYorkCart.addCartItem(CartItem.fromVariant(miniSugarCookie, 15));
+            tokyoToNewYorkCart.setOwnerId(bakerBenny.getUserId());
 
-                Cart romeToBarcelonaCart = new Cart(LocalDateTime.now());
-                romeToBarcelonaCart.addCartItem(new CartItem(tiramisu.getProductId(), regularVariant.getVariantId(), 30,
-                                tiramisu.getBasePrice()));
-                romeToBarcelonaCart.addCartItem(new CartItem(applePie.getProductId(), largeVariant.getVariantId(), 20,
-                                applePie.getBasePrice()));
+            Cart romeToBarcelonaCart = new Cart();
+            romeToBarcelonaCart.addCartItem(CartItem.fromVariant(miniCroissant, 50));
+            romeToBarcelonaCart.addCartItem(CartItem.fromVariant(largeTiramisu, 100));
+            romeToBarcelonaCart.setOwnerId(bakerBella.getUserId());
 
-                Cart berlinToAmsterdamCart = new Cart(LocalDateTime.now());
-                berlinToAmsterdamCart
-                                .addCartItem(new CartItem(sourdoughBread.getProductId(), largeVariant.getVariantId(),
-                                                40, sourdoughBread.getBasePrice()));
-                berlinToAmsterdamCart.addCartItem(new CartItem(cinnamonBread.getProductId(),
-                                regularVariant.getVariantId(), 35, cinnamonBread.getBasePrice()));
+            Cart berlinToAmsterdamCart = new Cart();
+            berlinToAmsterdamCart.addCartItem(CartItem.fromVariant(miniRedVelvetCake, 10));
+            berlinToAmsterdamCart.addCartItem(CartItem.fromVariant(largePumpkinPie, 20));
+            berlinToAmsterdamCart.setOwnerId(bakerBill.getUserId());
 
-                Cart newYorkToParisCart = new Cart(LocalDateTime.now());
-                newYorkToParisCart.addCartItem(new CartItem(chocolateChipCookie.getProductId(),
-                                regularVariant.getVariantId(), 500, chocolateChipCookie.getBasePrice()));
-                newYorkToParisCart
-                                .addCartItem(new CartItem(blueberryMuffin.getProductId(), regularVariant.getVariantId(),
-                                                200, blueberryMuffin.getBasePrice()));
-
-                cartRepository.save(parisToLondonCart);
+            cartRepository.save(parisToLondonCart);
                 cartRepository.save(tokyoToNewYorkCart);
                 cartRepository.save(romeToBarcelonaCart);
                 cartRepository.save(berlinToAmsterdamCart);
-                cartRepository.save(newYorkToParisCart);
 
                 Order parisToLondon = Order.createB2B(
                                 LocalDateTime.now().plusDays(5),
@@ -684,16 +622,9 @@ public class DbInitializer {
                                 berlinShop.getShopId(),
                                 berlinToAmsterdamCart.getCartId());
 
-                Order newYorkToParis = Order.createB2B(
-                                LocalDateTime.now().plusDays(6),
-                                parisShop.getShopId(),
-                                newYorkShop.getShopId(),
-                                newYorkToParisCart.getCartId());
-
                 orderRepository.save(parisToLondon);
                 orderRepository.save(tokyoToNewYork);
                 orderRepository.save(romeToBarcelona);
                 orderRepository.save(berlinToAmsterdam);
-                orderRepository.save(newYorkToParis);
         }
 }

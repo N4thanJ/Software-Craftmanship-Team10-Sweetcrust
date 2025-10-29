@@ -2,11 +2,12 @@ package com.sweetcrust.team10_bakery.cart.domain.entities;
 
 import com.sweetcrust.team10_bakery.cart.domain.CartDomainException;
 import com.sweetcrust.team10_bakery.cart.domain.valueobjects.CartItemId;
-import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductId;
+import com.sweetcrust.team10_bakery.product.domain.entities.ProductVariant;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.VariantId;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Entity
 @Table(name = "cart_items")
@@ -16,34 +17,52 @@ public class CartItem {
     private CartItemId cartItemId;
 
     @Embedded
-    @AttributeOverride(name = "id", column = @Column(name = "product_id"))
-    private ProductId productId;
-
-    @Embedded
     @AttributeOverride(name = "id", column = @Column(name = "variant_id"))
     private VariantId variantId;
 
     private int quantity;
 
-    private BigDecimal unitPrice;
+    private final BigDecimal unitPrice;
 
     protected CartItem() {
+        this.unitPrice = BigDecimal.ZERO;
     }
 
-    public CartItem(ProductId productId, VariantId variantId, int quantity, BigDecimal unitPrice) {
+    private CartItem(VariantId variantId, int quantity, BigDecimal unitPrice) {
+        if (variantId == null) {
+            throw new CartDomainException("variantId", "variantId must not be null");
+        }
+        if (quantity <= 0) {
+            throw new CartDomainException("quantity", "quantity must be positive");
+        }
+        if (unitPrice == null || unitPrice.compareTo(BigDecimal.ZERO) < 0) {
+            throw new CartDomainException("unitPrice", "unitPrice must not be null or negative");
+        }
+
         this.cartItemId = new CartItemId();
-        setProductId(productId);
-        setVariantId(variantId);
-        setQuantity(quantity);
-        setUnitPrice(unitPrice);
+        this.variantId = variantId;
+        this.quantity = quantity;
+        this.unitPrice = unitPrice;
+    }
+
+    // FACTORY METHOD
+    public static CartItem fromVariant(ProductVariant variant, int quantity) {
+        if (variant == null) {
+            throw new CartDomainException("variant", "variant must not be null");
+        }
+        if (quantity <= 0) {
+            throw new CartDomainException("quantity", "quantity must be positive");
+        }
+
+        return new CartItem(
+                variant.getVariantId(),
+                quantity,
+                variant.getPriceModifier()
+        );
     }
 
     public CartItemId getCartItemId() {
         return cartItemId;
-    }
-
-    public ProductId getProductId() {
-        return productId;
     }
 
     public VariantId getVariantId() {
@@ -62,34 +81,36 @@ public class CartItem {
         return unitPrice.multiply(BigDecimal.valueOf(quantity));
     }
 
-    public void setProductId(ProductId productId) {
-        if (productId == null) {
-            throw new CartDomainException("productId", "productId must not be null");
+    public void increaseQuantity(int amount) {
+        if (amount <= 0) {
+            throw new CartDomainException("quantity", "amount must be positive");
         }
-        this.productId = productId;
+        this.quantity += amount;
     }
 
-    public void setVariantId(VariantId variantId) {
-        if (variantId == null) {
-            throw new CartDomainException("variantId", "variantId must not be null");
+    public void decreaseQuantity(int amount) {
+        if (amount <= 0) {
+            throw new CartDomainException("quantity", "amount must be positive");
         }
-        this.variantId = variantId;
+        if (quantity < amount) {
+            throw new CartDomainException("quantity", "quantity must be greater than or equal to amount");
+        }
+        this.quantity -= amount;
     }
 
-    public void setQuantity(int quantity) {
-        if (quantity <= 0) {
-            throw new CartDomainException("quantity", "quantity must be positive");
-        }
-        this.quantity = quantity;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CartItem other)) return false;
+        return variantId.equals(other.variantId);
     }
 
-    public void setUnitPrice(BigDecimal unitPrice) {
-        if (unitPrice == null) {
-            throw new CartDomainException("unitPrice", "unitPrice must not be null");
-        }
-        if (unitPrice.compareTo(BigDecimal.ZERO) < 0) {
-            throw new CartDomainException("unitPrice", "unitPrice must not be negative");
-        }
-        this.unitPrice = unitPrice;
+    @Override
+    public int hashCode() {
+        return Objects.hash(variantId);
+    }
+
+    public boolean isSameVariant(VariantId variantId) {
+        return this.variantId.equals(variantId);
     }
 }

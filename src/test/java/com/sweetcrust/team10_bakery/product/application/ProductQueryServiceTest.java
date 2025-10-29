@@ -19,9 +19,9 @@ import com.sweetcrust.team10_bakery.product.domain.entities.ProductVariant;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductSize;
 import com.sweetcrust.team10_bakery.product.infrastructure.ProductRepository;
 
-
 @ExtendWith(MockitoExtension.class)
 public class ProductQueryServiceTest {
+
     @Mock
     private ProductRepository productRepository;
 
@@ -29,18 +29,27 @@ public class ProductQueryServiceTest {
     private ProductQueryService productQueryService;
 
     @Test
-    void givenGetAllProducts_whenGettingAllProducts_thenAlProductsAreReturned() {
+    void givenGetAllProducts_whenGettingAllProducts_thenAllProductsAreReturned() {
         // given
-        ProductVariant productVariant = new ProductVariant(ProductSize.REGULAR, "Regular", BigDecimal.valueOf(.3));
         ProductCategory productCategory = new ProductCategory("Koffiekoeken", "Het hele assortiment van chocokoeken");
 
-        List<Product> allProducts = List.of(
-                new Product("bread-sheeran",
-                        "BreadS123!",
-                        BigDecimal.valueOf(.5),
-                        false,
-                        productVariant.getVariantId(),
-                        productCategory.getCategoryId()));
+        Product product = new Product(
+                "bread-sheeran",
+                "BreadS123!",
+                BigDecimal.valueOf(0.5),
+                false,
+                productCategory.getCategoryId()
+        );
+
+        ProductVariant productVariant = new ProductVariant(
+                ProductSize.REGULAR,
+                "Regular",
+                BigDecimal.valueOf(0.3),
+                product.getProductId()
+        );
+        product.addVariant(productVariant);
+
+        List<Product> allProducts = List.of(product);
 
         when(productRepository.findAll()).thenReturn(allProducts);
 
@@ -50,5 +59,8 @@ public class ProductQueryServiceTest {
         // then
         assertNotNull(products);
         assertEquals(1, products.size());
+        assertEquals("bread-sheeran", products.get(0).getName());
+        assertEquals(1, products.get(0).getVariants().size());
+        assertEquals(productCategory.getCategoryId(), products.get(0).getCategoryId());
     }
 }
