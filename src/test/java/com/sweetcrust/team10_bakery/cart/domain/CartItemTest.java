@@ -17,7 +17,7 @@ public class CartItemTest {
         VariantId variantId = new VariantId();
         ProductVariant chocolateCroissant = mock(ProductVariant.class);
         when(chocolateCroissant.getVariantId()).thenReturn(variantId);
-        when(chocolateCroissant.getPriceModifier()).thenReturn(BigDecimal.valueOf(3.50));
+        when(chocolateCroissant.getPrice()).thenReturn(BigDecimal.valueOf(3.50));
 
         int quantity = 2;
 
@@ -67,7 +67,8 @@ public class CartItemTest {
     void givenValidCartItem_whenIncreasingQuantity_thenQuantityIncreases() {
         ProductVariant muffinVariant = mock(ProductVariant.class);
         when(muffinVariant.getVariantId()).thenReturn(new VariantId());
-        when(muffinVariant.getPriceModifier()).thenReturn(BigDecimal.valueOf(4.00));
+        when(muffinVariant.getPrice()).thenReturn(BigDecimal.valueOf(4.00));
+
 
         CartItem cartItem = CartItem.fromVariant(muffinVariant, 3);
         cartItem.increaseQuantity(2);
@@ -79,7 +80,7 @@ public class CartItemTest {
     void givenInvalidAmount_whenIncreasingQuantity_thenThrowsException() {
         ProductVariant variant = mock(ProductVariant.class);
         when(variant.getVariantId()).thenReturn(new VariantId());
-        when(variant.getPriceModifier()).thenReturn(BigDecimal.valueOf(4.00));
+        when(variant.getPrice()).thenReturn(BigDecimal.valueOf(4.00));
 
         CartItem cartItem = CartItem.fromVariant(variant, 3);
 
@@ -93,7 +94,7 @@ public class CartItemTest {
     void givenValidCartItem_whenDecreasingQuantity_thenQuantityDecreases() {
         ProductVariant brownieVariant = mock(ProductVariant.class);
         when(brownieVariant.getVariantId()).thenReturn(new VariantId());
-        when(brownieVariant.getPriceModifier()).thenReturn(BigDecimal.valueOf(2.50));
+        when(brownieVariant.getPrice()).thenReturn(BigDecimal.valueOf(2.50));
 
         CartItem cartItem = CartItem.fromVariant(brownieVariant, 5);
         cartItem.decreaseQuantity(2);
@@ -105,7 +106,7 @@ public class CartItemTest {
     void givenDecreaseAmountGreaterThanQuantity_whenDecreasing_thenThrowsException() {
         ProductVariant variant = mock(ProductVariant.class);
         when(variant.getVariantId()).thenReturn(new VariantId());
-        when(variant.getPriceModifier()).thenReturn(BigDecimal.valueOf(2.50));
+        when(variant.getPrice()).thenReturn(BigDecimal.valueOf(2.50));
 
         CartItem cartItem = CartItem.fromVariant(variant, 2);
 
@@ -120,7 +121,7 @@ public class CartItemTest {
         VariantId sharedId = new VariantId();
         ProductVariant variant = mock(ProductVariant.class);
         when(variant.getVariantId()).thenReturn(sharedId);
-        when(variant.getPriceModifier()).thenReturn(BigDecimal.valueOf(5.00));
+        when(variant.getPrice()).thenReturn(BigDecimal.valueOf(5.00));
 
         CartItem item1 = CartItem.fromVariant(variant, 3);
         CartItem item2 = CartItem.fromVariant(variant, 10);
@@ -134,9 +135,9 @@ public class CartItemTest {
         ProductVariant v1 = mock(ProductVariant.class);
         ProductVariant v2 = mock(ProductVariant.class);
         when(v1.getVariantId()).thenReturn(new VariantId());
-        when(v1.getPriceModifier()).thenReturn(BigDecimal.valueOf(2.50));
+        when(v1.getPrice()).thenReturn(BigDecimal.valueOf(2.50));
         when(v2.getVariantId()).thenReturn(new VariantId());
-        when(v2.getPriceModifier()).thenReturn(BigDecimal.valueOf(2.50));
+        when(v2.getPrice()).thenReturn(BigDecimal.valueOf(2.50));
 
         CartItem item1 = CartItem.fromVariant(v1, 3);
         CartItem item2 = CartItem.fromVariant(v2, 3);
@@ -149,7 +150,7 @@ public class CartItemTest {
         VariantId sharedId = new VariantId();
         ProductVariant variant = mock(ProductVariant.class);
         when(variant.getVariantId()).thenReturn(sharedId);
-        when(variant.getPriceModifier()).thenReturn(BigDecimal.valueOf(3.50));
+        when(variant.getPrice()).thenReturn(BigDecimal.valueOf(3.50));
 
         CartItem muffinItem = CartItem.fromVariant(variant, 4);
         assertTrue(muffinItem.isSameVariant(sharedId));
@@ -159,7 +160,7 @@ public class CartItemTest {
     void givenDifferentVariantId_whenCheckingIsSameVariant_thenReturnsFalse() {
         ProductVariant variant = mock(ProductVariant.class);
         when(variant.getVariantId()).thenReturn(new VariantId());
-        when(variant.getPriceModifier()).thenReturn(BigDecimal.valueOf(3.50));
+        when(variant.getPrice()).thenReturn(BigDecimal.valueOf(3.50));
 
         CartItem donutItem = CartItem.fromVariant(variant, 4);
         assertFalse(donutItem.isSameVariant(new VariantId()));
