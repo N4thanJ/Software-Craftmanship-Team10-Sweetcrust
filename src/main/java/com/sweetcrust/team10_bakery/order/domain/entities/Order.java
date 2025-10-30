@@ -50,7 +50,7 @@ public class Order {
     protected Order() {
     }
 
-    // Factory constructor (private cause only used inside the class)
+    // Factory METHOD PATTERN
     private Order(LocalDateTime requestedDeliveryDate) {
         this.orderId = new OrderId();
         this.orderDate = LocalDateTime.now();
