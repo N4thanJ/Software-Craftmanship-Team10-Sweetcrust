@@ -7,6 +7,7 @@ import com.sweetcrust.team10_bakery.cart.domain.valueobjects.CartItemId;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserId;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +54,6 @@ public class Cart {
             throw new CartDomainException("cartItem", "cartItem must not be null");
         }
 
-        // Combine quantities if the same variant exists
         cartItems.stream()
                 .filter(item -> item.isSameVariant(newItem.getVariantId()))
                 .findFirst()
@@ -79,4 +79,12 @@ public class Cart {
     public boolean isEmpty() {
         return cartItems.isEmpty();
     }
+
+    @Transient
+    public BigDecimal getCartTotalPrice() {
+        return cartItems.stream()
+                .map(CartItem::getTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
 }

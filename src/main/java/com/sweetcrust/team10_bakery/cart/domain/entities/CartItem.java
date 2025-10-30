@@ -57,7 +57,7 @@ public class CartItem {
         return new CartItem(
                 variant.getVariantId(),
                 quantity,
-                variant.getPriceModifier()
+                variant.getPrice()
         );
     }
 
