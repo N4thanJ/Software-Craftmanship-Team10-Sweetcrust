@@ -51,6 +51,8 @@ public class DbInitializer {
         private void clearAll() {
                 orderRepository.deleteAll();
                 productRepository.deleteAll();
+                productVariantRepository.deleteAll();
+                categoryRepository.deleteAll();
                 userRepository.deleteAll();
                 shopRepository.deleteAll();
                 cartRepository.deleteAll();
@@ -76,8 +78,11 @@ public class DbInitializer {
                     "Molten chocolate center that erupts with every bite - volcanic levels of deliciousness",
                     BigDecimal.valueOf(6.99), true, cakes.getCategoryId());
             ProductVariant miniChocolateLavaCake = new ProductVariant(ProductSize.MINI, "Chocolate Lava Mini", BigDecimal.valueOf(0.0), chocolateLavaCake.getProductId());
+            miniChocolateLavaCake.setProduct(chocolateLavaCake);
             ProductVariant regularChocolateLavaCake = new ProductVariant(ProductSize.REGULAR, "Chocolate Lava Regular", BigDecimal.valueOf(0.5), chocolateLavaCake.getProductId());
+            regularChocolateLavaCake.setProduct(chocolateLavaCake);
             ProductVariant largeChocolateLavaCake = new ProductVariant(ProductSize.LARGE, "Chocolate Lava Large", BigDecimal.valueOf(0.7), chocolateLavaCake.getProductId());
+            largeChocolateLavaCake.setProduct(chocolateLavaCake);
             productRepository.save(chocolateLavaCake);
             productVariantRepository.save(miniChocolateLavaCake);
             productVariantRepository.save(regularChocolateLavaCake);
@@ -87,8 +92,11 @@ public class DbInitializer {
                     "Velvety smooth with cream cheese frosting - like a hug from grandma",
                     BigDecimal.valueOf(7.49), true, cakes.getCategoryId());
             ProductVariant miniRedVelvetCake = new ProductVariant(ProductSize.MINI, "Red Velvet Mini", BigDecimal.valueOf(0.0), redVelvetCake.getProductId());
+            miniRedVelvetCake.setProduct(redVelvetCake);
             ProductVariant regularRedVelvetCake = new ProductVariant(ProductSize.REGULAR, "Red Velvet Regular", BigDecimal.valueOf(0.5), redVelvetCake.getProductId());
+            regularRedVelvetCake.setProduct(redVelvetCake);
             ProductVariant largeRedVelvetCake = new ProductVariant(ProductSize.LARGE, "Red Velvet Large", BigDecimal.valueOf(0.7), redVelvetCake.getProductId());
+            largeRedVelvetCake.setProduct(redVelvetCake);
             productRepository.save(redVelvetCake);
             productVariantRepository.save(miniRedVelvetCake);
             productVariantRepository.save(regularRedVelvetCake);
@@ -98,8 +106,11 @@ public class DbInitializer {
                     "Vegetables never tasted this good - we won't tell if you won't",
                     BigDecimal.valueOf(5.99), true, cakes.getCategoryId());
             ProductVariant miniCarrotCake = new ProductVariant(ProductSize.MINI, "Carrot Cake Mini", BigDecimal.valueOf(0.0), carrotCake.getProductId());
+            miniCarrotCake.setProduct(carrotCake);
             ProductVariant regularCarrotCake = new ProductVariant(ProductSize.REGULAR, "Carrot Cake Regular", BigDecimal.valueOf(0.5), carrotCake.getProductId());
+            regularCarrotCake.setProduct(carrotCake);
             ProductVariant largeCarrotCake = new ProductVariant(ProductSize.LARGE, "Carrot Cake Large", BigDecimal.valueOf(0.7), carrotCake.getProductId());
+            largeCarrotCake.setProduct(carrotCake);
             productRepository.save(carrotCake);
             productVariantRepository.save(miniCarrotCake);
             productVariantRepository.save(regularCarrotCake);
@@ -109,8 +120,11 @@ public class DbInitializer {
                     "Italian coffee-soaked layers of pure bliss - pick-me-up in dessert form",
                     BigDecimal.valueOf(8.49), true, cakes.getCategoryId());
             ProductVariant miniTiramisu = new ProductVariant(ProductSize.MINI, "Tiramisu Mini", BigDecimal.valueOf(0.0), tiramisu.getProductId());
+            miniTiramisu.setProduct(tiramisu);
             ProductVariant regularTiramisu = new ProductVariant(ProductSize.REGULAR, "Tiramisu Regular", BigDecimal.valueOf(0.5), tiramisu.getProductId());
+            regularTiramisu.setProduct(tiramisu);
             ProductVariant largeTiramisu = new ProductVariant(ProductSize.LARGE, "Tiramisu Large", BigDecimal.valueOf(0.7), tiramisu.getProductId());
+            largeTiramisu.setProduct(tiramisu);
             productRepository.save(tiramisu);
             productVariantRepository.save(miniTiramisu);
             productVariantRepository.save(regularTiramisu);
@@ -120,8 +134,11 @@ public class DbInitializer {
                     "1000 layers of buttery goodness - made by hand, destroyed in seconds",
                     BigDecimal.valueOf(3.49), true, pastries.getCategoryId());
             ProductVariant miniCroissant = new ProductVariant(ProductSize.MINI, "Croissant Mini", BigDecimal.valueOf(0.0), croissant.getProductId());
+            miniCroissant.setProduct(croissant);
             ProductVariant regularCroissant = new ProductVariant(ProductSize.REGULAR, "Croissant Regular", BigDecimal.valueOf(0.5), croissant.getProductId());
+            regularCroissant.setProduct(croissant);
             ProductVariant largeCroissant = new ProductVariant(ProductSize.LARGE, "Croissant Large", BigDecimal.valueOf(0.7), croissant.getProductId());
+            largeCroissant.setProduct(croissant);
             productRepository.save(croissant);
             productVariantRepository.save(miniCroissant);
             productVariantRepository.save(regularCroissant);
@@ -131,6 +148,7 @@ public class DbInitializer {
                     "Chocolate wrapped in pastry perfection - the French know what's up",
                     BigDecimal.valueOf(3.99), true, pastries.getCategoryId());
             ProductVariant regularPainAuChocolat = new ProductVariant(ProductSize.REGULAR, "Pain au Chocolat Regular", BigDecimal.valueOf(0.5), painAuChocolat.getProductId());
+            regularPainAuChocolat.setProduct(painAuChocolat);
             productRepository.save(painAuChocolat);
             productVariantRepository.save(regularPainAuChocolat);
 
@@ -138,6 +156,7 @@ public class DbInitializer {
                     "Cream cheese filling nestled in flaky layers - Copenhagen approved",
                     BigDecimal.valueOf(4.29), true, pastries.getCategoryId());
             ProductVariant regularDanish = new ProductVariant(ProductSize.REGULAR, "Danish Regular", BigDecimal.valueOf(0.5), danishPastry.getProductId());
+            regularDanish.setProduct(danishPastry);
             productRepository.save(danishPastry);
             productVariantRepository.save(regularDanish);
 
@@ -145,6 +164,7 @@ public class DbInitializer {
                     "Caramelized apples in a golden crust - autumn in every bite",
                     BigDecimal.valueOf(3.79), true, pastries.getCategoryId());
             ProductVariant regularAppleTurnover = new ProductVariant(ProductSize.REGULAR, "Apple Turnover Regular", BigDecimal.valueOf(0.5), appleTurnover.getProductId());
+            regularAppleTurnover.setProduct(appleTurnover);
             productRepository.save(appleTurnover);
             productVariantRepository.save(regularAppleTurnover);
 
@@ -152,6 +172,7 @@ public class DbInitializer {
                     "Classic glazed perfection - shiny, sweet, and absolutely essential",
                     BigDecimal.valueOf(2.49), true, donuts.getCategoryId());
             ProductVariant regularGlazedDonut = new ProductVariant(ProductSize.REGULAR, "Glazed Donut Regular", BigDecimal.valueOf(0.5), glazedDonut.getProductId());
+            regularGlazedDonut.setProduct(glazedDonut);
             productRepository.save(glazedDonut);
             productVariantRepository.save(regularGlazedDonut);
 
@@ -159,6 +180,7 @@ public class DbInitializer {
                     "Cream-filled heaven with chocolate ganache - double the indulgence",
                     BigDecimal.valueOf(3.29), true, donuts.getCategoryId());
             ProductVariant regularBostonCreamDonut = new ProductVariant(ProductSize.REGULAR, "Boston Cream Donut Regular", BigDecimal.valueOf(0.5), bostonCreamDonut.getProductId());
+            regularBostonCreamDonut.setProduct(bostonCreamDonut);
             productRepository.save(bostonCreamDonut);
             productVariantRepository.save(regularBostonCreamDonut);
 
@@ -166,6 +188,7 @@ public class DbInitializer {
                     "Covered in happiness sprinkles - because life needs more color",
                     BigDecimal.valueOf(2.79), true, donuts.getCategoryId());
             ProductVariant regularSprinkleDonut = new ProductVariant(ProductSize.REGULAR, "Sprinkle Donut Regular", BigDecimal.valueOf(0.5), sprinkleDonut.getProductId());
+            regularSprinkleDonut.setProduct(sprinkleDonut);
             productRepository.save(sprinkleDonut);
             productVariantRepository.save(regularSprinkleDonut);
 
@@ -173,6 +196,7 @@ public class DbInitializer {
                     "Sweet maple glaze meets crispy bacon - the ultimate sweet-savory combo",
                     BigDecimal.valueOf(3.99), true, donuts.getCategoryId());
             ProductVariant regularMapleDonut = new ProductVariant(ProductSize.REGULAR, "Maple Donut Regular", BigDecimal.valueOf(0.5), mapleDonut.getProductId());
+            regularMapleDonut.setProduct(mapleDonut);
             productRepository.save(mapleDonut);
             productVariantRepository.save(regularMapleDonut);
 
@@ -180,6 +204,7 @@ public class DbInitializer {
                     "Loaded with chocolate chunks - still warm from the oven vibes",
                     BigDecimal.valueOf(2.99), true, cookies.getCategoryId());
             ProductVariant regularChocolateChipCookie = new ProductVariant(ProductSize.REGULAR, "Chocolate Chip Cookie Regular", BigDecimal.valueOf(0.5), chocolateChipCookie.getProductId());
+            regularChocolateChipCookie.setProduct(chocolateChipCookie);
             productRepository.save(chocolateChipCookie);
             productVariantRepository.save(regularChocolateChipCookie);
 
@@ -187,6 +212,7 @@ public class DbInitializer {
                     "Premium macadamia nuts and white chocolate - fancy cookie energy",
                     BigDecimal.valueOf(3.49), true, cookies.getCategoryId());
             ProductVariant regularMacadamiaCookie = new ProductVariant(ProductSize.REGULAR, "Macadamia Cookie Regular", BigDecimal.valueOf(0.5), macadamiaCookie.getProductId());
+            regularMacadamiaCookie.setProduct(macadamiaCookie);
             productRepository.save(macadamiaCookie);
             productVariantRepository.save(regularMacadamiaCookie);
 
@@ -194,6 +220,7 @@ public class DbInitializer {
                     "Not chocolate chips but still amazing - trust us on this one",
                     BigDecimal.valueOf(2.79), true, cookies.getCategoryId());
             ProductVariant regularOatmealRaisinCookie = new ProductVariant(ProductSize.REGULAR, "Oatmeal Cookie Regular", BigDecimal.valueOf(0.5), oatmealRaisinCookie.getProductId());
+            regularOatmealRaisinCookie.setProduct(oatmealRaisinCookie);
             productRepository.save(oatmealRaisinCookie);
             productVariantRepository.save(regularOatmealRaisinCookie);
 
@@ -201,6 +228,7 @@ public class DbInitializer {
                     "Decorated with festive frosting - party in cookie form",
                     BigDecimal.valueOf(2.49), true, cookies.getCategoryId());
             ProductVariant miniSugarCookie = new ProductVariant(ProductSize.MINI, "Sugar Cookie Mini", BigDecimal.valueOf(0.0), sugarCookie.getProductId());
+            miniSugarCookie.setProduct(sugarCookie);
             productRepository.save(sugarCookie);
             productVariantRepository.save(miniSugarCookie);
 
@@ -208,6 +236,7 @@ public class DbInitializer {
                     "Tangy, crusty, and absolutely artisan - bread for bread snobs",
                     BigDecimal.valueOf(5.49), true, bread.getCategoryId());
             ProductVariant largeSourdoughBread = new ProductVariant(ProductSize.LARGE, "Sourdough Large", BigDecimal.valueOf(0.7), sourdoughBread.getProductId());
+            largeSourdoughBread.setProduct(sourdoughBread);
             productRepository.save(sourdoughBread);
             productVariantRepository.save(largeSourdoughBread);
 
@@ -215,6 +244,7 @@ public class DbInitializer {
                     "Crusty outside, fluffy inside - ooh la la worthy",
                     BigDecimal.valueOf(4.29), true, bread.getCategoryId());
             ProductVariant largeBaguette = new ProductVariant(ProductSize.LARGE, "Baguette Large", BigDecimal.valueOf(0.7), baguette.getProductId());
+            largeBaguette.setProduct(baguette);
             productRepository.save(baguette);
             productVariantRepository.save(largeBaguette);
 
@@ -222,6 +252,7 @@ public class DbInitializer {
                     "Ribbons of cinnamon sugar throughout - makes the best toast ever",
                     BigDecimal.valueOf(6.49), true, bread.getCategoryId());
             ProductVariant regularCinnamonBread = new ProductVariant(ProductSize.REGULAR, "Cinnamon Bread Regular", BigDecimal.valueOf(0.5), cinnamonBread.getProductId());
+            regularCinnamonBread.setProduct(cinnamonBread);
             productRepository.save(cinnamonBread);
             productVariantRepository.save(regularCinnamonBread);
 
@@ -229,6 +260,7 @@ public class DbInitializer {
                     "Classic vanilla with buttercream swirl - simple but never boring",
                     BigDecimal.valueOf(3.99), true, cupcakes.getCategoryId());
             ProductVariant regularVanillaCupcake = new ProductVariant(ProductSize.REGULAR, "Vanilla Cupcake Regular", BigDecimal.valueOf(0.5), vanillaCupcake.getProductId());
+            regularVanillaCupcake.setProduct(vanillaCupcake);
             productRepository.save(vanillaCupcake);
             productVariantRepository.save(regularVanillaCupcake);
 
@@ -236,6 +268,7 @@ public class DbInitializer {
                     "Chocolate cake, chocolate filling, chocolate frosting - chocoholics only",
                     BigDecimal.valueOf(4.29), true, cupcakes.getCategoryId());
             ProductVariant regularChocolateCupcake = new ProductVariant(ProductSize.REGULAR, "Chocolate Cupcake Regular", BigDecimal.valueOf(0.5), chocolateCupcake.getProductId());
+            regularChocolateCupcake.setProduct(chocolateCupcake);
             productRepository.save(chocolateCupcake);
             productVariantRepository.save(regularChocolateCupcake);
 
@@ -243,6 +276,7 @@ public class DbInitializer {
                     "Tangy lemon cake with cream cheese frosting - sunshine in a wrapper",
                     BigDecimal.valueOf(3.79), true, cupcakes.getCategoryId());
             ProductVariant regularLemonCupcake = new ProductVariant(ProductSize.REGULAR, "Lemon Cupcake Regular", BigDecimal.valueOf(0.5), lemonCupcake.getProductId());
+            regularLemonCupcake.setProduct(lemonCupcake);
             productRepository.save(lemonCupcake);
             productVariantRepository.save(regularLemonCupcake);
 
@@ -250,6 +284,7 @@ public class DbInitializer {
                     "All the velvet love in cupcake form - perfect for romantic gestures",
                     BigDecimal.valueOf(4.49), true, cupcakes.getCategoryId());
             ProductVariant miniRedVelvetCupcake = new ProductVariant(ProductSize.MINI, "Red Velvet Cupcake Mini", BigDecimal.valueOf(0.0), redVelvetCupcake.getProductId());
+            miniRedVelvetCupcake.setProduct(redVelvetCupcake);
             productRepository.save(redVelvetCupcake);
             productVariantRepository.save(miniRedVelvetCupcake);
 
@@ -257,6 +292,7 @@ public class DbInitializer {
                     "Grandma's recipe with a SweetCrust twist - as American as it gets",
                     BigDecimal.valueOf(12.99), true, pies.getCategoryId());
             ProductVariant largeApplePie = new ProductVariant(ProductSize.LARGE, "Apple Pie Large", BigDecimal.valueOf(0.7), applePie.getProductId());
+            largeApplePie.setProduct(applePie);
             productRepository.save(applePie);
             productVariantRepository.save(largeApplePie);
 
@@ -264,6 +300,7 @@ public class DbInitializer {
                     "Smooth pumpkin filling with whipped cream - fall in a slice",
                     BigDecimal.valueOf(11.99), true, pies.getCategoryId());
             ProductVariant largePumpkinPie = new ProductVariant(ProductSize.LARGE, "Pumpkin Pie Large", BigDecimal.valueOf(0.7), pumpkinPie.getProductId());
+            largePumpkinPie.setProduct(pumpkinPie);
             productRepository.save(pumpkinPie);
             productVariantRepository.save(largePumpkinPie);
 
@@ -271,6 +308,7 @@ public class DbInitializer {
                     "Tart cherries in a buttery crust - cherry on top not included",
                     BigDecimal.valueOf(13.49), true, pies.getCategoryId());
             ProductVariant largeCherryPie = new ProductVariant(ProductSize.LARGE, "Cherry Pie Large", BigDecimal.valueOf(0.7), cherryPie.getProductId());
+            largeCherryPie.setProduct(cherryPie);
             productRepository.save(cherryPie);
             productVariantRepository.save(largeCherryPie);
 
@@ -278,6 +316,7 @@ public class DbInitializer {
                     "Bursting with fresh blueberries - practically a health food",
                     BigDecimal.valueOf(3.49), true, muffins.getCategoryId());
             ProductVariant regularBlueberryMuffin = new ProductVariant(ProductSize.REGULAR, "Blueberry Muffin Regular", BigDecimal.valueOf(0.5), blueberryMuffin.getProductId());
+            regularBlueberryMuffin.setProduct(blueberryMuffin);
             productRepository.save(blueberryMuffin);
             productVariantRepository.save(regularBlueberryMuffin);
 
@@ -285,6 +324,7 @@ public class DbInitializer {
                     "Moist banana goodness with walnuts - the breakfast of champions",
                     BigDecimal.valueOf(3.29), true, muffins.getCategoryId());
             ProductVariant regularBananaMuffin = new ProductVariant(ProductSize.REGULAR, "Banana Muffin Regular", BigDecimal.valueOf(0.5), bananaMuffin.getProductId());
+            regularBananaMuffin.setProduct(bananaMuffin);
             productRepository.save(bananaMuffin);
             productVariantRepository.save(regularBananaMuffin);
 
@@ -292,9 +332,9 @@ public class DbInitializer {
                     "Chocolate muffin with chocolate chips - yes you can have cake for breakfast",
                     BigDecimal.valueOf(3.79), true, muffins.getCategoryId());
             ProductVariant regularChocolateChipMuffin = new ProductVariant(ProductSize.REGULAR, "Chocolate Chip Muffin Regular", BigDecimal.valueOf(0.5), chocolateChipMuffin.getProductId());
+            regularChocolateChipMuffin.setProduct(chocolateChipMuffin);
             productRepository.save(chocolateChipMuffin);
             productVariantRepository.save(regularChocolateChipMuffin);
-
 
                 // Customers
                 User donutDan = new User("DonutDan", "Glazed4Life!", "donut.dan@sweetcrust.com", UserRole.CUSTOMER);

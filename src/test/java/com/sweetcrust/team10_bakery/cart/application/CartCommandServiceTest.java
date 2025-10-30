@@ -7,10 +7,7 @@ import com.sweetcrust.team10_bakery.cart.domain.entities.Cart;
 import com.sweetcrust.team10_bakery.cart.domain.entities.CartItem;
 import com.sweetcrust.team10_bakery.cart.domain.valueobjects.CartItemId;
 import com.sweetcrust.team10_bakery.cart.infrastructure.CartRepository;
-import com.sweetcrust.team10_bakery.product.domain.entities.Product;
 import com.sweetcrust.team10_bakery.product.domain.entities.ProductVariant;
-import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductSize;
-import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductId;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.VariantId;
 import com.sweetcrust.team10_bakery.product.infrastructure.ProductRepository;
 import com.sweetcrust.team10_bakery.product.infrastructure.ProductVariantRepository;
@@ -59,7 +56,7 @@ public class CartCommandServiceTest {
         CreateCartCommand command = new CreateCartCommand(variantId, 3, userId);
         ProductVariant variant = mock(ProductVariant.class);
         when(variant.getVariantId()).thenReturn(variantId);
-        when(variant.getPriceModifier()).thenReturn(BigDecimal.valueOf(2));
+        when(variant.getPrice()).thenReturn(BigDecimal.valueOf(2));
 
         when(productVariantRepository.findById(variantId)).thenReturn(Optional.of(variant));
         when(cartRepository.findByOwnerId(userId)).thenReturn(Optional.empty());
@@ -90,7 +87,7 @@ public class CartCommandServiceTest {
 
         ProductVariant variant = mock(ProductVariant.class);
         when(variant.getVariantId()).thenReturn(variantId);
-        when(variant.getPriceModifier()).thenReturn(BigDecimal.ONE);
+        when(variant.getPrice()).thenReturn(BigDecimal.ONE);
 
         when(productVariantRepository.findById(variantId)).thenReturn(Optional.of(variant));
 
@@ -113,7 +110,7 @@ public class CartCommandServiceTest {
 
         ProductVariant variant = mock(ProductVariant.class);
         when(variant.getVariantId()).thenReturn(variantId);
-        when(variant.getPriceModifier()).thenReturn(BigDecimal.ONE);
+        when(variant.getPrice()).thenReturn(BigDecimal.ONE);
 
         when(productVariantRepository.findById(variantId)).thenReturn(Optional.of(variant));
 

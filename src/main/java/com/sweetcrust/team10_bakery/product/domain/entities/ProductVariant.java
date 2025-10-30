@@ -26,6 +26,10 @@ public class ProductVariant {
     @AttributeOverride(name = "id", column = @Column(name = "product_id"))
     private ProductId productId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false, insertable = false, updatable = false)
+    private Product product;
+
     protected ProductVariant() {
     }
 
@@ -87,4 +91,24 @@ public class ProductVariant {
         }
         this.productId = productId;
     }
+
+    public void setProduct(Product product) {
+        if (product == null) {
+            throw new ProductDomainException("product", "product should not be null");
+        }
+        this.product = product;
+    }
+
+    @Transient
+    public BigDecimal getPrice() {
+        if (product == null) {
+            throw new ProductDomainException("product", "Product must be loaded to compute price");
+        }
+
+        BigDecimal basePrice = product.getBasePrice();
+        BigDecimal modifier = priceModifier != null ? priceModifier : BigDecimal.ZERO;
+
+        return basePrice.add(modifier);
+    }
+
 }
