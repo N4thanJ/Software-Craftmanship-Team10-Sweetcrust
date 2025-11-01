@@ -37,6 +37,7 @@ public class ProductCommandService {
                     variantCmd.priceModifier(),
                     product.getProductId()
             );
+            productVariant.setProduct(product);
             product.addVariant(productVariant);
         });
 

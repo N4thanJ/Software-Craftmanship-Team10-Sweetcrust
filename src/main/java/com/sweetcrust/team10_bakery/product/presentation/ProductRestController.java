@@ -36,11 +36,9 @@ public class ProductRestController {
         return ResponseEntity.ok(product);
     }
 
-    @PostMapping("/add")
+    @PostMapping()
     public ResponseEntity<Product> createProduct(@RequestBody AddProductCommand addProductCommand) {
         Product product = productCommandService.createProduct(addProductCommand);
         return ResponseEntity.ok(product);
     }
-
-
 }
