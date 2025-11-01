@@ -3,6 +3,7 @@ package com.sweetcrust.team10_bakery.product.presentation;
 import com.sweetcrust.team10_bakery.product.application.ProductCommandService;
 import com.sweetcrust.team10_bakery.product.application.ProductQueryService;
 import com.sweetcrust.team10_bakery.product.application.commands.AddProductCommand;
+import com.sweetcrust.team10_bakery.product.application.commands.AddProductVariantCommand;
 import com.sweetcrust.team10_bakery.product.domain.entities.Product;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductId;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -39,6 +40,12 @@ public class ProductRestController {
     @PostMapping()
     public ResponseEntity<Product> createProduct(@RequestBody AddProductCommand addProductCommand) {
         Product product = productCommandService.createProduct(addProductCommand);
+        return ResponseEntity.ok(product);
+    }
+
+    @PostMapping("/{productId}")
+    public ResponseEntity<Product> addVariantToProduct(@PathVariable UUID productId, @RequestBody AddProductVariantCommand addProductVariantCommand) {
+        Product product = productCommandService.addVariantToProduct(new ProductId(productId), addProductVariantCommand);
         return ResponseEntity.ok(product);
     }
 }
