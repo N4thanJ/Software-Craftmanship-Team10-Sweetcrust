@@ -14,14 +14,14 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 @Service
-public class OrderCommandService {
+public class OrderCommandHandler {
 
     private final OrderRepository orderRepository;
     private final ShopRepository shopRepository;
     private final UserRepository userRepository;
 
-    public OrderCommandService(OrderRepository orderRepository, ShopRepository shopRepository,
-            UserRepository userRepository) {
+    public OrderCommandHandler(OrderRepository orderRepository, ShopRepository shopRepository,
+                               UserRepository userRepository) {
         this.orderRepository = orderRepository;
         this.shopRepository = shopRepository;
         this.userRepository = userRepository;

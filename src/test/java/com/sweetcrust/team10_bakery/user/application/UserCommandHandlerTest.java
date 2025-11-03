@@ -15,13 +15,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class UserCommandServiceTest {
+public class UserCommandHandlerTest {
 
     @Mock
     private UserRepository userRepository;
 
     @InjectMocks
-    private UserCommandService userCommandService;
+    private UserCommandHandler userCommandHandler;
 
     @Test
     void givenValidData_whenRegisterUser_thenUserIsCreated() {
@@ -29,7 +29,7 @@ public class UserCommandServiceTest {
         AddUserCommand addUserCommand = new AddUserCommand("bread-sheeran", "breadsheeran@sweetcrust.com", "BreadS123!", "BAKER");
 
         // when
-        userCommandService.registerUser(addUserCommand);
+        userCommandHandler.registerUser(addUserCommand);
 
         // then
         verify(userRepository, times(1)).save(any(User.class));
@@ -42,7 +42,7 @@ public class UserCommandServiceTest {
         when(userRepository.existsByEmail(addUserCommand.email())).thenReturn(true);
 
         // when
-        UserServiceException exception = assertThrows(UserServiceException.class, ()  -> userCommandService.registerUser(addUserCommand));
+        UserServiceException exception = assertThrows(UserServiceException.class, ()  -> userCommandHandler.registerUser(addUserCommand));
 
         // then
         assertEquals("email", exception.getField());
@@ -56,7 +56,7 @@ public class UserCommandServiceTest {
         when(userRepository.existsByUsername(addUserCommand.username())).thenReturn(true);
 
         // when
-        UserServiceException exception = assertThrows(UserServiceException.class, ()  -> userCommandService.registerUser(addUserCommand));
+        UserServiceException exception = assertThrows(UserServiceException.class, ()  -> userCommandHandler.registerUser(addUserCommand));
 
         // then
         assertEquals("username", exception.getField());

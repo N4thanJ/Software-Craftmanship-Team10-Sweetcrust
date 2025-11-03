@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class UserQueryService {
+public class UserQueryHandler {
 
     private final UserRepository userRepository;
 
-    public UserQueryService(UserRepository userRepository) {
+    public UserQueryHandler(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ProductQueryService {
+public class ProductQueryHandler {
     private final ProductRepository productRepository;
 
-    public ProductQueryService(ProductRepository productRepository) {
+    public ProductQueryHandler(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 

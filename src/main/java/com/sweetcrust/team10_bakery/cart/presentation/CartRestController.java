@@ -5,8 +5,8 @@ import com.sweetcrust.team10_bakery.cart.application.commands.RemoveItemFromCart
 import com.sweetcrust.team10_bakery.cart.domain.valueobjects.CartItemId;
 import org.springframework.web.bind.annotation.*;
 
-import com.sweetcrust.team10_bakery.cart.application.CartCommandService;
-import com.sweetcrust.team10_bakery.cart.application.CartQueryService;
+import com.sweetcrust.team10_bakery.cart.application.CartCommandHandler;
+import com.sweetcrust.team10_bakery.cart.application.CartQueryHandler;
 import com.sweetcrust.team10_bakery.cart.application.commands.CreateCartCommand;
 import com.sweetcrust.team10_bakery.cart.domain.entities.Cart;
 
@@ -20,36 +20,36 @@ import org.springframework.http.ResponseEntity;
 @RequestMapping("/cart")
 @Tag(name = "Cart Management", description = "Endpoints related to adding and removing items from carts")
 public class CartRestController {
-    private final CartQueryService cartQueryService;
-    private final CartCommandService cartCommandService;
+    private final CartQueryHandler cartQueryHandler;
+    private final CartCommandHandler cartCommandHandler;
 
-    public CartRestController(CartQueryService cartQueryService, CartCommandService cartCommandService) {
-        this.cartQueryService = cartQueryService;
-        this.cartCommandService = cartCommandService;
+    public CartRestController(CartQueryHandler cartQueryHandler, CartCommandHandler cartCommandHandler) {
+        this.cartQueryHandler = cartQueryHandler;
+        this.cartCommandHandler = cartCommandHandler;
     }
 
     @GetMapping()
     public ResponseEntity<Iterable<Cart>> getAllCarts() {
-        List<Cart> carts = cartQueryService.getAllCarts();
+        List<Cart> carts = cartQueryHandler.getAllCarts();
         return ResponseEntity.ok(carts);
     }
 
     @PostMapping()
     public ResponseEntity<Cart> createCart(@RequestBody CreateCartCommand createCartCommand) {
-        Cart cart = cartCommandService.createCart(createCartCommand);
+        Cart cart = cartCommandHandler.createCart(createCartCommand);
         return ResponseEntity.ok(cart);
     }
 
     @PutMapping
     public ResponseEntity<Cart> addItemToCart(@RequestBody AddItemToCartCommand addItemToCartCommand) {
-        Cart cart = cartCommandService.addItemToCart(addItemToCartCommand);
+        Cart cart = cartCommandHandler.addItemToCart(addItemToCartCommand);
         return ResponseEntity.ok(cart);
     }
 
     @DeleteMapping("/{cartItemId}")
     public ResponseEntity<Cart> removeItemFromCart(@RequestBody RemoveItemFromCartCommand removeItemFromCartCommand, @PathVariable CartItemId cartItemId) {
 
-        return cartCommandService.removeItemFromCart(removeItemFromCartCommand, cartItemId)
+        return cartCommandHandler.removeItemFromCart(removeItemFromCartCommand, cartItemId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.noContent().build());
     }

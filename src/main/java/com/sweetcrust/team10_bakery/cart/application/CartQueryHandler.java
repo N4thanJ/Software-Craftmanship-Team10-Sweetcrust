@@ -8,10 +8,10 @@ import com.sweetcrust.team10_bakery.cart.domain.entities.Cart;
 import com.sweetcrust.team10_bakery.cart.infrastructure.CartRepository;
 
 @Service
-public class CartQueryService {
+public class CartQueryHandler {
     private CartRepository cartRepository;
 
-    public CartQueryService(CartRepository cartRepository) {
+    public CartQueryHandler(CartRepository cartRepository) {
         this.cartRepository = cartRepository;
     }
 

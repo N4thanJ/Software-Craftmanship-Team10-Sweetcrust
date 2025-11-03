@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductId;
-import com.sweetcrust.team10_bakery.product.domain.valueobjects.CategoryId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,13 +24,13 @@ import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductSize;
 import com.sweetcrust.team10_bakery.product.infrastructure.ProductRepository;
 
 @ExtendWith(MockitoExtension.class)
-public class ProductCommandServiceTest {
+public class ProductCommandHandlerTest {
 
     @Mock
     private ProductRepository productRepository;
 
     @InjectMocks
-    private ProductCommandService productCommandService;
+    private ProductCommandHandler productCommandHandler;
 
     @Test
     void givenValidData_whenCreatingProduct_thenProductIsCreated() {
@@ -55,7 +54,7 @@ public class ProductCommandServiceTest {
         );
 
         // when
-        productCommandService.createProduct(addProductCommand);
+        productCommandHandler.createProduct(addProductCommand);
 
         // then
         verify(productRepository, times(1)).save(any(Product.class));
@@ -87,7 +86,7 @@ public class ProductCommandServiceTest {
         // when
         ProductServiceException exception = assertThrows(
                 ProductServiceException.class,
-                () -> productCommandService.createProduct(addProductCommand)
+                () -> productCommandHandler.createProduct(addProductCommand)
         );
 
         // then
@@ -119,7 +118,7 @@ public class ProductCommandServiceTest {
         when(productRepository.save(any(Product.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // when
-        Product updatedProduct = productCommandService.addVariantToProduct(product.getProductId(), variantCommand);
+        Product updatedProduct = productCommandHandler.addVariantToProduct(product.getProductId(), variantCommand);
 
         // then
         assertEquals(1, updatedProduct.getVariants().size());
@@ -161,7 +160,7 @@ public class ProductCommandServiceTest {
         // when
         ProductServiceException exception = assertThrows(
                 ProductServiceException.class,
-                () -> productCommandService.addVariantToProduct(product.getProductId(), variantCommand)
+                () -> productCommandHandler.addVariantToProduct(product.getProductId(), variantCommand)
         );
 
         // then
@@ -186,7 +185,7 @@ public class ProductCommandServiceTest {
         // when
         ProductServiceException exception = assertThrows(
                 ProductServiceException.class,
-                () -> productCommandService.addVariantToProduct(nonExistingProductId, variantCommand)
+                () -> productCommandHandler.addVariantToProduct(nonExistingProductId, variantCommand)
         );
 
         // then

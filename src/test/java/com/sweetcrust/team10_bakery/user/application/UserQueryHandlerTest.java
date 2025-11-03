@@ -18,13 +18,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class UserQueryServiceTest {
+public class UserQueryHandlerTest {
 
     @Mock
     private UserRepository userRepository;
 
     @InjectMocks
-    private UserQueryService userQueryService;
+    private UserQueryHandler userQueryHandler;
 
     @Test
     void givenGetAllUsers_whenGettingAllUsers_thenAllUsersAreReturned() {
@@ -33,7 +33,7 @@ public class UserQueryServiceTest {
         when(userRepository.findAll()).thenReturn(allUsers);
 
         // when
-        List<User> users = userQueryService.getAllUsers();
+        List<User> users = userQueryHandler.getAllUsers();
 
         // then
         assertNotNull(users);
@@ -48,7 +48,7 @@ public class UserQueryServiceTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
         // when
-        User foundUser = userQueryService.getUserById(userId);
+        User foundUser = userQueryHandler.getUserById(userId);
 
         // then
         assertEquals(user, foundUser);
@@ -60,7 +60,7 @@ public class UserQueryServiceTest {
         UserId userId = new UserId(UUID.randomUUID());
 
         // when
-        UserServiceException exception = assertThrows(UserServiceException.class, () -> userQueryService.getUserById(userId));
+        UserServiceException exception = assertThrows(UserServiceException.class, () -> userQueryHandler.getUserById(userId));
 
         // then
         assertEquals("user", exception.getField());

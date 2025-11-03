@@ -28,7 +28,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class OrderCommandServiceTest {
+public class OrderCommandHandlerTest {
 
         @Mock
         private OrderRepository orderRepository;
@@ -40,7 +40,7 @@ public class OrderCommandServiceTest {
         private UserRepository userRepository;
 
         @InjectMocks
-        private OrderCommandService orderCommandService;
+        private OrderCommandHandler orderCommandHandler;
 
         @Test
         void givenValidData_whenCreateB2COrder_thenOrderIsCreated() {
@@ -64,7 +64,7 @@ public class OrderCommandServiceTest {
                 when(userRepository.findById(customerId)).thenReturn(Optional.of(customer));
 
                 // when
-                orderCommandService.createB2COrder(command);
+                orderCommandHandler.createB2COrder(command);
 
                 // then
                 verify(orderRepository, times(1)).save(any(Order.class));
@@ -87,7 +87,7 @@ public class OrderCommandServiceTest {
 
                 // when
                 OrderServiceException exception = assertThrows(OrderServiceException.class,
-                                () -> orderCommandService.createB2COrder(command));
+                                () -> orderCommandHandler.createB2COrder(command));
 
                 // then
                 assertEquals("requestedDeliveryDate", exception.getField());
@@ -112,7 +112,7 @@ public class OrderCommandServiceTest {
 
                 // when
                 OrderServiceException exception = assertThrows(OrderServiceException.class,
-                                () -> orderCommandService.createB2COrder(command));
+                                () -> orderCommandHandler.createB2COrder(command));
 
                 // then
                 assertEquals("requestedDeliveryDate", exception.getField());
@@ -140,7 +140,7 @@ public class OrderCommandServiceTest {
 
                 // when
                 OrderServiceException exception = assertThrows(OrderServiceException.class,
-                                () -> orderCommandService.createB2COrder(command));
+                                () -> orderCommandHandler.createB2COrder(command));
 
                 // then
                 assertEquals("customerId", exception.getField());
@@ -170,7 +170,7 @@ public class OrderCommandServiceTest {
 
                 // when
                 OrderServiceException exception = assertThrows(OrderServiceException.class,
-                                () -> orderCommandService.createB2COrder(command));
+                                () -> orderCommandHandler.createB2COrder(command));
 
                 // then
                 assertEquals("customerId", exception.getField());
@@ -206,7 +206,7 @@ public class OrderCommandServiceTest {
                 when(userRepository.findById(bakerId)).thenReturn(Optional.of(baker));
 
                 // when
-                orderCommandService.createB2BOrder(command);
+                orderCommandHandler.createB2BOrder(command);
 
                 // then
                 verify(orderRepository, times(1)).save(any(Order.class));
@@ -225,7 +225,7 @@ public class OrderCommandServiceTest {
 
                 // when
                 OrderServiceException exception = assertThrows(OrderServiceException.class,
-                                () -> orderCommandService.createB2BOrder(command));
+                                () -> orderCommandHandler.createB2BOrder(command));
 
                 // then
                 assertEquals("requestedDeliveryDate", exception.getField());
@@ -248,7 +248,7 @@ public class OrderCommandServiceTest {
 
                 // when
                 OrderServiceException exception = assertThrows(OrderServiceException.class,
-                                () -> orderCommandService.createB2BOrder(command));
+                                () -> orderCommandHandler.createB2BOrder(command));
 
                 // then
                 assertEquals("orderingShopId", exception.getField());
@@ -274,7 +274,7 @@ public class OrderCommandServiceTest {
 
                 // when
                 OrderServiceException exception = assertThrows(OrderServiceException.class,
-                                () -> orderCommandService.createB2BOrder(command));
+                                () -> orderCommandHandler.createB2BOrder(command));
 
                 // then
                 assertEquals("userId", exception.getField());
@@ -303,7 +303,7 @@ public class OrderCommandServiceTest {
 
                 // when
                 OrderServiceException exception = assertThrows(OrderServiceException.class,
-                                () -> orderCommandService.createB2BOrder(command));
+                                () -> orderCommandHandler.createB2BOrder(command));
 
                 // then
                 assertEquals("userId", exception.getField());

@@ -17,13 +17,13 @@ import com.sweetcrust.team10_bakery.cart.domain.entities.Cart;
 import com.sweetcrust.team10_bakery.cart.infrastructure.CartRepository;
 
 @ExtendWith(MockitoExtension.class)
-public class CartQueryServiceTest {
+public class CartQueryHandlerTest {
 
     @Mock
     private CartRepository cartRepository;
 
     @InjectMocks
-    private CartQueryService cartQueryService;
+    private CartQueryHandler cartQueryHandler;
 
     @Test
     void givenGetAllCarts_whenGettingAllCarts_thenAllCartsAreReturned() {
@@ -33,7 +33,7 @@ public class CartQueryServiceTest {
         when(cartRepository.findAll()).thenReturn(allCarts);
 
         // when
-        List<Cart> carts = cartQueryService.getAllCarts();
+        List<Cart> carts = cartQueryHandler.getAllCarts();
 
         // then
         assertNotNull(carts);
