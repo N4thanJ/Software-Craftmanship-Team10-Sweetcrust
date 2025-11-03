@@ -1,7 +1,7 @@
 package com.sweetcrust.team10_bakery.user.presentation;
 
-import com.sweetcrust.team10_bakery.user.application.UserCommandService;
-import com.sweetcrust.team10_bakery.user.application.UserQueryService;
+import com.sweetcrust.team10_bakery.user.application.UserCommandHandler;
+import com.sweetcrust.team10_bakery.user.application.UserQueryHandler;
 import com.sweetcrust.team10_bakery.user.application.commands.AddUserCommand;
 import com.sweetcrust.team10_bakery.user.domain.entities.User;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserId;
@@ -17,29 +17,29 @@ import java.util.UUID;
 @Tag(name = "User Management", description = "Endpoints related to user registration and user fetching")
 public class UserRestController {
 
-    private final UserCommandService userCommandService;
-    private final UserQueryService userQueryService;
+    private final UserCommandHandler userCommandHandler;
+    private final UserQueryHandler userQueryHandler;
 
-    public UserRestController(UserCommandService userCommandService, UserQueryService userQueryService) {
-        this.userCommandService = userCommandService;
-        this.userQueryService = userQueryService;
+    public UserRestController(UserCommandHandler userCommandHandler, UserQueryHandler userQueryHandler) {
+        this.userCommandHandler = userCommandHandler;
+        this.userQueryHandler = userQueryHandler;
     }
 
     @GetMapping()
     public ResponseEntity<Iterable<User>> getAllUsers() {
-        List<User> users = userQueryService.getAllUsers();
+        List<User> users = userQueryHandler.getAllUsers();
         return ResponseEntity.ok(users);
     }
 
     @GetMapping("/{userId}")
     public ResponseEntity<User> getUser(@PathVariable UUID userId) {
-        User user = userQueryService.getUserById(new UserId(userId));
+        User user = userQueryHandler.getUserById(new UserId(userId));
         return ResponseEntity.ok(user);
     }
 
     @PostMapping("/register")
     public ResponseEntity<User> registerUser(@RequestBody AddUserCommand addUserCommand) {
-        User user = userCommandService.registerUser(addUserCommand);
+        User user = userCommandHandler.registerUser(addUserCommand);
         return ResponseEntity.ok(user);
     }
 

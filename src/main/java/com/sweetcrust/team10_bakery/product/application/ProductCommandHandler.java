@@ -9,11 +9,11 @@ import com.sweetcrust.team10_bakery.product.infrastructure.ProductRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ProductCommandService {
+public class ProductCommandHandler {
 
     private final ProductRepository productRepository;
 
-    public ProductCommandService(ProductRepository productRepository) {
+    public ProductCommandHandler(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 

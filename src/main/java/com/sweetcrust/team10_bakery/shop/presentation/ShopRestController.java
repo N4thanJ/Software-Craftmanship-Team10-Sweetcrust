@@ -1,7 +1,7 @@
 package com.sweetcrust.team10_bakery.shop.presentation;
 
-import com.sweetcrust.team10_bakery.shop.application.ShopCommandService;
-import com.sweetcrust.team10_bakery.shop.application.ShopQueryService;
+import com.sweetcrust.team10_bakery.shop.application.ShopCommandHandler;
+import com.sweetcrust.team10_bakery.shop.application.ShopQueryHandler;
 import com.sweetcrust.team10_bakery.shop.domain.entities.Shop;
 import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopId;
 
@@ -21,23 +21,23 @@ import java.util.UUID;
 @Tag(name = "Shop Management", description = "Endpoints related to shop management and fetching")
 public class ShopRestController {
 
-    private final ShopCommandService shopCommandService;
-    private final ShopQueryService shopQueryService;
+    private final ShopCommandHandler shopCommandHandler;
+    private final ShopQueryHandler shopQueryHandler;
 
-    public ShopRestController(ShopCommandService shopCommandService, ShopQueryService shopQueryService) {
-        this.shopCommandService = shopCommandService;
-        this.shopQueryService = shopQueryService;
+    public ShopRestController(ShopCommandHandler shopCommandHandler, ShopQueryHandler shopQueryHandler) {
+        this.shopCommandHandler = shopCommandHandler;
+        this.shopQueryHandler = shopQueryHandler;
     }
 
     @GetMapping
     public ResponseEntity<Iterable<Shop>> findAll() {
-        List<Shop> shops = shopQueryService.getAllShops();
+        List<Shop> shops = shopQueryHandler.getAllShops();
         return ResponseEntity.ok(shops);
     }
 
     @GetMapping("/{shopId}")
     public ResponseEntity<Shop> getShopById(@PathVariable UUID shopId) {
-        Shop shop = shopQueryService.getShopById(new ShopId(shopId));
+        Shop shop = shopQueryHandler.getShopById(new ShopId(shopId));
         return ResponseEntity.ok(shop);
     }
 }

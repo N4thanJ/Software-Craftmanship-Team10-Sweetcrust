@@ -18,13 +18,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class OrderQueryServiceTest {
+public class OrderQueryHandlerTest {
 
     @Mock
     private OrderRepository orderRepository;
 
     @InjectMocks
-    private OrderQueryService orderQueryService;
+    private OrderQueryHandler orderQueryHandler;
 
     @Test
     void givenGetAllOrders_whenGettingAllOrders_thenAllOrdersAreReturned() {
@@ -35,7 +35,7 @@ public class OrderQueryServiceTest {
         when(orderRepository.findAll()).thenReturn(allOrders);
 
         // when
-        List<Order> orders = orderQueryService.getAllOrders();
+        List<Order> orders = orderQueryHandler.getAllOrders();
 
         // then
         assertNotNull(orders);
@@ -50,7 +50,7 @@ public class OrderQueryServiceTest {
         when(orderRepository.findById(orderId)).thenReturn(Optional.of(sourdoughOrder));
 
         // when
-        Order foundOrder = orderQueryService.getOrderById(orderId);
+        Order foundOrder = orderQueryHandler.getOrderById(orderId);
 
         // then
         assertEquals(sourdoughOrder, foundOrder);
@@ -62,7 +62,7 @@ public class OrderQueryServiceTest {
         OrderId orderId = new OrderId(UUID.randomUUID());
 
         // when
-        OrderServiceException exception = assertThrows(OrderServiceException.class, () -> orderQueryService.getOrderById(orderId));
+        OrderServiceException exception = assertThrows(OrderServiceException.class, () -> orderQueryHandler.getOrderById(orderId));
 
         // then
         assertEquals("order", exception.getField());

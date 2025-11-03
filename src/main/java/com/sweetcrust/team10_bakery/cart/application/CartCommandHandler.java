@@ -15,12 +15,12 @@ import com.sweetcrust.team10_bakery.cart.infrastructure.CartRepository;
 import java.util.Optional;
 
 @Service
-public class CartCommandService {
+public class CartCommandHandler {
 
     private final CartRepository cartRepository;
     private final ProductVariantRepository productVariantRepository;
 
-    public CartCommandService(CartRepository cartRepository, ProductVariantRepository productVariantRepository) {
+    public CartCommandHandler(CartRepository cartRepository, ProductVariantRepository productVariantRepository) {
         this.cartRepository = cartRepository;
         this.productVariantRepository = productVariantRepository;
     }

@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class CartCommandServiceTest {
+public class CartCommandHandlerTest {
 
     @Mock
     private CartRepository cartRepository;
@@ -39,7 +39,7 @@ public class CartCommandServiceTest {
     private ProductVariantRepository productVariantRepository;
 
     @InjectMocks
-    private CartCommandService cartCommandService;
+    private CartCommandHandler cartCommandHandler;
 
     private UserId userId;
     private VariantId variantId;
@@ -63,7 +63,7 @@ public class CartCommandServiceTest {
         when(cartRepository.save(any(Cart.class))).thenAnswer(i -> i.getArguments()[0]);
 
         // when
-        Cart cart = cartCommandService.createCart(command);
+        Cart cart = cartCommandHandler.createCart(command);
 
         // then
         assertEquals(userId, cart.getOwnerId());
@@ -92,7 +92,7 @@ public class CartCommandServiceTest {
         when(productVariantRepository.findById(variantId)).thenReturn(Optional.of(variant));
 
         // when
-        cartCommandService.createCart(command);
+        cartCommandHandler.createCart(command);
 
         // then
         verify(existingCart).addCartItem(any(CartItem.class));
@@ -115,7 +115,7 @@ public class CartCommandServiceTest {
         when(productVariantRepository.findById(variantId)).thenReturn(Optional.of(variant));
 
         // when
-        cartCommandService.addItemToCart(command);
+        cartCommandHandler.addItemToCart(command);
 
         // then
         verify(existingCart).addCartItem(any(CartItem.class));
@@ -129,7 +129,7 @@ public class CartCommandServiceTest {
         when(cartRepository.findByOwnerId(userId)).thenReturn(Optional.empty());
 
         CartServiceException exception = assertThrows(CartServiceException.class,
-                () -> cartCommandService.addItemToCart(command));
+                () -> cartCommandHandler.addItemToCart(command));
 
         assertEquals("ownerId", exception.getField());
     }
@@ -149,7 +149,7 @@ public class CartCommandServiceTest {
         when(cartRepository.save(cart)).thenReturn(cart);
         when(cart.isEmpty()).thenReturn(false);
 
-        cartCommandService.removeItemFromCart(command, cartItemId);
+        cartCommandHandler.removeItemFromCart(command, cartItemId);
 
         verify(cartItem).decreaseQuantity(2);
         verify(cartRepository).save(cart);
@@ -170,7 +170,7 @@ public class CartCommandServiceTest {
         when(cart.isEmpty()).thenReturn(false);
         when(cartRepository.save(cart)).thenReturn(cart);
 
-        cartCommandService.removeItemFromCart(command, cartItemId);
+        cartCommandHandler.removeItemFromCart(command, cartItemId);
 
         verify(cart).removeCartItem(cartItemId);
         verify(cartRepository).save(cart);
@@ -190,7 +190,7 @@ public class CartCommandServiceTest {
         when(cartRepository.findByOwnerId(userId)).thenReturn(Optional.of(cart));
         when(cart.isEmpty()).thenReturn(true);
 
-        cartCommandService.removeItemFromCart(command, cartItemId);
+        cartCommandHandler.removeItemFromCart(command, cartItemId);
 
         verify(cart).removeCartItem(cartItemId);
         verify(cartRepository).delete(cart);
@@ -206,7 +206,7 @@ public class CartCommandServiceTest {
         when(cartRepository.findByOwnerId(userId)).thenReturn(Optional.of(cart));
 
         CartServiceException exception = assertThrows(CartServiceException.class,
-                () -> cartCommandService.removeItemFromCart(command, cartItemId));
+                () -> cartCommandHandler.removeItemFromCart(command, cartItemId));
 
         assertEquals("cartItemId", exception.getField());
     }

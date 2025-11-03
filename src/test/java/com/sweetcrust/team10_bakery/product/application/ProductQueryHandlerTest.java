@@ -20,13 +20,13 @@ import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductSize;
 import com.sweetcrust.team10_bakery.product.infrastructure.ProductRepository;
 
 @ExtendWith(MockitoExtension.class)
-public class ProductQueryServiceTest {
+public class ProductQueryHandlerTest {
 
     @Mock
     private ProductRepository productRepository;
 
     @InjectMocks
-    private ProductQueryService productQueryService;
+    private ProductQueryHandler productQueryHandler;
 
     @Test
     void givenGetAllProducts_whenGettingAllProducts_thenAllProductsAreReturned() {
@@ -54,7 +54,7 @@ public class ProductQueryServiceTest {
         when(productRepository.findAll()).thenReturn(allProducts);
 
         // when
-        List<Product> products = productQueryService.getAllProducts();
+        List<Product> products = productQueryHandler.getAllProducts();
 
         // then
         assertNotNull(products);

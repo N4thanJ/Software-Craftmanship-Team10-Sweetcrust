@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ShopQueryService {
+public class ShopQueryHandler {
 
     private final ShopRepository shopRepository;
 
-    public ShopQueryService(ShopRepository shopRepository) {
+    public ShopQueryHandler(ShopRepository shopRepository) {
         this.shopRepository = shopRepository;
     }
 
