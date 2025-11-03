@@ -30,11 +30,12 @@ public class Shop {
     protected Shop() {
     }
 
-    public Shop(String name, Address address, String email) {
+    public Shop(String name, Address address, String email, CountryCode countryCode) {
         this.shopId = new ShopId();
         setName(name);
         setAddress(address);
         setEmail(email);
+        setCountryCode(countryCode);
     }
 
     public ShopId getShopId() {
