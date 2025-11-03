@@ -20,9 +20,10 @@ public class ShopTest {
                 .setCountry("Bakeland")
                 .build();
         String email = "amsterdam@sweetcrust.nl";
+        CountryCode countryCode = new CountryCode("FR");
 
         // when
-        Shop shop = new Shop(name, address, email);
+        Shop shop = new Shop(name, address, email, countryCode);
 
         // then
         assertNotNull(shop);
@@ -42,10 +43,11 @@ public class ShopTest {
                 .setCountry("Bakeland")
                 .build();
         String email = "rome@sweetcrust.it";
+        CountryCode countryCode = new CountryCode("FR");
 
         // when
         ShopDomainException exception = assertThrows(ShopDomainException.class,
-                () -> new Shop(null, address, email));
+                () -> new Shop(null, address, email, countryCode));
 
         // then
         assertEquals("shopName", exception.getField());
@@ -62,10 +64,11 @@ public class ShopTest {
                 .setCountry("Bakeland")
                 .build();
         String email = "athens@sweetcrust.gr";
+        CountryCode countryCode = new CountryCode("FR");
 
         // when
         ShopDomainException exception = assertThrows(ShopDomainException.class,
-                () -> new Shop("   ", address, email));
+                () -> new Shop("   ", address, email, countryCode));
 
         // then
         assertEquals("shopName", exception.getField());
@@ -77,10 +80,11 @@ public class ShopTest {
         // given
         String name = "Bun Intended";
         String email = "stockholm@sweetcrust.se";
+        CountryCode countryCode = new CountryCode("FR");
 
         // when
         ShopDomainException exception = assertThrows(ShopDomainException.class,
-                () -> new Shop(name, null, email));
+                () -> new Shop(name, null, email, countryCode));
 
         // then
         assertEquals("shopAddress", exception.getField());
@@ -96,10 +100,11 @@ public class ShopTest {
                 .setPostalCode("99999")
                 .setCountry("Bakeland")
                 .build();
+        CountryCode countryCode = new CountryCode("FR");
 
         // when
         ShopDomainException exception = assertThrows(ShopDomainException.class,
-                () -> new Shop("Bready or Not", address, null));
+                () -> new Shop("Bready or Not", address, null, countryCode));
 
         // then
         assertEquals("email", exception.getField());
@@ -115,10 +120,11 @@ public class ShopTest {
                 .setPostalCode("11223")
                 .setCountry("Bakeland")
                 .build();
+        CountryCode countryCode = new CountryCode("FR");
 
         // when
         ShopDomainException exception = assertThrows(ShopDomainException.class,
-                () -> new Shop("Bake It Easy", address, "   "));
+                () -> new Shop("Bake It Easy", address, "   ", countryCode));
 
         // then
         assertEquals("email", exception.getField());
@@ -134,10 +140,11 @@ public class ShopTest {
                 .setPostalCode("45678")
                 .setCountry("Bakeland")
                 .build();
+        CountryCode countryCode = new CountryCode("FR");
 
         // when
         ShopDomainException exception = assertThrows(ShopDomainException.class,
-                () -> new Shop("The Bread Awakens", address, "berlinsweetcrust.de"));
+                () -> new Shop("The Bread Awakens", address, "berlinsweetcrust.de", countryCode));
 
         // then
         assertEquals("email", exception.getField());
@@ -153,10 +160,11 @@ public class ShopTest {
                 .setPostalCode("55555")
                 .setCountry("Bakeland")
                 .build();
+        CountryCode countryCode = new CountryCode("FR");
 
         // when
         ShopDomainException exception = assertThrows(ShopDomainException.class,
-                () -> new Shop("Planet of the Crepes", address, "crepes@"));
+                () -> new Shop("Planet of the Crepes", address, "crepes@", countryCode));
 
         // then
         assertEquals("email", exception.getField());
@@ -173,32 +181,14 @@ public class ShopTest {
                 .setCountry("Bakeland")
                 .build();
         String email = "barcelona@sweetcrust.es";
+        CountryCode countryCode = new CountryCode("FR");
 
         // when
-        Shop shop = new Shop("Flour Power", address, email);
+        Shop shop = new Shop("Flour Power", address, email, countryCode);
 
         // then
         assertNotNull(shop);
         assertEquals(email, shop.getEmail());
-    }
-
-    @Test
-    void givenValidCountryCode_whenSettingCountryCode_thenCountryCodeIsSet() {
-        // given
-        Address address = Address.builder()
-                .setStreet("100 Donut Drive")
-                .setCity("Sprinkleville")
-                .setPostalCode("60606")
-                .setCountry("Bakeland")
-                .build();
-        Shop shop = new Shop("Holy Sheet Cakes", address, "newdelhi@sweetcrust.in");
-        CountryCode countryCode = new CountryCode("US");
-
-        // when
-        shop.setCountryCode(countryCode);
-
-        // then
-        assertEquals(countryCode, shop.getCountryCode());
     }
 
     @Test
@@ -210,11 +200,10 @@ public class ShopTest {
                 .setPostalCode("80808")
                 .setCountry("Bakeland")
                 .build();
-        Shop shop = new Shop("Dough My Gosh", address, "miami@sweetcrust.us");
 
         // when
         ShopDomainException exception = assertThrows(ShopDomainException.class,
-                () -> shop.setCountryCode(null));
+                () -> new Shop("Dough My Gosh", address, "miami@sweetcrust.us", null));
 
         // then
         assertEquals("countryCode", exception.getField());
@@ -230,7 +219,8 @@ public class ShopTest {
                 .setPostalCode("34567")
                 .setCountry("Bakeland")
                 .build();
-        Shop shop = new Shop("Bake Street Boys", address, "leuven@sweetcrust.be");
+        CountryCode countryCode = new CountryCode("FR");
+        Shop shop = new Shop("Bake Street Boys", address, "leuven@sweetcrust.be", countryCode);
 
         // then
         assertEquals("123 Cupcake Avenue", shop.getAddress().getStreet());

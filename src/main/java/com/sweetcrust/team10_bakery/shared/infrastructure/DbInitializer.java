@@ -13,6 +13,7 @@ import com.sweetcrust.team10_bakery.product.infrastructure.ProductCategoryReposi
 import com.sweetcrust.team10_bakery.product.infrastructure.ProductVariantRepository;
 import com.sweetcrust.team10_bakery.shared.domain.valueobjects.Address;
 import com.sweetcrust.team10_bakery.shop.domain.entities.Shop;
+import com.sweetcrust.team10_bakery.shop.domain.valueobjects.CountryCode;
 import com.sweetcrust.team10_bakery.user.domain.entities.User;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserRole;
 import com.sweetcrust.team10_bakery.user.infrastructure.UserRepository;
@@ -391,7 +392,9 @@ public class DbInitializer {
                                                 .setPostalCode("75001")
                                                 .setCountry("France")
                                                 .build(),
-                                "bonjour@sweetcrust.com");
+                                "bonjour@sweetcrust.com",
+                                new CountryCode("FR")
+                );
 
                 Shop tokyoShop = new Shop("SweetCrust Tokyo",
                                 Address.builder()
@@ -400,7 +403,9 @@ public class DbInitializer {
                                                 .setPostalCode("1500001")
                                                 .setCountry("Japan")
                                                 .build(),
-                                "konnichiwa@sweetcrust.com");
+                                "konnichiwa@sweetcrust.com",
+                                new CountryCode("JP")
+                );
 
                 Shop newYorkShop = new Shop("SweetCrust New York",
                                 Address.builder()
@@ -409,7 +414,9 @@ public class DbInitializer {
                                                 .setPostalCode("10001")
                                                 .setCountry("United States")
                                                 .build(),
-                                "bigapple@sweetcrust.com");
+                                "bigapple@sweetcrust.com",
+                                new  CountryCode("US")
+                );
 
                 Shop londonShop = new Shop("SweetCrust London",
                                 Address.builder()
@@ -418,7 +425,9 @@ public class DbInitializer {
                                                 .setPostalCode("NW16XE")
                                                 .setCountry("United Kingdom")
                                                 .build(),
-                                "cheerio@sweetcrust.com");
+                                "cheerio@sweetcrust.com",
+                                new CountryCode("GB")
+                );
 
                 Shop berlinShop = new Shop("SweetCrust Berlin",
                                 Address.builder()
@@ -427,7 +436,9 @@ public class DbInitializer {
                                                 .setPostalCode("10178")
                                                 .setCountry("Germany")
                                                 .build(),
-                                "gutentag@sweetcrust.com");
+                                "gutentag@sweetcrust.com",
+                                new CountryCode("DE")
+                );
 
                 Shop romeShop = new Shop("SweetCrust Rome",
                                 Address.builder()
@@ -436,7 +447,9 @@ public class DbInitializer {
                                                 .setPostalCode("00186")
                                                 .setCountry("Italy")
                                                 .build(),
-                                "ciao@sweetcrust.com");
+                                "ciao@sweetcrust.com",
+                                new CountryCode("IT")
+                );
 
                 Shop barcelonaShop = new Shop("SweetCrust Barcelona",
                                 Address.builder()
@@ -445,7 +458,9 @@ public class DbInitializer {
                                                 .setPostalCode("08002")
                                                 .setCountry("Spain")
                                                 .build(),
-                                "hola@sweetcrust.com");
+                                "hola@sweetcrust.com",
+                                new CountryCode("ES")
+                );
 
                 Shop amsterdamShop = new Shop("SweetCrust Amsterdam",
                                 Address.builder()
@@ -454,7 +469,9 @@ public class DbInitializer {
                                                 .setPostalCode("1012LG")
                                                 .setCountry("Netherlands")
                                                 .build(),
-                                "hallo@sweetcrust.com");
+                                "hallo@sweetcrust.com",
+                                new CountryCode("NL")
+                );
 
                 shopRepository.save(parisShop);
                 shopRepository.save(tokyoShop);
