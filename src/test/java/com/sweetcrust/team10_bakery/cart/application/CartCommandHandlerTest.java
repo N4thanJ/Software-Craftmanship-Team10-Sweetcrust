@@ -7,6 +7,7 @@ import com.sweetcrust.team10_bakery.cart.domain.entities.Cart;
 import com.sweetcrust.team10_bakery.cart.domain.entities.CartItem;
 import com.sweetcrust.team10_bakery.cart.domain.valueobjects.CartItemId;
 import com.sweetcrust.team10_bakery.cart.infrastructure.CartRepository;
+import com.sweetcrust.team10_bakery.product.domain.entities.Product;
 import com.sweetcrust.team10_bakery.product.domain.entities.ProductVariant;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.VariantId;
 import com.sweetcrust.team10_bakery.product.infrastructure.ProductRepository;
@@ -54,9 +55,14 @@ public class CartCommandHandlerTest {
     void givenValidCreateCommand_whenNoExistingCart_thenCartCreated() {
         // given
         CreateCartCommand command = new CreateCartCommand(variantId, 3, userId);
+
+        Product product = mock(Product.class);
+        when(product.isAvailable()).thenReturn(true);
+
         ProductVariant variant = mock(ProductVariant.class);
         when(variant.getVariantId()).thenReturn(variantId);
         when(variant.getPrice()).thenReturn(BigDecimal.valueOf(2));
+        when(variant.getProduct()).thenReturn(product);
 
         when(productVariantRepository.findById(variantId)).thenReturn(Optional.of(variant));
         when(cartRepository.findByOwnerId(userId)).thenReturn(Optional.empty());
@@ -75,7 +81,6 @@ public class CartCommandHandlerTest {
         verify(cartRepository).save(any(Cart.class));
     }
 
-
     @Test
     void givenValidCreateCommand_whenExistingCart_thenItemAdded() {
         // given
@@ -85,9 +90,13 @@ public class CartCommandHandlerTest {
         when(cartRepository.findByOwnerId(userId)).thenReturn(Optional.of(existingCart));
         when(cartRepository.save(existingCart)).thenReturn(existingCart);
 
+        Product product = mock(Product.class);
+        when(product.isAvailable()).thenReturn(true);
+
         ProductVariant variant = mock(ProductVariant.class);
         when(variant.getVariantId()).thenReturn(variantId);
         when(variant.getPrice()).thenReturn(BigDecimal.ONE);
+        when(variant.getProduct()).thenReturn(product);
 
         when(productVariantRepository.findById(variantId)).thenReturn(Optional.of(variant));
 
@@ -108,9 +117,13 @@ public class CartCommandHandlerTest {
         when(cartRepository.findByOwnerId(userId)).thenReturn(Optional.of(existingCart));
         when(cartRepository.save(existingCart)).thenReturn(existingCart);
 
+        Product product = mock(Product.class);
+        when(product.isAvailable()).thenReturn(true);
+
         ProductVariant variant = mock(ProductVariant.class);
         when(variant.getVariantId()).thenReturn(variantId);
         when(variant.getPrice()).thenReturn(BigDecimal.ONE);
+        when(variant.getProduct()).thenReturn(product);
 
         when(productVariantRepository.findById(variantId)).thenReturn(Optional.of(variant));
 

@@ -6,6 +6,7 @@ import com.sweetcrust.team10_bakery.cart.application.commands.RemoveItemFromCart
 import com.sweetcrust.team10_bakery.cart.domain.entities.Cart;
 import com.sweetcrust.team10_bakery.cart.domain.entities.CartItem;
 import com.sweetcrust.team10_bakery.cart.domain.valueobjects.CartItemId;
+import com.sweetcrust.team10_bakery.product.domain.entities.Product;
 import com.sweetcrust.team10_bakery.product.domain.entities.ProductVariant;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.VariantId;
 import com.sweetcrust.team10_bakery.product.infrastructure.ProductVariantRepository;
@@ -28,6 +29,11 @@ public class CartCommandHandler {
     public Cart createCart(CreateCartCommand command) {
         ProductVariant variant = getVariantOrThrow(command.variantId());
 
+        Product product = variant.getProduct();
+        if (!product.isAvailable()) {
+            throw new CartServiceException("product", "product is currently not available");
+        }
+
         CartItem cartItem = CartItem.fromVariant(variant, command.quantity());
 
         Cart cart = cartRepository.findByOwnerId(command.ownerId())
@@ -46,6 +52,10 @@ public class CartCommandHandler {
                 .orElseThrow(() -> new CartServiceException("ownerId", "User does not have a cart"));
 
         ProductVariant variant = getVariantOrThrow(command.variantId());
+        Product product = variant.getProduct();
+        if (!product.isAvailable()) {
+            throw new CartServiceException("product", "product is currently not available");
+        }
         CartItem cartItem = CartItem.fromVariant(variant, command.quantity());
 
         cart.addCartItem(cartItem);

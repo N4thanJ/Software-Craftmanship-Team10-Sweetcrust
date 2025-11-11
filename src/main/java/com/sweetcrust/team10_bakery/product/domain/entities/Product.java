@@ -64,6 +64,14 @@ public class Product {
         return available;
     }
 
+    public void markUnavailable() {
+        this.available = false;
+    }
+
+    public void markAvailable() {
+        this.available = true;
+    }
+
     public List<ProductVariant> getVariants() {
         return List.copyOf(variants);
     }
@@ -96,7 +104,7 @@ public class Product {
         this.basePrice = basePrice;
     }
 
-    public void setAvailable(boolean available) {
+    private void setAvailable(boolean available) {
         this.available = available;
     }
 

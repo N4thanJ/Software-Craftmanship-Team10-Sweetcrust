@@ -57,6 +57,10 @@ public class ProductVariant {
         return productId;
     }
 
+    public Product getProduct() {
+        return product;
+    }
+
     public BigDecimal getPriceModifier() {
         return priceModifier;
     }
