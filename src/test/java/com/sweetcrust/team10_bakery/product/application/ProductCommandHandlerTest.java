@@ -15,6 +15,7 @@ import com.sweetcrust.team10_bakery.product.domain.entities.ProductVariant;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductSize;
 import com.sweetcrust.team10_bakery.product.infrastructure.ProductRepository;
 import com.sweetcrust.team10_bakery.user.domain.entities.User;
+import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserId;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserRole;
 import com.sweetcrust.team10_bakery.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,8 +67,11 @@ public class ProductCommandHandlerTest {
                 BigDecimal.valueOf(2.99),
                 true,
                 pastryCategory.getCategoryId(),
-                List.of()
+                List.of(),
+                baker.getUserId()
         );
+
+        when(userRepository.findById(baker.getUserId())).thenReturn(Optional.of(baker));
 
         when(productRepository.existsByName("Chocokoek")).thenReturn(false);
 
@@ -84,7 +88,8 @@ public class ProductCommandHandlerTest {
                 BigDecimal.valueOf(2.99),
                 true,
                 pastryCategory.getCategoryId(),
-                List.of()
+                List.of(),
+                baker.getUserId()
         );
 
         when(productRepository.existsByName("Choco Croissant")).thenReturn(true);
