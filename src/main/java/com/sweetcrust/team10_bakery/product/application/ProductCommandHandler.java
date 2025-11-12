@@ -63,6 +63,13 @@ public class ProductCommandHandler {
     }
 
     public void addVariantToProduct(ProductId productId, AddProductVariantCommand addProductVariantCommand) {
+        User user = userRepository.findById(addProductVariantCommand.userId())
+                .orElseThrow(() -> new UserServiceException("userId", "User not found"));
+
+        if (user.getRole() != UserRole.BAKER && user.getRole() != UserRole.ADMIN) {
+            throw new ProductServiceException("role", "Only users with BAKER or ADMIN role can add product variants");
+        }
+
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductServiceException("product", "product not found"));
 
