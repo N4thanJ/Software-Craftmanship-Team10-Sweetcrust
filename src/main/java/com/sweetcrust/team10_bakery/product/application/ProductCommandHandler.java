@@ -26,6 +26,13 @@ public class ProductCommandHandler {
     }
 
     public void createProduct(AddProductCommand addProductCommand) {
+
+        User user = userRepository.findById(addProductCommand.userId())
+                .orElseThrow(() -> new OrderServiceException("userId", "User not found"));
+
+        if (user.getRole() != UserRole.BAKER && user.getRole() != UserRole.ADMIN) {
+            throw new ProductServiceException("role", "Only users with BAKER or ADMIN role can create products");
+        }
         boolean existsByName = productRepository.existsByName(addProductCommand.name());
 
         if (existsByName) {
