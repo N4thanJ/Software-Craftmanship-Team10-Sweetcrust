@@ -1,8 +1,10 @@
 package com.sweetcrust.team10_bakery.order.application;
 
+import com.sweetcrust.team10_bakery.cart.infrastructure.CartRepository;
 import com.sweetcrust.team10_bakery.order.application.commands.CreateB2BOrderCommand;
 import com.sweetcrust.team10_bakery.order.application.commands.CreateB2COrderCommand;
 import com.sweetcrust.team10_bakery.order.domain.entities.Order;
+import com.sweetcrust.team10_bakery.order.domain.policies.DiscountPolicy;
 import com.sweetcrust.team10_bakery.order.infrastructure.OrderRepository;
 import com.sweetcrust.team10_bakery.shop.domain.entities.Shop;
 import com.sweetcrust.team10_bakery.shop.infrastructure.ShopRepository;
@@ -11,6 +13,7 @@ import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserRole;
 import com.sweetcrust.team10_bakery.user.infrastructure.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
@@ -19,12 +22,16 @@ public class OrderCommandHandler {
     private final OrderRepository orderRepository;
     private final ShopRepository shopRepository;
     private final UserRepository userRepository;
+    private final DiscountPolicy b2bDiscountPolicy;
+    private final CartRepository cartRepository;
 
     public OrderCommandHandler(OrderRepository orderRepository, ShopRepository shopRepository,
-                               UserRepository userRepository) {
+                               UserRepository userRepository, DiscountPolicy b2bDiscountPolicy, CartRepository cartRepository) {
         this.orderRepository = orderRepository;
         this.shopRepository = shopRepository;
         this.userRepository = userRepository;
+        this.b2bDiscountPolicy = b2bDiscountPolicy;
+        this.cartRepository = cartRepository;
     }
 
     public Order createB2COrder(CreateB2COrderCommand createB2COrderCommand) {
@@ -67,6 +74,15 @@ public class OrderCommandHandler {
             throw new OrderServiceException("userId", "Only users with baker role can make B2B orders");
         }
 
+        var cart = cartRepository.findById(createB2BOrderCommand.cartId())
+                .orElseThrow(() -> new OrderServiceException("cartId", "Cart not found"));
+
+        BigDecimal subtotal = cart.getCartItems().stream()
+                .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal totalAfterDiscount = b2bDiscountPolicy.applyDiscount(subtotal);
+
         Order order = Order.createB2B(
                 createB2BOrderCommand.requestedDeliveryDate(),
                 createB2BOrderCommand.orderingShopId(),
@@ -74,6 +90,9 @@ public class OrderCommandHandler {
                 createB2BOrderCommand.cartId());
 
         order.setDeliveryAddress(orderingShop.getAddress());
+        order.setSubtotal(subtotal);
+        order.setTotalAfterDiscount(totalAfterDiscount);
+        order.setDiscountRate(b2bDiscountPolicy.discountRate());
 
         return orderRepository.save(order);
     }
