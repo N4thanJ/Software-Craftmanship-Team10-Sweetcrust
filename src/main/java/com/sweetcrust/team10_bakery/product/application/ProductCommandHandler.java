@@ -1,6 +1,5 @@
 package com.sweetcrust.team10_bakery.product.application;
 
-import com.sweetcrust.team10_bakery.order.application.OrderServiceException;
 import com.sweetcrust.team10_bakery.product.application.commands.AddProductCommand;
 import com.sweetcrust.team10_bakery.product.application.commands.AddProductVariantCommand;
 import com.sweetcrust.team10_bakery.product.application.commands.MarkProductAvailableCommand;
