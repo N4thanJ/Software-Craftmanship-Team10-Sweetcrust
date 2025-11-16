@@ -1,12 +1,15 @@
 package com.sweetcrust.team10_bakery.order.application;
 
 import com.sweetcrust.team10_bakery.cart.infrastructure.CartRepository;
+import com.sweetcrust.team10_bakery.order.application.commands.CancelOrderCommand;
 import com.sweetcrust.team10_bakery.order.application.commands.CreateB2BOrderCommand;
 import com.sweetcrust.team10_bakery.order.application.commands.CreateB2COrderCommand;
+import com.sweetcrust.team10_bakery.order.application.events.OrderCancelledEvent;
 import com.sweetcrust.team10_bakery.order.application.events.OrderCreatedEvent;
 import com.sweetcrust.team10_bakery.order.application.events.OrderEventPublisher;
 import com.sweetcrust.team10_bakery.order.domain.entities.Order;
 import com.sweetcrust.team10_bakery.order.domain.policies.DiscountPolicy;
+import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderStatus;
 import com.sweetcrust.team10_bakery.order.infrastructure.OrderRepository;
 import com.sweetcrust.team10_bakery.shop.domain.entities.Shop;
 import com.sweetcrust.team10_bakery.shop.infrastructure.ShopRepository;
@@ -109,5 +112,51 @@ public class OrderCommandHandler {
         Order savedOrder = orderRepository.save(order);
         orderEventPublisher.publish(new OrderCreatedEvent(savedOrder, orderingShop.getEmail(), sourceShop.getEmail()));
         return savedOrder;
+    }
+
+    public Order cancelOrder(CancelOrderCommand cancelOrderCommand) {
+        Order order = orderRepository.findById(cancelOrderCommand.orderId())
+                .orElseThrow(() -> new OrderServiceException("orderId", "Order not found"));
+        
+        User user = userRepository.findById(cancelOrderCommand.userId())
+                .orElseThrow(() -> new OrderServiceException("userId", "User not found"));
+
+        if (order.getOrderingShopId() != null) {
+            if (user.getRole() != UserRole.BAKER && user.getRole() != UserRole.ADMIN) {
+                throw new OrderServiceException("userId", "Only users with baker or admin role can cancel B2B orders");
+            }
+
+            Shop orderingShop = shopRepository.findById(order.getOrderingShopId())
+                    .orElseThrow(() -> new OrderServiceException("orderingShopId", "Shop not found"));
+            Shop sourceShop = shopRepository.findById(order.getSourceShopId())
+                    .orElseThrow(() -> new OrderServiceException("sourceShopId", "Shop not found")); 
+
+            order.cancel();
+
+            Order savedOrder = orderRepository.save(order);
+            orderEventPublisher.publish(new OrderCancelledEvent(
+                    savedOrder,
+                    orderingShop.getEmail(),
+                    sourceShop.getEmail()
+            ));
+
+            return savedOrder;
+        } else {
+            if (!order.getCustomerId().equals(cancelOrderCommand.userId()) && user.getRole() != UserRole.ADMIN) {
+                throw new OrderServiceException("userId", "Only the customer who placed the order can cancel it");
+            }
+
+            order.cancel();
+
+            Order savedOrder = orderRepository.save(order);
+
+            orderEventPublisher.publish(new OrderCancelledEvent(
+                    savedOrder,
+                    user.getEmail(),
+                    null
+            ));
+
+            return savedOrder;
+        }
     }
 }

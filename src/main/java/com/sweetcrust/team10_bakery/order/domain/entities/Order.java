@@ -269,6 +269,13 @@ public class Order {
         if (status == OrderStatus.DELIVERED) {
             throw new OrderDomainException("status", "Delivered orders cannot be cancelled");
         }
+
+        LocalDateTime cancellationCutoff = requestedDeliveryDate.minusDays(1);
+        if (!LocalDateTime.now().isBefore(cancellationCutoff)) {
+            throw new OrderDomainException("status",
+                    "Orders can only be cancelled up until 1 day before the requested delivery date");
+        }
+        
         this.status = OrderStatus.CANCELLED;
     }
 }
