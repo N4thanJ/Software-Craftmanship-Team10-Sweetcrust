@@ -3,6 +3,8 @@ package com.sweetcrust.team10_bakery.order.application;
 import com.sweetcrust.team10_bakery.cart.infrastructure.CartRepository;
 import com.sweetcrust.team10_bakery.order.application.commands.CreateB2BOrderCommand;
 import com.sweetcrust.team10_bakery.order.application.commands.CreateB2COrderCommand;
+import com.sweetcrust.team10_bakery.order.application.events.OrderCreatedEvent;
+import com.sweetcrust.team10_bakery.order.application.events.OrderEventPublisher;
 import com.sweetcrust.team10_bakery.order.domain.entities.Order;
 import com.sweetcrust.team10_bakery.order.domain.policies.DiscountPolicy;
 import com.sweetcrust.team10_bakery.order.infrastructure.OrderRepository;
@@ -24,14 +26,17 @@ public class OrderCommandHandler {
     private final UserRepository userRepository;
     private final DiscountPolicy b2bDiscountPolicy;
     private final CartRepository cartRepository;
+    private final OrderEventPublisher orderEventPublisher;
 
     public OrderCommandHandler(OrderRepository orderRepository, ShopRepository shopRepository,
-                               UserRepository userRepository, DiscountPolicy b2bDiscountPolicy, CartRepository cartRepository) {
+                               UserRepository userRepository, DiscountPolicy b2bDiscountPolicy, CartRepository cartRepository,
+                               OrderEventPublisher orderEventPublisher) {
         this.orderRepository = orderRepository;
         this.shopRepository = shopRepository;
         this.userRepository = userRepository;
         this.b2bDiscountPolicy = b2bDiscountPolicy;
         this.cartRepository = cartRepository;
+        this.orderEventPublisher = orderEventPublisher;
     }
 
     public Order createB2COrder(CreateB2COrderCommand createB2COrderCommand) {
@@ -56,7 +61,11 @@ public class OrderCommandHandler {
                 createB2COrderCommand.customerId(),
                 createB2COrderCommand.cartId());
 
-        return orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
+
+        orderEventPublisher.publish(new OrderCreatedEvent(savedOrder, user.getEmail(), null));
+
+        return savedOrder;
     }
 
     public Order createB2BOrder(CreateB2BOrderCommand createB2BOrderCommand) {
@@ -66,6 +75,9 @@ public class OrderCommandHandler {
 
         Shop orderingShop = shopRepository.findById(createB2BOrderCommand.orderingShopId())
                 .orElseThrow(() -> new OrderServiceException("orderingShopId", "Shop not found"));
+
+        Shop sourceShop = shopRepository.findById(createB2BOrderCommand.sourceShopId())
+                .orElseThrow(() -> new OrderServiceException("sourceShopId", "Shop not found"));
 
         User user = userRepository.findById(createB2BOrderCommand.userId())
                 .orElseThrow(() -> new OrderServiceException("userId", "User not found"));
@@ -94,6 +106,8 @@ public class OrderCommandHandler {
         order.setTotalAfterDiscount(totalAfterDiscount);
         order.setDiscountRate(b2bDiscountPolicy.discountRate());
 
-        return orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
+        orderEventPublisher.publish(new OrderCreatedEvent(savedOrder, orderingShop.getEmail(), sourceShop.getEmail()));
+        return savedOrder;
     }
 }
