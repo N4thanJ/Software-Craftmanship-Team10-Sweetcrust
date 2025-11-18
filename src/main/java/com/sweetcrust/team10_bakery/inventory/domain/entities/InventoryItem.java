@@ -2,16 +2,14 @@ package com.sweetcrust.team10_bakery.inventory.domain.entities;
 
 import com.sweetcrust.team10_bakery.inventory.domain.InventoryDomainException;
 import com.sweetcrust.team10_bakery.inventory.domain.valueobjects.InventoryItemId;
-import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductId;
+import com.sweetcrust.team10_bakery.product.domain.valueobjects.VariantId;
+import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopId;
 
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -21,24 +19,25 @@ public class InventoryItem {
     private InventoryItemId inventoryItemId;
 
     @Embedded
-    @AttributeOverride(name = "id", column = @Column(name = "product_id"))
-    private ProductId productId;
+    @AttributeOverride(name = "id", column = @Column(name = "shop_id"))
+    private ShopId shopId;
+
+    @Embedded
+    @AttributeOverride(name = "id", column = @Column(name = "varian_id"))
+    private VariantId variantId;
 
     private int quantityOnHand;
     private int quantityReserved;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "inventory_id", nullable = false, insertable = false, updatable = false)
-    private Inventory inventory;
-
     protected InventoryItem() {
     }
 
-    public InventoryItem(ProductId productId, int quantityOnHand, int quantityReserved) {
+    public InventoryItem(ShopId shopId, VariantId variantId, int quantityOnHand) {
         this.inventoryItemId = new InventoryItemId();
-        setProductId(productId);
+        setShopId(shopId);
+        setVariantId(variantId);
         setQuantityOnHand(quantityOnHand);
-        setQuantityReserved(quantityReserved);
+        setQuantityReserved(0);
     }
 
     public void setInventoryItemId(InventoryItemId inventoryItemId) {
@@ -48,11 +47,18 @@ public class InventoryItem {
         this.inventoryItemId = inventoryItemId;
     }
 
-    public void setProductId(ProductId productId) {
-        if (productId == null) {
-            throw new InventoryDomainException("ProductId", "ProductId should not be null");
+    public void setShopId(ShopId shopId) {
+        if (shopId == null) {
+            throw new InventoryDomainException("ShopId", "ShopId should not be null");
         }
-        this.productId = productId;
+        this.shopId = shopId;
+    }
+
+    public void setVariantId(VariantId variantId) {
+        if (variantId == null) {
+            throw new InventoryDomainException("VariantId", "VariantId should not be null");
+        }
+        this.variantId = variantId;
     }
 
     public void setQuantityOnHand(int quantityOnHand) {
@@ -69,15 +75,12 @@ public class InventoryItem {
         this.quantityReserved = quantityReserved;
     }
 
-    public void setInventory(Inventory inventory) {
-        if (inventory == null) {
-            throw new InventoryDomainException("Inventory", "Inventory should not be null");
-        }
-        this.inventory = inventory;
+    public ShopId getShopId() {
+        return shopId;
     }
 
-    public ProductId getProductId() {
-        return productId;
+    public VariantId getVariantId() {
+        return variantId;
     }
 
     public int getQuantityOnHand() {
@@ -90,10 +93,6 @@ public class InventoryItem {
 
     public InventoryItemId getInventoryItemId() {
         return inventoryItemId;
-    }
-
-    public Inventory getInventory() {
-        return inventory;
     }
 
 }

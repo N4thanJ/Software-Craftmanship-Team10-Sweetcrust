@@ -1,13 +1,10 @@
 package com.sweetcrust.team10_bakery.shop.domain.entities;
 
-import com.sweetcrust.team10_bakery.inventory.domain.valueobjects.InventoryId;
 import com.sweetcrust.team10_bakery.shared.domain.valueobjects.Address;
 import com.sweetcrust.team10_bakery.shop.domain.ShopDomainException;
 import com.sweetcrust.team10_bakery.shop.domain.valueobjects.CountryCode;
 import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopId;
 
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -29,10 +26,6 @@ public class Shop {
 
     @Embedded
     private CountryCode countryCode;
-
-    @Embedded
-    @AttributeOverride(name = "id", column = @Column(name = "inventory_id"))
-    private InventoryId inventoryId;
 
     protected Shop() {
     }
@@ -94,16 +87,5 @@ public class Shop {
             throw new ShopDomainException("countryCode", "countryCode should not be null");
         }
         this.countryCode = countryCode;
-    }
-
-    public InventoryId getInventoryId() {
-        return inventoryId;
-    }
-
-    public void setInventoryId(InventoryId inventoryId) {
-        if (inventoryId == null) {
-            throw new ShopDomainException("inventoryId", "InventoryId should not be null");
-        }
-        this.inventoryId = inventoryId;
     }
 }

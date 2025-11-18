@@ -7,8 +7,8 @@ import java.util.List;
 import com.sweetcrust.team10_bakery.cart.domain.entities.Cart;
 import com.sweetcrust.team10_bakery.cart.domain.entities.CartItem;
 import com.sweetcrust.team10_bakery.cart.infrastructure.CartRepository;
-import com.sweetcrust.team10_bakery.inventory.domain.entities.Inventory;
-import com.sweetcrust.team10_bakery.inventory.infrastructure.InventoryRepository;
+import com.sweetcrust.team10_bakery.inventory.domain.entities.InventoryItem;
+import com.sweetcrust.team10_bakery.inventory.infrastructure.InventoryItemRepository;
 import com.sweetcrust.team10_bakery.order.domain.entities.Order;
 import com.sweetcrust.team10_bakery.order.infrastructure.OrderRepository;
 import com.sweetcrust.team10_bakery.product.infrastructure.ProductCategoryRepository;
@@ -39,12 +39,12 @@ public class DbInitializer {
         private final UserRepository userRepository;
         private final ShopRepository shopRepository;
         private final CartRepository cartRepository;
-        private final InventoryRepository inventoryRepository;
+        private final InventoryItemRepository inventoryItemRepository;
 
         public DbInitializer(ProductRepository productRepository, OrderRepository orderRepository,
                         UserRepository userRepository, ShopRepository shopRepository, CartRepository cartRepository,
                         ProductVariantRepository productVariantRepository,
-                        ProductCategoryRepository categoryRepository, InventoryRepository inventoryRepository) {
+                        ProductCategoryRepository categoryRepository, InventoryItemRepository inventoryItemRepository) {
                 this.productRepository = productRepository;
                 this.productVariantRepository = productVariantRepository;
                 this.categoryRepository = categoryRepository;
@@ -52,7 +52,7 @@ public class DbInitializer {
                 this.userRepository = userRepository;
                 this.shopRepository = shopRepository;
                 this.cartRepository = cartRepository;
-                this.inventoryRepository = inventoryRepository;
+                this.inventoryItemRepository = inventoryItemRepository;
         }
 
         private void clearAll() {
@@ -63,7 +63,7 @@ public class DbInitializer {
                 userRepository.deleteAll();
                 shopRepository.deleteAll();
                 cartRepository.deleteAll();
-                inventoryRepository.deleteAll();
+                inventoryItemRepository.deleteAll();
         }
 
         @PostConstruct
@@ -521,41 +521,30 @@ public class DbInitializer {
                 shopRepository.save(barcelonaShop);
                 shopRepository.save(amsterdamShop);
 
-                Inventory parisInventory = new Inventory(parisShop.getShopId());
-                Inventory tokyoInventory = new Inventory(tokyoShop.getShopId());
-                Inventory newYorkInventory = new Inventory(newYorkShop.getShopId());
-                Inventory londonInventory = new Inventory(londonShop.getShopId());
-                Inventory berlinInventory = new Inventory(berlinShop.getShopId());
-                Inventory romeInventory = new Inventory(romeShop.getShopId());
-                Inventory barcelonaInventory = new Inventory(barcelonaShop.getShopId());
-                Inventory amsterdamInventory = new Inventory(amsterdamShop.getShopId());
+                InventoryItem parisInventory = new InventoryItem(parisShop.getShopId(), largeApplePie.getVariantId(),
+                                10);
+                InventoryItem tokyoInventory = new InventoryItem(tokyoShop.getShopId(), miniCroissant.getVariantId(),
+                                50);
+                InventoryItem newYorkInventory = new InventoryItem(newYorkShop.getShopId(),
+                                regularChocolateCupcake.getVariantId(), 0);
+                InventoryItem londonInventory = new InventoryItem(londonShop.getShopId(),
+                                regularGlazedDonut.getVariantId(), 40);
+                InventoryItem berlinInventory = new InventoryItem(berlinShop.getShopId(),
+                                regularChocolateChipCookie.getVariantId(), 20);
+                InventoryItem romeInventory = new InventoryItem(romeShop.getShopId(), largeTiramisu.getVariantId(), 15);
+                InventoryItem barcelonaInventory = new InventoryItem(barcelonaShop.getShopId(),
+                                regularBlueberryMuffin.getVariantId(), 25);
+                InventoryItem amsterdamInventory = new InventoryItem(amsterdamShop.getShopId(),
+                                largePumpkinPie.getVariantId(), 10);
 
-                inventoryRepository.save(parisInventory);
-                inventoryRepository.save(tokyoInventory);
-                inventoryRepository.save(newYorkInventory);
-                inventoryRepository.save(londonInventory);
-                inventoryRepository.save(berlinInventory);
-                inventoryRepository.save(romeInventory);
-                inventoryRepository.save(barcelonaInventory);
-                inventoryRepository.save(amsterdamInventory);
-
-                parisShop.setInventoryId(parisInventory.getInventoryId());
-                tokyoShop.setInventoryId(tokyoInventory.getInventoryId());
-                newYorkShop.setInventoryId(newYorkInventory.getInventoryId());
-                londonShop.setInventoryId(londonInventory.getInventoryId());
-                berlinShop.setInventoryId(berlinInventory.getInventoryId());
-                romeShop.setInventoryId(romeInventory.getInventoryId());
-                barcelonaShop.setInventoryId(barcelonaInventory.getInventoryId());
-                amsterdamShop.setInventoryId(amsterdamInventory.getInventoryId());
-
-                shopRepository.save(parisShop);
-                shopRepository.save(tokyoShop);
-                shopRepository.save(newYorkShop);
-                shopRepository.save(londonShop);
-                shopRepository.save(berlinShop);
-                shopRepository.save(romeShop);
-                shopRepository.save(barcelonaShop);
-                shopRepository.save(amsterdamShop);
+                inventoryItemRepository.save(parisInventory);
+                inventoryItemRepository.save(tokyoInventory);
+                inventoryItemRepository.save(newYorkInventory);
+                inventoryItemRepository.save(londonInventory);
+                inventoryItemRepository.save(berlinInventory);
+                inventoryItemRepository.save(romeInventory);
+                inventoryItemRepository.save(barcelonaInventory);
+                inventoryItemRepository.save(amsterdamInventory);
 
                 // B2C
                 Cart donutCart = new Cart();
