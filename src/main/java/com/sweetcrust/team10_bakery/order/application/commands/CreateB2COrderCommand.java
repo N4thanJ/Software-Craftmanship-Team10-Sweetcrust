@@ -9,5 +9,7 @@ public record CreateB2COrderCommand(
                 Address deliveryAddress,
                 LocalDateTime requestedDeliveryDate,
                 UserId customerId,
-                CartId cartId) {
+                CartId cartId,
+                String discountCode
+) {
 }

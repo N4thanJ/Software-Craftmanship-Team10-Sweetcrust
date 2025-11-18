@@ -9,6 +9,8 @@ import com.sweetcrust.team10_bakery.order.application.events.OrderCancelledEvent
 import com.sweetcrust.team10_bakery.order.application.events.OrderCreatedEvent;
 import com.sweetcrust.team10_bakery.order.application.events.OrderEventPublisher;
 import com.sweetcrust.team10_bakery.order.domain.entities.Order;
+import com.sweetcrust.team10_bakery.order.domain.policies.DiscountCodePolicy;
+import com.sweetcrust.team10_bakery.order.domain.policies.DiscountCodeRegistery;
 import com.sweetcrust.team10_bakery.order.domain.policies.DiscountPolicy;
 import com.sweetcrust.team10_bakery.order.infrastructure.OrderRepository;
 import com.sweetcrust.team10_bakery.shop.domain.entities.Shop;
@@ -29,19 +31,21 @@ public class OrderCommandHandler {
     private final OrderRepository orderRepository;
     private final ShopRepository shopRepository;
     private final UserRepository userRepository;
-    private final DiscountPolicy b2bDiscountPolicy;
+    private final DiscountPolicy discountPolicy;
     private final CartRepository cartRepository;
     private final OrderEventPublisher orderEventPublisher;
+    private final DiscountCodeRegistery discountCodeRegistery;
 
     public OrderCommandHandler(OrderRepository orderRepository, ShopRepository shopRepository,
-                               UserRepository userRepository, DiscountPolicy b2bDiscountPolicy, CartRepository cartRepository,
-                               OrderEventPublisher orderEventPublisher) {
+                               UserRepository userRepository, DiscountPolicy discountPolicy, CartRepository cartRepository,
+                               OrderEventPublisher orderEventPublisher, DiscountCodeRegistery discountCodeRegistery) {
         this.orderRepository = orderRepository;
         this.shopRepository = shopRepository;
         this.userRepository = userRepository;
-        this.b2bDiscountPolicy = b2bDiscountPolicy;
+        this.discountPolicy = discountPolicy;
         this.cartRepository = cartRepository;
         this.orderEventPublisher = orderEventPublisher;
+        this.discountCodeRegistery = discountCodeRegistery;
     }
 
     public Order createB2COrder(CreateB2COrderCommand createB2COrderCommand) {
@@ -76,6 +80,26 @@ public class OrderCommandHandler {
                 createB2COrderCommand.cartId(),
                 shop.getShopId());
 
+        BigDecimal subtotal = cart.getCartItems().stream()
+                .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        String discountCode = null;
+        try {
+            discountCode = createB2COrderCommand.discountCode();
+        } catch (NoSuchMethodError | AbstractMethodError | Exception ignored) {
+            // not provided == null
+        }
+
+        DiscountCodePolicy policy = discountCodeRegistery.getByCode(discountCode);
+        BigDecimal totalAfterDiscount = policy.applyDiscount(subtotal);
+
+        order.setSubtotal(subtotal);
+        order.setTotalAfterDiscount(totalAfterDiscount);
+        order.setDiscountRate(policy.discountRate());
+
+        order.setDiscountCode(discountCode != null ? discountCode.trim().toUpperCase() : null);
+
         Order savedOrder = orderRepository.save(order);
 
         orderEventPublisher.publish(new OrderCreatedEvent(savedOrder, user.getEmail(), shop.getEmail()));
@@ -108,7 +132,7 @@ public class OrderCommandHandler {
                 .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        BigDecimal totalAfterDiscount = b2bDiscountPolicy.applyDiscount(subtotal);
+        BigDecimal totalAfterDiscount = discountPolicy.applyDiscount(subtotal);
 
         Order order = Order.createB2B(
                 createB2BOrderCommand.requestedDeliveryDate(),
@@ -119,7 +143,7 @@ public class OrderCommandHandler {
         order.setDeliveryAddress(orderingShop.getAddress());
         order.setSubtotal(subtotal);
         order.setTotalAfterDiscount(totalAfterDiscount);
-        order.setDiscountRate(b2bDiscountPolicy.discountRate());
+        order.setDiscountRate(discountPolicy.discountRate());
 
         Order savedOrder = orderRepository.save(order);
         orderEventPublisher.publish(new OrderCreatedEvent(savedOrder, orderingShop.getEmail(), sourceShop.getEmail()));
