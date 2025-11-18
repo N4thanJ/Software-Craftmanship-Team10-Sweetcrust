@@ -2,16 +2,21 @@ package com.sweetcrust.team10_bakery.order.presentation;
 
 import com.sweetcrust.team10_bakery.order.application.OrderCommandHandler;
 import com.sweetcrust.team10_bakery.order.application.OrderQueryHandler;
+import com.sweetcrust.team10_bakery.order.application.commands.CancelOrderCommand;
 import com.sweetcrust.team10_bakery.order.application.commands.CreateB2BOrderCommand;
 import com.sweetcrust.team10_bakery.order.application.commands.CreateB2COrderCommand;
 import com.sweetcrust.team10_bakery.order.domain.entities.Order;
 import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderId;
+import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopId;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
 @RequestMapping("/order")
@@ -38,6 +43,12 @@ public class OrderRestController {
         return ResponseEntity.ok(order);
     }
 
+    @GetMapping("/shop/{sourceShopId}")
+    public ResponseEntity<Iterable<Order>> getOrdersBySourceShopId(@PathVariable UUID sourceShopId) {
+        List<Order> orders = orderQueryHandler.getOrdersBySourceShopId(new ShopId(sourceShopId));
+        return ResponseEntity.ok(orders);
+    }
+
     @PostMapping("/B2C")
     public ResponseEntity<Order> createB2COrder(@RequestBody CreateB2COrderCommand createB2COrderCommand) {
         Order order = orderCommandHandler.createB2COrder(createB2COrderCommand);
@@ -50,5 +61,9 @@ public class OrderRestController {
         return ResponseEntity.ok(order);
     }
 
-
+    @PostMapping("/cancel")
+    public ResponseEntity<Order> cancelOrder(@RequestBody CancelOrderCommand cancelOrderCommand) {
+        Order order = orderCommandHandler.cancelOrder(cancelOrderCommand);
+        return ResponseEntity.ok(order);
+    }
 }
