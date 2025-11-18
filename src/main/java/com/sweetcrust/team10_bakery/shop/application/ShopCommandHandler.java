@@ -1,6 +1,5 @@
 package com.sweetcrust.team10_bakery.shop.application;
 
-import com.sweetcrust.team10_bakery.order.application.OrderServiceException;
 import com.sweetcrust.team10_bakery.shop.application.commands.AddShopCommand;
 import com.sweetcrust.team10_bakery.shop.domain.entities.Shop;
 import com.sweetcrust.team10_bakery.shop.infrastructure.ShopRepository;

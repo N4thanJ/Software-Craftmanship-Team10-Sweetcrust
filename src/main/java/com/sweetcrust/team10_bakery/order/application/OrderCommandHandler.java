@@ -1,8 +1,14 @@
 package com.sweetcrust.team10_bakery.order.application;
 
+import com.sweetcrust.team10_bakery.cart.infrastructure.CartRepository;
+import com.sweetcrust.team10_bakery.order.application.commands.CancelOrderCommand;
 import com.sweetcrust.team10_bakery.order.application.commands.CreateB2BOrderCommand;
 import com.sweetcrust.team10_bakery.order.application.commands.CreateB2COrderCommand;
+import com.sweetcrust.team10_bakery.order.application.events.OrderCancelledEvent;
+import com.sweetcrust.team10_bakery.order.application.events.OrderCreatedEvent;
+import com.sweetcrust.team10_bakery.order.application.events.OrderEventPublisher;
 import com.sweetcrust.team10_bakery.order.domain.entities.Order;
+import com.sweetcrust.team10_bakery.order.domain.policies.DiscountPolicy;
 import com.sweetcrust.team10_bakery.order.infrastructure.OrderRepository;
 import com.sweetcrust.team10_bakery.shop.domain.entities.Shop;
 import com.sweetcrust.team10_bakery.shop.infrastructure.ShopRepository;
@@ -11,7 +17,10 @@ import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserRole;
 import com.sweetcrust.team10_bakery.user.infrastructure.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class OrderCommandHandler {
@@ -19,12 +28,19 @@ public class OrderCommandHandler {
     private final OrderRepository orderRepository;
     private final ShopRepository shopRepository;
     private final UserRepository userRepository;
+    private final DiscountPolicy b2bDiscountPolicy;
+    private final CartRepository cartRepository;
+    private final OrderEventPublisher orderEventPublisher;
 
     public OrderCommandHandler(OrderRepository orderRepository, ShopRepository shopRepository,
-                               UserRepository userRepository) {
+                               UserRepository userRepository, DiscountPolicy b2bDiscountPolicy, CartRepository cartRepository,
+                               OrderEventPublisher orderEventPublisher) {
         this.orderRepository = orderRepository;
         this.shopRepository = shopRepository;
         this.userRepository = userRepository;
+        this.b2bDiscountPolicy = b2bDiscountPolicy;
+        this.cartRepository = cartRepository;
+        this.orderEventPublisher = orderEventPublisher;
     }
 
     public Order createB2COrder(CreateB2COrderCommand createB2COrderCommand) {
@@ -39,6 +55,12 @@ public class OrderCommandHandler {
         User user = userRepository.findById(createB2COrderCommand.customerId())
                 .orElseThrow(() -> new OrderServiceException("customerId", "User not found"));
 
+        List<Shop> shops = shopRepository.findAll();
+        if (shops.isEmpty()) {
+            throw new OrderServiceException("shopId", "Shop not found");
+        }
+        Shop shop = shops.get(ThreadLocalRandom.current().nextInt(shops.size()));
+
         if (user.getRole() != UserRole.CUSTOMER) {
             throw new OrderServiceException("customerId", "Only users with customer role can make B2C orders");
         }
@@ -47,9 +69,14 @@ public class OrderCommandHandler {
                 createB2COrderCommand.deliveryAddress(),
                 createB2COrderCommand.requestedDeliveryDate(),
                 createB2COrderCommand.customerId(),
-                createB2COrderCommand.cartId());
+                createB2COrderCommand.cartId(),
+                shop.getShopId());
 
-        return orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
+
+        orderEventPublisher.publish(new OrderCreatedEvent(savedOrder, user.getEmail(), shop.getEmail()));
+
+        return savedOrder;
     }
 
     public Order createB2BOrder(CreateB2BOrderCommand createB2BOrderCommand) {
@@ -60,12 +87,24 @@ public class OrderCommandHandler {
         Shop orderingShop = shopRepository.findById(createB2BOrderCommand.orderingShopId())
                 .orElseThrow(() -> new OrderServiceException("orderingShopId", "Shop not found"));
 
+        Shop sourceShop = shopRepository.findById(createB2BOrderCommand.sourceShopId())
+                .orElseThrow(() -> new OrderServiceException("sourceShopId", "Shop not found"));
+
         User user = userRepository.findById(createB2BOrderCommand.userId())
                 .orElseThrow(() -> new OrderServiceException("userId", "User not found"));
 
         if (user.getRole() != UserRole.BAKER) {
             throw new OrderServiceException("userId", "Only users with baker role can make B2B orders");
         }
+
+        var cart = cartRepository.findById(createB2BOrderCommand.cartId())
+                .orElseThrow(() -> new OrderServiceException("cartId", "Cart not found"));
+
+        BigDecimal subtotal = cart.getCartItems().stream()
+                .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal totalAfterDiscount = b2bDiscountPolicy.applyDiscount(subtotal);
 
         Order order = Order.createB2B(
                 createB2BOrderCommand.requestedDeliveryDate(),
@@ -74,7 +113,58 @@ public class OrderCommandHandler {
                 createB2BOrderCommand.cartId());
 
         order.setDeliveryAddress(orderingShop.getAddress());
+        order.setSubtotal(subtotal);
+        order.setTotalAfterDiscount(totalAfterDiscount);
+        order.setDiscountRate(b2bDiscountPolicy.discountRate());
 
-        return orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
+        orderEventPublisher.publish(new OrderCreatedEvent(savedOrder, orderingShop.getEmail(), sourceShop.getEmail()));
+        return savedOrder;
+    }
+
+    public Order cancelOrder(CancelOrderCommand cancelOrderCommand) {
+        Order order = orderRepository.findById(cancelOrderCommand.orderId())
+                .orElseThrow(() -> new OrderServiceException("orderId", "Order not found"));
+        
+        User user = userRepository.findById(cancelOrderCommand.userId())
+                .orElseThrow(() -> new OrderServiceException("userId", "User not found"));
+
+        if (order.getOrderingShopId() != null) {
+            if (user.getRole() != UserRole.BAKER && user.getRole() != UserRole.ADMIN) {
+                throw new OrderServiceException("userId", "Only users with baker or admin role can cancel B2B orders");
+            }
+
+            Shop orderingShop = shopRepository.findById(order.getOrderingShopId())
+                    .orElseThrow(() -> new OrderServiceException("orderingShopId", "Shop not found"));
+            Shop sourceShop = shopRepository.findById(order.getSourceShopId())
+                    .orElseThrow(() -> new OrderServiceException("sourceShopId", "Shop not found")); 
+
+            order.cancel();
+
+            Order savedOrder = orderRepository.save(order);
+            orderEventPublisher.publish(new OrderCancelledEvent(
+                    savedOrder,
+                    orderingShop.getEmail(),
+                    sourceShop.getEmail()
+            ));
+
+            return savedOrder;
+        } else {
+            if (!order.getCustomerId().equals(cancelOrderCommand.userId()) && user.getRole() != UserRole.ADMIN) {
+                throw new OrderServiceException("userId", "Only the customer who placed the order can cancel it");
+            }
+
+            order.cancel();
+
+            Order savedOrder = orderRepository.save(order);
+
+            orderEventPublisher.publish(new OrderCancelledEvent(
+                    savedOrder,
+                    user.getEmail(),
+                    null
+            ));
+
+            return savedOrder;
+        }
     }
 }

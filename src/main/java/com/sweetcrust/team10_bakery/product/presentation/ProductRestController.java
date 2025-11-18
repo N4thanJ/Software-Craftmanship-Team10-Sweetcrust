@@ -6,7 +6,6 @@ import com.sweetcrust.team10_bakery.product.application.commands.AddProductComma
 import com.sweetcrust.team10_bakery.product.application.commands.AddProductVariantCommand;
 import com.sweetcrust.team10_bakery.product.application.commands.MarkProductAvailableCommand;
 import com.sweetcrust.team10_bakery.product.application.commands.MarkProductUnavailableCommand;
-import com.sweetcrust.team10_bakery.product.domain.entities.Product;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductId;
 import com.sweetcrust.team10_bakery.product.presentation.dto.ProductResponseDto;
 import io.swagger.v3.oas.annotations.tags.Tag;

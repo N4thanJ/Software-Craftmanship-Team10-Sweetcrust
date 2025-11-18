@@ -40,7 +40,7 @@ public class ProductCommandHandlerTest {
     private Product chocolateCroissant;
     private User baker;
     private User admin;
-    private User sleepyCustomer;
+    private User customer;
 
     @BeforeEach
     void setup() {
@@ -55,7 +55,7 @@ public class ProductCommandHandlerTest {
 
         baker = new User("baker123", "Bakery123!", "baker@sweetcrust.com", UserRole.BAKER);
         admin = new User("admin007", "Admin123!", "admin@sweetcrust.com", UserRole.ADMIN);
-        sleepyCustomer = new User("sleepy", "SleepyJoe123!", "sleepy@sweetcrust.com", UserRole.CUSTOMER);
+        customer = new User("sleepy", "SleepyJoe123!", "sleepy@sweetcrust.com", UserRole.CUSTOMER);
     }
 
     @Test
@@ -66,8 +66,11 @@ public class ProductCommandHandlerTest {
                 BigDecimal.valueOf(2.99),
                 true,
                 pastryCategory.getCategoryId(),
-                List.of()
+                List.of(),
+                baker.getUserId()
         );
+
+        when(userRepository.findById(baker.getUserId())).thenReturn(Optional.of(baker));
 
         when(productRepository.existsByName("Chocokoek")).thenReturn(false);
 
@@ -84,8 +87,11 @@ public class ProductCommandHandlerTest {
                 BigDecimal.valueOf(2.99),
                 true,
                 pastryCategory.getCategoryId(),
-                List.of()
+                List.of(),
+                baker.getUserId()
         );
+
+        when(userRepository.findById(baker.getUserId())).thenReturn(Optional.of(baker));
 
         when(productRepository.existsByName("Choco Croissant")).thenReturn(true);
 
@@ -99,12 +105,36 @@ public class ProductCommandHandlerTest {
     }
 
     @Test
+    void givenUnauthorizedUser_whenCreating_thenExceptionIsThrown() {
+        AddProductCommand command = new AddProductCommand(
+                "Chocokoek",
+                "A classic chocolate pastry",
+                BigDecimal.valueOf(2.99),
+                true,
+                pastryCategory.getCategoryId(),
+                List.of(),
+                customer.getUserId()
+        );
+
+        when(userRepository.findById(customer.getUserId())).thenReturn(Optional.of(customer));
+
+        ProductServiceException ex = assertThrows(
+                ProductServiceException.class,
+                () -> productCommandHandler.createProduct(command)
+        );
+        verify(productRepository, never()).save(any(Product.class));
+    }
+
+    @Test
     void givenNewVariant_whenAdding_thenVariantIsSaved() {
         AddProductVariantCommand variantCommand = new AddProductVariantCommand(
                 ProductSize.REGULAR,
                 "Choco Mini",
-                BigDecimal.valueOf(0.3)
+                BigDecimal.valueOf(0.3),
+                baker.getUserId()
         );
+
+        when(userRepository.findById(baker.getUserId())).thenReturn(Optional.of(baker));
 
         when(productRepository.findById(chocolateCroissant.getProductId())).thenReturn(Optional.of(chocolateCroissant));
 
@@ -127,8 +157,11 @@ public class ProductCommandHandlerTest {
         AddProductVariantCommand duplicateCommand = new AddProductVariantCommand(
                 ProductSize.REGULAR,
                 "Choco Mini",
-                BigDecimal.valueOf(0.3)
+                BigDecimal.valueOf(0.3),
+                baker.getUserId()
         );
+
+        when(userRepository.findById(baker.getUserId())).thenReturn(Optional.of(baker));
 
         when(productRepository.findById(chocolateCroissant.getProductId())).thenReturn(Optional.of(chocolateCroissant));
 
@@ -139,6 +172,25 @@ public class ProductCommandHandlerTest {
 
         assertEquals("variant", ex.getField());
         verify(productRepository, never()).save(any());
+    }
+
+    @Test
+    void givenUnauthorizedUser_whenAdding_thenVariantIsSaved() {
+        AddProductVariantCommand variantCommand = new AddProductVariantCommand(
+                ProductSize.REGULAR,
+                "Choco Mini",
+                BigDecimal.valueOf(0.3),
+                customer.getUserId()
+        );
+
+        when(userRepository.findById(customer.getUserId())).thenReturn(Optional.of(customer));
+
+        ProductServiceException ex = assertThrows(
+                ProductServiceException.class,
+                () -> productCommandHandler.addVariantToProduct(chocolateCroissant.getProductId(), variantCommand)
+        );
+
+        verify(productRepository, never()).save(any(Product.class));
     }
 
     @Test
@@ -181,11 +233,11 @@ public class ProductCommandHandlerTest {
     void givenUnauthorizedUser_whenMarkAvailable_thenExceptionThrown() {
         MarkProductAvailableCommand command = new MarkProductAvailableCommand(
                 chocolateCroissant.getProductId(),
-                sleepyCustomer.getUserId()
+                customer.getUserId()
         );
 
         when(productRepository.findById(chocolateCroissant.getProductId())).thenReturn(Optional.of(chocolateCroissant));
-        when(userRepository.findById(sleepyCustomer.getUserId())).thenReturn(Optional.of(sleepyCustomer));
+        when(userRepository.findById(customer.getUserId())).thenReturn(Optional.of(customer));
 
         ProductServiceException ex = assertThrows(
                 ProductServiceException.class,
@@ -236,11 +288,11 @@ public class ProductCommandHandlerTest {
     void givenUnauthorizedUser_whenMarkUnavailable_thenExceptionThrown() {
         MarkProductUnavailableCommand command = new MarkProductUnavailableCommand(
                 chocolateCroissant.getProductId(),
-                sleepyCustomer.getUserId()
+                customer.getUserId()
         );
 
         when(productRepository.findById(chocolateCroissant.getProductId())).thenReturn(Optional.of(chocolateCroissant));
-        when(userRepository.findById(sleepyCustomer.getUserId())).thenReturn(Optional.of(sleepyCustomer));
+        when(userRepository.findById(customer.getUserId())).thenReturn(Optional.of(customer));
 
         ProductServiceException ex = assertThrows(
                 ProductServiceException.class,

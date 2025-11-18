@@ -1,5 +1,7 @@
 package com.sweetcrust.team10_bakery.order.domain.entities;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import com.sweetcrust.team10_bakery.cart.domain.valueobjects.CartId;
 import com.sweetcrust.team10_bakery.order.domain.OrderDomainException;
@@ -47,6 +49,16 @@ public class Order {
 
     private LocalDateTime requestedDeliveryDate;
 
+    // discount policy fields
+    @Column(name = "subtotal", precision = 10, scale = 2, nullable = true)
+    private BigDecimal subtotal;
+
+    @Column(name = "total_after_discount", precision = 10, scale = 2, nullable = true)
+    private BigDecimal totalAfterDiscount;
+
+    @Column(name = "discount_rate", precision = 5, scale = 4, nullable = true)
+    private BigDecimal discountRate;
+
     protected Order() {
     }
 
@@ -60,12 +72,13 @@ public class Order {
 
     // B2C orders (klant order)
     public static Order createB2C(Address deliveryAddress, LocalDateTime requestedDeliveryDate, UserId customerId,
-            CartId cartId) {
+            CartId cartId, ShopId sourceShopId) {
         Order order = new Order(requestedDeliveryDate);
         order.setOrderType(OrderType.B2C);
         order.setDeliveryAddress(deliveryAddress);
         order.setCustomerId(customerId);
         order.setCartId(cartId);
+        order.setSourceShopId(sourceShopId);
         return order;
     }
 
@@ -120,6 +133,12 @@ public class Order {
         return cartId;
     }
 
+    public BigDecimal getSubtotal() { return subtotal; }
+
+    public BigDecimal getTotalAfterDiscount() { return totalAfterDiscount; }
+
+    public BigDecimal getDiscountRate() { return discountRate; }
+
     public void setOrderType(OrderType orderType) {
         if (orderType == null) {
             throw new OrderDomainException("orderType", "orderType should not be null");
@@ -172,6 +191,40 @@ public class Order {
         this.cartId = cartId;
     }
 
+    public void setSubtotal(BigDecimal subtotal) {
+        if (subtotal == null) {
+            this.subtotal = null;
+            return;
+        }
+        if (subtotal.compareTo(BigDecimal.ZERO) < 0) {
+            throw new OrderDomainException("subtotal", "subtotal cannot be negative");
+        }
+        this.subtotal = subtotal.setScale(2, RoundingMode.HALF_UP);
+    }
+
+    public void setTotalAfterDiscount(BigDecimal totalAfterDiscount) {
+        if (totalAfterDiscount == null) {
+            this.totalAfterDiscount = null;
+            return;
+        }
+        if (totalAfterDiscount.compareTo(BigDecimal.ZERO) < 0) {
+            throw new OrderDomainException("totalAfterDiscount", "totalAfterDiscount cannot be negative");
+        }
+        this.totalAfterDiscount = totalAfterDiscount.setScale(2, RoundingMode.HALF_UP);
+    }
+
+    public void setDiscountRate(BigDecimal discountRate) {
+        if (discountRate == null) {
+            this.discountRate = null;
+            return;
+        }
+        if (discountRate.compareTo(BigDecimal.ZERO) < 0 || discountRate.compareTo(BigDecimal.ONE) > 0) {
+            throw new OrderDomainException("discountRate", "discountRate must be between 0 and 1");
+        }
+        // store with reasonable scale (e.g. 4 decimal places)
+        this.discountRate = discountRate.setScale(4, RoundingMode.HALF_UP);
+    }
+
     public void validateOrder() {
         if (orderType == OrderType.B2C && customerId == null) {
             throw new OrderDomainException("customerId", "B2C orders must have customerId");
@@ -217,6 +270,13 @@ public class Order {
         if (status == OrderStatus.DELIVERED) {
             throw new OrderDomainException("status", "Delivered orders cannot be cancelled");
         }
+
+        LocalDateTime cancellationCutoff = requestedDeliveryDate.minusDays(1);
+        if (!LocalDateTime.now().isBefore(cancellationCutoff)) {
+            throw new OrderDomainException("status",
+                    "Orders can only be cancelled up until 1 day before the requested delivery date");
+        }
+        
         this.status = OrderStatus.CANCELLED;
     }
 }

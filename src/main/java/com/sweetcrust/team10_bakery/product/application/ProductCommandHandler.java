@@ -1,6 +1,5 @@
 package com.sweetcrust.team10_bakery.product.application;
 
-import com.sweetcrust.team10_bakery.order.application.OrderServiceException;
 import com.sweetcrust.team10_bakery.product.application.commands.AddProductCommand;
 import com.sweetcrust.team10_bakery.product.application.commands.AddProductVariantCommand;
 import com.sweetcrust.team10_bakery.product.application.commands.MarkProductAvailableCommand;
@@ -9,6 +8,7 @@ import com.sweetcrust.team10_bakery.product.domain.entities.Product;
 import com.sweetcrust.team10_bakery.product.domain.entities.ProductVariant;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductId;
 import com.sweetcrust.team10_bakery.product.infrastructure.ProductRepository;
+import com.sweetcrust.team10_bakery.user.application.UserServiceException;
 import com.sweetcrust.team10_bakery.user.domain.entities.User;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserRole;
 import com.sweetcrust.team10_bakery.user.infrastructure.UserRepository;
@@ -26,6 +26,13 @@ public class ProductCommandHandler {
     }
 
     public void createProduct(AddProductCommand addProductCommand) {
+
+        User user = userRepository.findById(addProductCommand.userId())
+                .orElseThrow(() -> new UserServiceException("userId", "User not found"));
+
+        if (user.getRole() != UserRole.BAKER && user.getRole() != UserRole.ADMIN) {
+            throw new ProductServiceException("role", "Only users with BAKER or ADMIN role can create products");
+        }
         boolean existsByName = productRepository.existsByName(addProductCommand.name());
 
         if (existsByName) {
@@ -55,6 +62,13 @@ public class ProductCommandHandler {
     }
 
     public void addVariantToProduct(ProductId productId, AddProductVariantCommand addProductVariantCommand) {
+        User user = userRepository.findById(addProductVariantCommand.userId())
+                .orElseThrow(() -> new UserServiceException("userId", "User not found"));
+
+        if (user.getRole() != UserRole.BAKER && user.getRole() != UserRole.ADMIN) {
+            throw new ProductServiceException("role", "Only users with BAKER or ADMIN role can add product variants");
+        }
+
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductServiceException("product", "product not found"));
 
