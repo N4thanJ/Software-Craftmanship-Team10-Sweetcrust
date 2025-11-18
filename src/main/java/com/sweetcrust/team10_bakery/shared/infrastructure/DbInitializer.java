@@ -25,8 +25,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
-
-
 import com.sweetcrust.team10_bakery.product.domain.entities.Product;
 import com.sweetcrust.team10_bakery.product.domain.entities.ProductCategory;
 import com.sweetcrust.team10_bakery.product.domain.entities.ProductVariant;
@@ -51,7 +49,9 @@ public class DbInitializer {
         public DbInitializer(ProductRepository productRepository, OrderRepository orderRepository,
                         UserRepository userRepository, ShopRepository shopRepository, CartRepository cartRepository,
                         ProductVariantRepository productVariantRepository,
-                        ProductCategoryRepository categoryRepository, DiscountPolicy b2bDiscountPolicy, PlatformTransactionManager transactionManager, InventoryItemRepository inventoryItemRepository) {
+                        ProductCategoryRepository categoryRepository, DiscountPolicy b2bDiscountPolicy,
+                        PlatformTransactionManager transactionManager,
+                        InventoryItemRepository inventoryItemRepository) {
                 this.productRepository = productRepository;
                 this.productVariantRepository = productVariantRepository;
                 this.categoryRepository = categoryRepository;
@@ -720,89 +720,96 @@ public class DbInitializer {
                 berlinToAmsterdamCart.addCartItem(CartItem.fromVariant(largePumpkinPie, 20));
                 berlinToAmsterdamCart.setOwnerId(bakerBill.getUserId());
 
-                    cartRepository.save(parisToLondonCart);
+                cartRepository.save(parisToLondonCart);
                 cartRepository.save(tokyoToNewYorkCart);
                 cartRepository.save(romeToBarcelonaCart);
                 cartRepository.save(berlinToAmsterdamCart);
 
-            transactionTemplate.execute(status -> {
-                    Order parisToLondon = Order.createB2B(
-                            LocalDateTime.now().plusDays(5),
-                            londonShop.getShopId(),
-                            parisShop.getShopId(),
-                            parisToLondonCart.getCartId());
+                transactionTemplate.execute(status -> {
+                        Order parisToLondon = Order.createB2B(
+                                        LocalDateTime.now().plusDays(5),
+                                        londonShop.getShopId(),
+                                        parisShop.getShopId(),
+                                        parisToLondonCart.getCartId());
 
-                    Cart cartForParis = cartRepository.findById(parisToLondon.getCartId())
-                            .orElseThrow(() -> new RuntimeException("Cart not found for Paris->London order"));
-                    BigDecimal parisSubtotal = cartForParis.getCartItems().stream()
-                            .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
-                            .reduce(BigDecimal.ZERO, BigDecimal::add);
-                    BigDecimal parisTotalAfterDiscount = b2bDiscountPolicy.applyDiscount(parisSubtotal);
-                    parisToLondon.setSubtotal(parisSubtotal);
-                    parisToLondon.setTotalAfterDiscount(parisTotalAfterDiscount);
-                    parisToLondon.setDiscountRate(b2bDiscountPolicy.discountRate());
-                    // set delivery address to the ordering shop's address so it is persisted and returned
-                    parisToLondon.setDeliveryAddress(londonShop.getAddress());
+                        Cart cartForParis = cartRepository.findById(parisToLondon.getCartId())
+                                        .orElseThrow(() -> new RuntimeException(
+                                                        "Cart not found for Paris->London order"));
+                        BigDecimal parisSubtotal = cartForParis.getCartItems().stream()
+                                        .map(item -> item.getUnitPrice()
+                                                        .multiply(BigDecimal.valueOf(item.getQuantity())))
+                                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+                        BigDecimal parisTotalAfterDiscount = b2bDiscountPolicy.applyDiscount(parisSubtotal);
+                        parisToLondon.setSubtotal(parisSubtotal);
+                        parisToLondon.setTotalAfterDiscount(parisTotalAfterDiscount);
+                        parisToLondon.setDiscountRate(b2bDiscountPolicy.discountRate());
+                        // set delivery address to the ordering shop's address so it is persisted and
+                        // returned
+                        parisToLondon.setDeliveryAddress(londonShop.getAddress());
 
-                    Order tokyoToNewYork = Order.createB2B(
-                            LocalDateTime.now().plusDays(7),
-                            newYorkShop.getShopId(),
-                            tokyoShop.getShopId(),
-                            tokyoToNewYorkCart.getCartId());
+                        Order tokyoToNewYork = Order.createB2B(
+                                        LocalDateTime.now().plusDays(7),
+                                        newYorkShop.getShopId(),
+                                        tokyoShop.getShopId(),
+                                        tokyoToNewYorkCart.getCartId());
 
-                    Cart cartForTokyo = cartRepository.findById(tokyoToNewYork.getCartId())
-                            .orElseThrow(() -> new IllegalStateException("Cart not found for Tokyo->NewYork order"));
-                    BigDecimal tokyoSubtotal = cartForTokyo.getCartItems().stream()
-                            .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
-                            .reduce(BigDecimal.ZERO, BigDecimal::add);
-                    BigDecimal tokyoTotalAfter = b2bDiscountPolicy.applyDiscount(tokyoSubtotal);
-                    tokyoToNewYork.setSubtotal(tokyoSubtotal);
-                    tokyoToNewYork.setTotalAfterDiscount(tokyoTotalAfter);
-                    tokyoToNewYork.setDiscountRate(b2bDiscountPolicy.discountRate());
-                    tokyoToNewYork.setDeliveryAddress(newYorkShop.getAddress());
+                        Cart cartForTokyo = cartRepository.findById(tokyoToNewYork.getCartId())
+                                        .orElseThrow(() -> new IllegalStateException(
+                                                        "Cart not found for Tokyo->NewYork order"));
+                        BigDecimal tokyoSubtotal = cartForTokyo.getCartItems().stream()
+                                        .map(item -> item.getUnitPrice()
+                                                        .multiply(BigDecimal.valueOf(item.getQuantity())))
+                                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+                        BigDecimal tokyoTotalAfter = b2bDiscountPolicy.applyDiscount(tokyoSubtotal);
+                        tokyoToNewYork.setSubtotal(tokyoSubtotal);
+                        tokyoToNewYork.setTotalAfterDiscount(tokyoTotalAfter);
+                        tokyoToNewYork.setDiscountRate(b2bDiscountPolicy.discountRate());
+                        tokyoToNewYork.setDeliveryAddress(newYorkShop.getAddress());
 
-                    Order romeToBarcelona = Order.createB2B(
-                            LocalDateTime.now().plusDays(4),
-                            barcelonaShop.getShopId(),
-                            romeShop.getShopId(),
-                            romeToBarcelonaCart.getCartId());
+                        Order romeToBarcelona = Order.createB2B(
+                                        LocalDateTime.now().plusDays(4),
+                                        barcelonaShop.getShopId(),
+                                        romeShop.getShopId(),
+                                        romeToBarcelonaCart.getCartId());
 
-                    Cart cartForRome = cartRepository.findById(romeToBarcelona.getCartId())
-                            .orElseThrow(() -> new IllegalStateException("Cart not found for Rome->Barcelona order"));
-                    BigDecimal romeSubtotal = cartForRome.getCartItems().stream()
-                            .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
-                            .reduce(BigDecimal.ZERO, BigDecimal::add);
-                    BigDecimal romeTotalAfter = b2bDiscountPolicy.applyDiscount(romeSubtotal);
-                    romeToBarcelona.setSubtotal(romeSubtotal);
-                    romeToBarcelona.setTotalAfterDiscount(romeTotalAfter);
-                    romeToBarcelona.setDiscountRate(b2bDiscountPolicy.discountRate());
-                    romeToBarcelona.setDeliveryAddress(barcelonaShop.getAddress());
+                        Cart cartForRome = cartRepository.findById(romeToBarcelona.getCartId())
+                                        .orElseThrow(() -> new IllegalStateException(
+                                                        "Cart not found for Rome->Barcelona order"));
+                        BigDecimal romeSubtotal = cartForRome.getCartItems().stream()
+                                        .map(item -> item.getUnitPrice()
+                                                        .multiply(BigDecimal.valueOf(item.getQuantity())))
+                                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+                        BigDecimal romeTotalAfter = b2bDiscountPolicy.applyDiscount(romeSubtotal);
+                        romeToBarcelona.setSubtotal(romeSubtotal);
+                        romeToBarcelona.setTotalAfterDiscount(romeTotalAfter);
+                        romeToBarcelona.setDiscountRate(b2bDiscountPolicy.discountRate());
+                        romeToBarcelona.setDeliveryAddress(barcelonaShop.getAddress());
 
-                    Order berlinToAmsterdam = Order.createB2B(
-                            LocalDateTime.now().plusDays(3),
-                            amsterdamShop.getShopId(),
-                            berlinShop.getShopId(),
-                            berlinToAmsterdamCart.getCartId());
+                        Order berlinToAmsterdam = Order.createB2B(
+                                        LocalDateTime.now().plusDays(3),
+                                        amsterdamShop.getShopId(),
+                                        berlinShop.getShopId(),
+                                        berlinToAmsterdamCart.getCartId());
 
+                        Cart cartForBerlin = cartRepository.findById(berlinToAmsterdam.getCartId())
+                                        .orElseThrow(() -> new IllegalStateException(
+                                                        "Cart not found for Berlin->Amsterdam order"));
+                        BigDecimal berlinSubtotal = cartForBerlin.getCartItems().stream()
+                                        .map(item -> item.getUnitPrice()
+                                                        .multiply(BigDecimal.valueOf(item.getQuantity())))
+                                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+                        BigDecimal berlinTotalAfter = b2bDiscountPolicy.applyDiscount(berlinSubtotal);
+                        berlinToAmsterdam.setSubtotal(berlinSubtotal);
+                        berlinToAmsterdam.setTotalAfterDiscount(berlinTotalAfter);
+                        berlinToAmsterdam.setDiscountRate(b2bDiscountPolicy.discountRate());
+                        berlinToAmsterdam.setDeliveryAddress(amsterdamShop.getAddress());
 
-                    Cart cartForBerlin = cartRepository.findById(berlinToAmsterdam.getCartId())
-                            .orElseThrow(() -> new IllegalStateException("Cart not found for Berlin->Amsterdam order"));
-                    BigDecimal berlinSubtotal = cartForBerlin.getCartItems().stream()
-                            .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
-                            .reduce(BigDecimal.ZERO, BigDecimal::add);
-                    BigDecimal berlinTotalAfter = b2bDiscountPolicy.applyDiscount(berlinSubtotal);
-                    berlinToAmsterdam.setSubtotal(berlinSubtotal);
-                    berlinToAmsterdam.setTotalAfterDiscount(berlinTotalAfter);
-                    berlinToAmsterdam.setDiscountRate(b2bDiscountPolicy.discountRate());
-                    berlinToAmsterdam.setDeliveryAddress(amsterdamShop.getAddress());
+                        orderRepository.save(parisToLondon);
+                        orderRepository.save(tokyoToNewYork);
+                        orderRepository.save(romeToBarcelona);
+                        orderRepository.save(berlinToAmsterdam);
 
-                    orderRepository.save(parisToLondon);
-                    orderRepository.save(tokyoToNewYork);
-                    orderRepository.save(romeToBarcelona);
-                    orderRepository.save(berlinToAmsterdam);
-
-                    return null;
+                        return null;
                 });
         }
 }
-
