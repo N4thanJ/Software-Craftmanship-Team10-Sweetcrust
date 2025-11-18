@@ -1,5 +1,6 @@
 package com.sweetcrust.team10_bakery.order.application;
 
+import com.sweetcrust.team10_bakery.cart.domain.entities.Cart;
 import com.sweetcrust.team10_bakery.cart.infrastructure.CartRepository;
 import com.sweetcrust.team10_bakery.order.application.commands.CancelOrderCommand;
 import com.sweetcrust.team10_bakery.order.application.commands.CreateB2BOrderCommand;
@@ -55,6 +56,9 @@ public class OrderCommandHandler {
         User user = userRepository.findById(createB2COrderCommand.customerId())
                 .orElseThrow(() -> new OrderServiceException("customerId", "User not found"));
 
+        Cart cart = cartRepository.findById(createB2COrderCommand.cartId())
+                .orElseThrow(() -> new OrderServiceException("cartId", "Cart not found"));
+
         List<Shop> shops = shopRepository.findAll();
         if (shops.isEmpty()) {
             throw new OrderServiceException("shopId", "Shop not found");
@@ -93,12 +97,12 @@ public class OrderCommandHandler {
         User user = userRepository.findById(createB2BOrderCommand.userId())
                 .orElseThrow(() -> new OrderServiceException("userId", "User not found"));
 
+        Cart cart = cartRepository.findById(createB2BOrderCommand.cartId())
+                .orElseThrow(() -> new OrderServiceException("cartId", "Cart not found"));
+
         if (user.getRole() != UserRole.BAKER) {
             throw new OrderServiceException("userId", "Only users with baker role can make B2B orders");
         }
-
-        var cart = cartRepository.findById(createB2BOrderCommand.cartId())
-                .orElseThrow(() -> new OrderServiceException("cartId", "Cart not found"));
 
         BigDecimal subtotal = cart.getCartItems().stream()
                 .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
