@@ -553,7 +553,8 @@ public class DbInitializer {
                                                 .build(),
                                 LocalDateTime.now().plusDays(2),
                                 cupcakeClaire.getUserId(),
-                                cupcakeCart.getCartId());
+                                cupcakeCart.getCartId(),
+                                barcelonaShop.getShopId());
 
                 Order pieOrder = Order.createB2C(
                                 Address.builder()
@@ -564,7 +565,8 @@ public class DbInitializer {
                                                 .build(),
                                 LocalDateTime.now().plusDays(3),
                                 piePatrick.getUserId(),
-                                pieCart.getCartId());
+                                pieCart.getCartId(),
+                                berlinShop.getShopId());
 
                 Order cookieOrder = Order.createB2C(
                                 Address.builder()
@@ -575,7 +577,8 @@ public class DbInitializer {
                                                 .build(),
                                 LocalDateTime.now().plusDays(1),
                                 cookieConnie.getUserId(),
-                                cookieCart.getCartId());
+                                cookieCart.getCartId(),
+                                amsterdamShop.getShopId());
 
                 Order cakeOrder = Order.createB2C(
                                 Address.builder()
@@ -586,7 +589,8 @@ public class DbInitializer {
                                                 .build(),
                                 LocalDateTime.now().plusDays(4),
                                 cakeCathy.getUserId(),
-                                cakeCart.getCartId());
+                                cakeCart.getCartId(),
+                                romeShop.getShopId());
 
                 Order breadOrder = Order.createB2C(
                                 Address.builder()
@@ -597,7 +601,8 @@ public class DbInitializer {
                                                 .build(),
                                 LocalDateTime.now().plusDays(1),
                                 breadBob.getUserId(),
-                                breadCart.getCartId());
+                                breadCart.getCartId(),
+                                londonShop.getShopId());
 
                 Order croissantOrder = Order.createB2C(
                                 Address.builder()
@@ -608,14 +613,16 @@ public class DbInitializer {
                                                 .build(),
                                 LocalDateTime.now().plusDays(2),
                                 croissantCarl.getUserId(),
-                                croissantCart.getCartId());
+                                croissantCart.getCartId(),
+                                parisShop.getShopId());
 
                 Order donutOrder = Order.createB2C(
                                 Address.builder().setStreet("Donut Drive 15").setCity("Glazeville")
                                                 .setPostalCode("12345").setCountry("Donutland").build(),
                                 LocalDateTime.now().plusDays(1),
                                 donutDan.getUserId(),
-                                donutCart.getCartId());
+                                donutCart.getCartId(),
+                                tokyoShop.getShopId());
 
                 Order muffinOrder = Order.createB2C(
                                 Address.builder()
@@ -626,7 +633,8 @@ public class DbInitializer {
                                                 .build(),
                                 LocalDateTime.now().plusDays(1),
                                 muffinMary.getUserId(),
-                                muffinCart.getCartId());
+                                muffinCart.getCartId(),
+                                newYorkShop.getShopId());
 
                 orderRepository.save(cupcakeOrder);
                 orderRepository.save(pieOrder);

@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class OrderCommandHandler {
@@ -53,6 +55,12 @@ public class OrderCommandHandler {
         User user = userRepository.findById(createB2COrderCommand.customerId())
                 .orElseThrow(() -> new OrderServiceException("customerId", "User not found"));
 
+        List<Shop> shops = shopRepository.findAll();
+        if (shops.isEmpty()) {
+            throw new OrderServiceException("shopId", "Shop not found");
+        }
+        Shop shop = shops.get(ThreadLocalRandom.current().nextInt(shops.size()));
+
         if (user.getRole() != UserRole.CUSTOMER) {
             throw new OrderServiceException("customerId", "Only users with customer role can make B2C orders");
         }
@@ -61,11 +69,12 @@ public class OrderCommandHandler {
                 createB2COrderCommand.deliveryAddress(),
                 createB2COrderCommand.requestedDeliveryDate(),
                 createB2COrderCommand.customerId(),
-                createB2COrderCommand.cartId());
+                createB2COrderCommand.cartId(),
+                shop.getShopId());
 
         Order savedOrder = orderRepository.save(order);
 
-        orderEventPublisher.publish(new OrderCreatedEvent(savedOrder, user.getEmail(), null));
+        orderEventPublisher.publish(new OrderCreatedEvent(savedOrder, user.getEmail(), shop.getEmail()));
 
         return savedOrder;
     }
