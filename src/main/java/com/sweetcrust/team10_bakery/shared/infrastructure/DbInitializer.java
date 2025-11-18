@@ -3,6 +3,7 @@ package com.sweetcrust.team10_bakery.shared.infrastructure;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.function.Function;
 
 import com.sweetcrust.team10_bakery.cart.domain.entities.Cart;
 import com.sweetcrust.team10_bakery.cart.domain.entities.CartItem;
@@ -10,6 +11,8 @@ import com.sweetcrust.team10_bakery.cart.infrastructure.CartRepository;
 import com.sweetcrust.team10_bakery.inventory.domain.entities.InventoryItem;
 import com.sweetcrust.team10_bakery.inventory.infrastructure.InventoryItemRepository;
 import com.sweetcrust.team10_bakery.order.domain.entities.Order;
+import com.sweetcrust.team10_bakery.order.domain.policies.DiscountCodePolicy;
+import com.sweetcrust.team10_bakery.order.domain.policies.DiscountCodeRegistery;
 import com.sweetcrust.team10_bakery.order.domain.policies.DiscountPolicy;
 import com.sweetcrust.team10_bakery.order.infrastructure.OrderRepository;
 import com.sweetcrust.team10_bakery.product.infrastructure.ProductCategoryRepository;
@@ -45,13 +48,15 @@ public class DbInitializer {
         private final DiscountPolicy b2bDiscountPolicy;
         private final TransactionTemplate transactionTemplate;
         private final InventoryItemRepository inventoryItemRepository;
+        private final DiscountCodeRegistery discountCodeRegistery;
 
         public DbInitializer(ProductRepository productRepository, OrderRepository orderRepository,
                         UserRepository userRepository, ShopRepository shopRepository, CartRepository cartRepository,
                         ProductVariantRepository productVariantRepository,
                         ProductCategoryRepository categoryRepository, DiscountPolicy b2bDiscountPolicy,
                         PlatformTransactionManager transactionManager,
-                        InventoryItemRepository inventoryItemRepository) {
+                        InventoryItemRepository inventoryItemRepository,
+                             DiscountCodeRegistery discountCodeRegistery) {
                 this.productRepository = productRepository;
                 this.productVariantRepository = productVariantRepository;
                 this.categoryRepository = categoryRepository;
@@ -62,6 +67,7 @@ public class DbInitializer {
                 this.b2bDiscountPolicy = b2bDiscountPolicy;
                 this.transactionTemplate = new TransactionTemplate(transactionManager);
                 this.inventoryItemRepository = inventoryItemRepository;
+                this.discountCodeRegistery = discountCodeRegistery;
         }
 
         private void clearAll() {
@@ -697,14 +703,7 @@ public class DbInitializer {
                                 muffinCart.getCartId(),
                                 newYorkShop.getShopId());
 
-                orderRepository.save(cupcakeOrder);
-                orderRepository.save(pieOrder);
-                orderRepository.save(cookieOrder);
-                orderRepository.save(cakeOrder);
-                orderRepository.save(breadOrder);
-                orderRepository.save(croissantOrder);
-                orderRepository.save(donutOrder);
-                orderRepository.save(muffinOrder);
+                // remove premature saves of B2C orders (we'll save them after computing totals inside transaction)
 
                 // B2B
                 Cart parisToLondonCart = new Cart();
@@ -734,6 +733,51 @@ public class DbInitializer {
                 cartRepository.save(berlinToAmsterdamCart);
 
                 transactionTemplate.execute(status -> {
+                        // helper lambda to compute subtotal for a cart
+                        Function<Cart, BigDecimal> computeSubtotal =
+                                        cart -> cart.getCartItems().stream()
+                                                        .map(item -> item.getUnitPrice().multiply(java.math.BigDecimal.valueOf(item.getQuantity())))
+                                                        .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+
+                        // retrieve policies
+                        DiscountCodePolicy sweetcrust = discountCodeRegistery.getByCode("SWEETCRUST10");
+                        DiscountCodePolicy noDiscount = discountCodeRegistery.getByCode(null); // fallback
+
+                        // --- B2C: cupcake order with SWEETCRUST10 ---
+                        Cart cartForCupcake = cartRepository.findById(cupcakeCart.getCartId())
+                                        .orElseThrow(() -> new RuntimeException("Cart not found for cupcake order"));
+                        java.math.BigDecimal cupcakeSubtotal = computeSubtotal.apply(cartForCupcake);
+                        java.math.BigDecimal cupcakeTotalAfterDiscount = sweetcrust.applyDiscount(cupcakeSubtotal);
+                        cupcakeOrder.setSubtotal(cupcakeSubtotal);
+                        cupcakeOrder.setTotalAfterDiscount(cupcakeTotalAfterDiscount);
+                        cupcakeOrder.setDiscountRate(sweetcrust.discountRate());
+                        cupcakeOrder.setDiscountCode(sweetcrust.code());
+
+                        // --- B2C: pie order using HAPPYNEWYEAR50 (valid) ---
+                        Cart cartForPie = cartRepository.findById(pieCart.getCartId())
+                                        .orElseThrow(() -> new RuntimeException("Cart not found for pie order"));
+                        java.math.BigDecimal pieSubtotal = computeSubtotal.apply(cartForPie);
+                        DiscountCodePolicy happy = discountCodeRegistery.getByCode("HAPPYNEWYEAR50");
+                        java.math.BigDecimal pieTotalAfter = happy.applyDiscount(pieSubtotal);
+                        pieOrder.setSubtotal(pieSubtotal);
+                        pieOrder.setTotalAfterDiscount(pieTotalAfter);
+                        pieOrder.setDiscountRate(happy.discountRate());
+                        pieOrder.setDiscountCode(happy.code());
+
+                        // --- B2C: cookie order using EXPIRED20 (expired) - we still record the attempted code ---
+                        Cart cartForCookie = cartRepository.findById(cookieCart.getCartId())
+                                        .orElseThrow(() -> new RuntimeException("Cart not found for cookie order"));
+                        java.math.BigDecimal cookieSubtotal = computeSubtotal.apply(cartForCookie);
+                        DiscountCodePolicy expiredPolicy = discountCodeRegistery.getByCode("EXPIRED20");
+                        // registry will return fallback when expired, so totalAfter reflects that
+                        java.math.BigDecimal cookieTotalAfter = expiredPolicy.applyDiscount(cookieSubtotal);
+                        cookieOrder.setSubtotal(cookieSubtotal);
+                        cookieOrder.setTotalAfterDiscount(cookieTotalAfter);
+                        cookieOrder.setDiscountRate(expiredPolicy.discountRate());
+                        // record the code the user attempted to use even if expired
+                        cookieOrder.setDiscountCode("EXPIRED20");
+
+                        // --- B2B orders ---
                         Order parisToLondon = Order.createB2B(
                                         LocalDateTime.now().plusDays(5),
                                         londonShop.getShopId(),
@@ -741,18 +785,14 @@ public class DbInitializer {
                                         parisToLondonCart.getCartId());
 
                         Cart cartForParis = cartRepository.findById(parisToLondon.getCartId())
-                                        .orElseThrow(() -> new RuntimeException(
-                                                        "Cart not found for Paris->London order"));
+                                        .orElseThrow(() -> new RuntimeException("Cart not found for Paris->London order"));
                         BigDecimal parisSubtotal = cartForParis.getCartItems().stream()
-                                        .map(item -> item.getUnitPrice()
-                                                        .multiply(BigDecimal.valueOf(item.getQuantity())))
+                                        .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                                         .reduce(BigDecimal.ZERO, BigDecimal::add);
                         BigDecimal parisTotalAfterDiscount = b2bDiscountPolicy.applyDiscount(parisSubtotal);
                         parisToLondon.setSubtotal(parisSubtotal);
                         parisToLondon.setTotalAfterDiscount(parisTotalAfterDiscount);
                         parisToLondon.setDiscountRate(b2bDiscountPolicy.discountRate());
-                        // set delivery address to the ordering shop's address so it is persisted and
-                        // returned
                         parisToLondon.setDeliveryAddress(londonShop.getAddress());
 
                         Order tokyoToNewYork = Order.createB2B(
@@ -762,11 +802,9 @@ public class DbInitializer {
                                         tokyoToNewYorkCart.getCartId());
 
                         Cart cartForTokyo = cartRepository.findById(tokyoToNewYork.getCartId())
-                                        .orElseThrow(() -> new IllegalStateException(
-                                                        "Cart not found for Tokyo->NewYork order"));
+                                        .orElseThrow(() -> new IllegalStateException("Cart not found for Tokyo->NewYork order"));
                         BigDecimal tokyoSubtotal = cartForTokyo.getCartItems().stream()
-                                        .map(item -> item.getUnitPrice()
-                                                        .multiply(BigDecimal.valueOf(item.getQuantity())))
+                                        .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                                         .reduce(BigDecimal.ZERO, BigDecimal::add);
                         BigDecimal tokyoTotalAfter = b2bDiscountPolicy.applyDiscount(tokyoSubtotal);
                         tokyoToNewYork.setSubtotal(tokyoSubtotal);
@@ -781,11 +819,9 @@ public class DbInitializer {
                                         romeToBarcelonaCart.getCartId());
 
                         Cart cartForRome = cartRepository.findById(romeToBarcelona.getCartId())
-                                        .orElseThrow(() -> new IllegalStateException(
-                                                        "Cart not found for Rome->Barcelona order"));
+                                        .orElseThrow(() -> new IllegalStateException("Cart not found for Rome->Barcelona order"));
                         BigDecimal romeSubtotal = cartForRome.getCartItems().stream()
-                                        .map(item -> item.getUnitPrice()
-                                                        .multiply(BigDecimal.valueOf(item.getQuantity())))
+                                        .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                                         .reduce(BigDecimal.ZERO, BigDecimal::add);
                         BigDecimal romeTotalAfter = b2bDiscountPolicy.applyDiscount(romeSubtotal);
                         romeToBarcelona.setSubtotal(romeSubtotal);
@@ -800,11 +836,9 @@ public class DbInitializer {
                                         berlinToAmsterdamCart.getCartId());
 
                         Cart cartForBerlin = cartRepository.findById(berlinToAmsterdam.getCartId())
-                                        .orElseThrow(() -> new IllegalStateException(
-                                                        "Cart not found for Berlin->Amsterdam order"));
+                                        .orElseThrow(() -> new IllegalStateException("Cart not found for Berlin->Amsterdam order"));
                         BigDecimal berlinSubtotal = cartForBerlin.getCartItems().stream()
-                                        .map(item -> item.getUnitPrice()
-                                                        .multiply(BigDecimal.valueOf(item.getQuantity())))
+                                        .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                                         .reduce(BigDecimal.ZERO, BigDecimal::add);
                         BigDecimal berlinTotalAfter = b2bDiscountPolicy.applyDiscount(berlinSubtotal);
                         berlinToAmsterdam.setSubtotal(berlinSubtotal);
@@ -817,7 +851,30 @@ public class DbInitializer {
                         orderRepository.save(romeToBarcelona);
                         orderRepository.save(berlinToAmsterdam);
 
+                        // ------- B2C: compute totals for remaining B2C orders using the fallback (no discount) -------
+                        java.util.List<Order> b2cOrders = java.util.List.of(cakeOrder, breadOrder,
+                                        croissantOrder, donutOrder, muffinOrder);
+                        for (Order o : b2cOrders) {
+                                Cart cart = cartRepository.findById(o.getCartId())
+                                                .orElseThrow(() -> new RuntimeException("Cart not found for order " + o.getOrderId()));
+                                java.math.BigDecimal subtotal = computeSubtotal.apply(cart);
+                                java.math.BigDecimal totalAfter = noDiscount.applyDiscount(subtotal);
+                                o.setSubtotal(subtotal);
+                                o.setTotalAfterDiscount(totalAfter);
+                                o.setDiscountRate(noDiscount.discountRate());
+                        }
+
+                        // save B2C orders (cupcake + others) after totals are set
+                        orderRepository.save(cupcakeOrder);
+                        orderRepository.save(pieOrder);
+                        orderRepository.save(cookieOrder);
+                        orderRepository.save(cakeOrder);
+                        orderRepository.save(breadOrder);
+                        orderRepository.save(croissantOrder);
+                        orderRepository.save(donutOrder);
+                        orderRepository.save(muffinOrder);
+
                         return null;
                 });
-        }
+         }
 }

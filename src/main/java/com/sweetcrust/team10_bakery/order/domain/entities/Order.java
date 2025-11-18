@@ -59,6 +59,9 @@ public class Order {
     @Column(name = "discount_rate", precision = 5, scale = 4, nullable = true)
     private BigDecimal discountRate;
 
+    @Column(name = "discount_code", length = 50, nullable = true)
+    private String discountCode;
+
     protected Order() {
     }
 
@@ -138,6 +141,8 @@ public class Order {
     public BigDecimal getTotalAfterDiscount() { return totalAfterDiscount; }
 
     public BigDecimal getDiscountRate() { return discountRate; }
+
+    public String getDiscountCode() { return discountCode; }
 
     public void setOrderType(OrderType orderType) {
         if (orderType == null) {
@@ -223,6 +228,14 @@ public class Order {
         }
         // store with reasonable scale (e.g. 4 decimal places)
         this.discountRate = discountRate.setScale(4, RoundingMode.HALF_UP);
+    }
+
+    public void setDiscountCode(String discountCode) {
+        if (discountCode == null || discountCode.isBlank()) {
+            this.discountCode = null;
+            return;
+        }
+        this.discountCode = discountCode.trim().toUpperCase();
     }
 
     public void validateOrder() {
