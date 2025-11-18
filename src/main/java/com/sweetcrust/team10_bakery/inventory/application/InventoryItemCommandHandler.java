@@ -23,6 +23,13 @@ public class InventoryItemCommandHandler {
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new InventoryItemServiceException("variantId", "Variant not found"));
 
+        boolean foundInventoryItem = inventoryItemRepository.existsByShopIdAndVariantId(shop.getShopId(),
+                addStockCommand.variantId());
+
+        if (foundInventoryItem) {
+            throw new InventoryItemServiceException("InventoryItem", "This inventoryItem already exists in this shop");
+        }
+
         InventoryItem inventoryItem = new InventoryItem(shop.getShopId(), addStockCommand.variantId());
 
         return inventoryItemRepository.save(inventoryItem);
