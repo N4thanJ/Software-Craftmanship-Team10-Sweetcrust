@@ -72,12 +72,13 @@ public class Order {
 
     // B2C orders (klant order)
     public static Order createB2C(Address deliveryAddress, LocalDateTime requestedDeliveryDate, UserId customerId,
-            CartId cartId) {
+            CartId cartId, ShopId sourceShopId) {
         Order order = new Order(requestedDeliveryDate);
         order.setOrderType(OrderType.B2C);
         order.setDeliveryAddress(deliveryAddress);
         order.setCustomerId(customerId);
         order.setCartId(cartId);
+        order.setSourceShopId(sourceShopId);
         return order;
     }
 
