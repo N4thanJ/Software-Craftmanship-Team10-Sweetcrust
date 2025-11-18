@@ -32,11 +32,11 @@ public class InventoryItem {
     protected InventoryItem() {
     }
 
-    public InventoryItem(ShopId shopId, VariantId variantId, int quantityOnHand) {
+    public InventoryItem(ShopId shopId, VariantId variantId) {
         this.inventoryItemId = new InventoryItemId();
         setShopId(shopId);
         setVariantId(variantId);
-        setQuantityOnHand(quantityOnHand);
+        setQuantityOnHand(0);
         setQuantityReserved(0);
     }
 

@@ -521,21 +521,19 @@ public class DbInitializer {
                 shopRepository.save(barcelonaShop);
                 shopRepository.save(amsterdamShop);
 
-                InventoryItem parisInventory = new InventoryItem(parisShop.getShopId(), largeApplePie.getVariantId(),
-                                10);
-                InventoryItem tokyoInventory = new InventoryItem(tokyoShop.getShopId(), miniCroissant.getVariantId(),
-                                50);
+                InventoryItem parisInventory = new InventoryItem(parisShop.getShopId(), largeApplePie.getVariantId());
+                InventoryItem tokyoInventory = new InventoryItem(tokyoShop.getShopId(), miniCroissant.getVariantId());
                 InventoryItem newYorkInventory = new InventoryItem(newYorkShop.getShopId(),
-                                regularChocolateCupcake.getVariantId(), 0);
+                                regularChocolateCupcake.getVariantId());
                 InventoryItem londonInventory = new InventoryItem(londonShop.getShopId(),
-                                regularGlazedDonut.getVariantId(), 40);
+                                regularGlazedDonut.getVariantId());
                 InventoryItem berlinInventory = new InventoryItem(berlinShop.getShopId(),
-                                regularChocolateChipCookie.getVariantId(), 20);
-                InventoryItem romeInventory = new InventoryItem(romeShop.getShopId(), largeTiramisu.getVariantId(), 15);
+                                regularChocolateChipCookie.getVariantId());
+                InventoryItem romeInventory = new InventoryItem(romeShop.getShopId(), largeTiramisu.getVariantId());
                 InventoryItem barcelonaInventory = new InventoryItem(barcelonaShop.getShopId(),
-                                regularBlueberryMuffin.getVariantId(), 25);
+                                regularBlueberryMuffin.getVariantId());
                 InventoryItem amsterdamInventory = new InventoryItem(amsterdamShop.getShopId(),
-                                largePumpkinPie.getVariantId(), 10);
+                                largePumpkinPie.getVariantId());
 
                 inventoryItemRepository.save(parisInventory);
                 inventoryItemRepository.save(tokyoInventory);
