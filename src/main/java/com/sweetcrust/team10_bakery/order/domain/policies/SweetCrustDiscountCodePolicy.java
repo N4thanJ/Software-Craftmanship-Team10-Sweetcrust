@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @Component
 public class SweetCrustDiscountCodePolicy implements DiscountCodePolicy {
 
-    private static final BigDecimal RATE = BigDecimal.valueOf(0.10); // 10%
+    private static final BigDecimal RATE = BigDecimal.valueOf(0.10);
 
     @Override
     public BigDecimal applyDiscount(BigDecimal subtotal) {
@@ -28,6 +28,6 @@ public class SweetCrustDiscountCodePolicy implements DiscountCodePolicy {
 
     @Override
     public LocalDate expiryDate() {
-        return LocalDate.MAX; // Expires in 6 months
+        return LocalDate.MAX;
     }
 }

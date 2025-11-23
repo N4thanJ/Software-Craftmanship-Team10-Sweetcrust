@@ -3,6 +3,7 @@ package com.sweetcrust.team10_bakery.order.domain.entities;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+
 import com.sweetcrust.team10_bakery.cart.domain.valueobjects.CartId;
 import com.sweetcrust.team10_bakery.order.domain.OrderDomainException;
 import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderId;
@@ -75,7 +76,7 @@ public class Order {
 
     // B2C orders (klant order)
     public static Order createB2C(Address deliveryAddress, LocalDateTime requestedDeliveryDate, UserId customerId,
-            CartId cartId, ShopId sourceShopId) {
+                                  CartId cartId, ShopId sourceShopId) {
         Order order = new Order(requestedDeliveryDate);
         order.setOrderType(OrderType.B2C);
         order.setDeliveryAddress(deliveryAddress);
@@ -87,7 +88,7 @@ public class Order {
 
     // B2B orders (SweetCrust order bij andere SweetCrust)
     public static Order createB2B(LocalDateTime requestedDeliveryDate, ShopId orderingShopId, ShopId sourceShopId,
-            CartId cartId) {
+                                  CartId cartId) {
         Order order = new Order(requestedDeliveryDate);
         order.setOrderType(OrderType.B2B);
         order.setOrderingShopId(orderingShopId);
@@ -136,13 +137,21 @@ public class Order {
         return cartId;
     }
 
-    public BigDecimal getSubtotal() { return subtotal; }
+    public BigDecimal getSubtotal() {
+        return subtotal;
+    }
 
-    public BigDecimal getTotalAfterDiscount() { return totalAfterDiscount; }
+    public BigDecimal getTotalAfterDiscount() {
+        return totalAfterDiscount;
+    }
 
-    public BigDecimal getDiscountRate() { return discountRate; }
+    public BigDecimal getDiscountRate() {
+        return discountRate;
+    }
 
-    public String getDiscountCode() { return discountCode; }
+    public String getDiscountCode() {
+        return discountCode;
+    }
 
     public void setOrderType(OrderType orderType) {
         if (orderType == null) {
@@ -289,7 +298,7 @@ public class Order {
             throw new OrderDomainException("status",
                     "Orders can only be cancelled up until 1 day before the requested delivery date");
         }
-        
+
         this.status = OrderStatus.CANCELLED;
     }
 }

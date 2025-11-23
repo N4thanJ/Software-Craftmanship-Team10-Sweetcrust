@@ -10,7 +10,7 @@ import com.sweetcrust.team10_bakery.order.application.events.OrderCreatedEvent;
 import com.sweetcrust.team10_bakery.order.application.events.OrderEventPublisher;
 import com.sweetcrust.team10_bakery.order.domain.entities.Order;
 import com.sweetcrust.team10_bakery.order.domain.policies.DiscountCodePolicy;
-import com.sweetcrust.team10_bakery.order.domain.policies.DiscountCodeRegistery;
+import com.sweetcrust.team10_bakery.order.domain.policies.DiscountCodeRegistry;
 import com.sweetcrust.team10_bakery.order.domain.policies.DiscountPolicy;
 import com.sweetcrust.team10_bakery.order.infrastructure.OrderRepository;
 import com.sweetcrust.team10_bakery.shop.domain.entities.Shop;
@@ -34,18 +34,18 @@ public class OrderCommandHandler {
     private final DiscountPolicy discountPolicy;
     private final CartRepository cartRepository;
     private final OrderEventPublisher orderEventPublisher;
-    private final DiscountCodeRegistery discountCodeRegistery;
+    private final DiscountCodeRegistry discountCodeRegistry;
 
     public OrderCommandHandler(OrderRepository orderRepository, ShopRepository shopRepository,
                                UserRepository userRepository, DiscountPolicy discountPolicy, CartRepository cartRepository,
-                               OrderEventPublisher orderEventPublisher, DiscountCodeRegistery discountCodeRegistery) {
+                               OrderEventPublisher orderEventPublisher, DiscountCodeRegistry discountCodeRegistry) {
         this.orderRepository = orderRepository;
         this.shopRepository = shopRepository;
         this.userRepository = userRepository;
         this.discountPolicy = discountPolicy;
         this.cartRepository = cartRepository;
         this.orderEventPublisher = orderEventPublisher;
-        this.discountCodeRegistery = discountCodeRegistery;
+        this.discountCodeRegistry = discountCodeRegistry;
     }
 
     public Order createB2COrder(CreateB2COrderCommand createB2COrderCommand) {
@@ -91,7 +91,7 @@ public class OrderCommandHandler {
             // not provided == null
         }
 
-        DiscountCodePolicy policy = discountCodeRegistery.getByCode(discountCode);
+        DiscountCodePolicy policy = discountCodeRegistry.getByCode(discountCode);
         BigDecimal totalAfterDiscount = policy.applyDiscount(subtotal);
 
         order.setSubtotal(subtotal);

@@ -8,7 +8,7 @@ import java.math.RoundingMode;
 
 @Primary
 @Component
-public class B2BDiscountPolicy implements DiscountPolicy{
+public class B2BDiscountPolicy implements DiscountPolicy {
 
     private final BigDecimal discountRate = new BigDecimal("0.21");
 

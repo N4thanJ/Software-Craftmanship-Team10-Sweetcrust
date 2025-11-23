@@ -29,7 +29,7 @@ public class UserQueryHandlerTest {
     @Test
     void givenGetAllUsers_whenGettingAllUsers_thenAllUsersAreReturned() {
         // given
-        List<User> allUsers = List.of(new User("bread-sheeran", "BreadS123!", "breadsheeran@sweetcrust.com", UserRole.BAKER), new User("toast-malone", "ToastM123!", "toastmalone@sweetcrust.com",  UserRole.CUSTOMER));
+        List<User> allUsers = List.of(new User("bread-sheeran", "BreadS123!", "breadsheeran@sweetcrust.com", UserRole.BAKER), new User("toast-malone", "ToastM123!", "toastmalone@sweetcrust.com", UserRole.CUSTOMER));
         when(userRepository.findAll()).thenReturn(allUsers);
 
         // when
@@ -37,7 +37,7 @@ public class UserQueryHandlerTest {
 
         // then
         assertNotNull(users);
-        assertEquals(2,  users.size());
+        assertEquals(2, users.size());
     }
 
     @Test

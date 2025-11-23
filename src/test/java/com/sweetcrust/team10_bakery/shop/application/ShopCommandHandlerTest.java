@@ -95,8 +95,8 @@ public class ShopCommandHandlerTest {
     @Test
     void givenExistingShopName_whenCreateShop_thenShopServiceExceptionIsThrown() {
         // given
-        UserId  userId = new UserId();
-        User adminUser = new User("baker-betty", "SweetDough123!","betty@bakery.com", UserRole.ADMIN);
+        UserId userId = new UserId();
+        User adminUser = new User("baker-betty", "SweetDough123!", "betty@bakery.com", UserRole.ADMIN);
         Address address = Address.builder()
                 .setStreet("123 Sourdough Street")
                 .setCity("Bread City")
@@ -129,7 +129,7 @@ public class ShopCommandHandlerTest {
     void givenNonAdminUser_whenCreateShop_thenShopServiceExceptionIsThrown() {
         // given
         UserId userId = new UserId();
-        User regularUser = new User("bread-enthusiast","ILoveBread123!","breadlover@bakery.com", UserRole.BAKER);
+        User regularUser = new User("bread-enthusiast", "ILoveBread123!", "breadlover@bakery.com", UserRole.BAKER);
         Address address = Address.builder()
                 .setStreet("123 Sourdough Street")
                 .setCity("Bread City")
