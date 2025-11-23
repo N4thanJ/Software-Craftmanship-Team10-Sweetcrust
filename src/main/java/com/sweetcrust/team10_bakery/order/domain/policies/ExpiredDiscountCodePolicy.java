@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Component
-public class ExpiredDiscountCodePolicy implements DiscountCodePolicy{
+public class ExpiredDiscountCodePolicy implements DiscountCodePolicy {
 
     private static final BigDecimal RATE = BigDecimal.valueOf(0.20); // 20%
     private static final LocalDate EXPIRY = LocalDate.of(2023, 12, 31);
