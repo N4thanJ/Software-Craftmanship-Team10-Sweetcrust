@@ -1,10 +1,10 @@
 package com.sweetcrust.team10_bakery.user.domain;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.sweetcrust.team10_bakery.user.domain.entities.User;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserRole;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class UserTest {
 

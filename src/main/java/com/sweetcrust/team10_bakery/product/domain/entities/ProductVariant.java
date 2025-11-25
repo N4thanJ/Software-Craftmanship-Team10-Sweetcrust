@@ -5,7 +5,6 @@ import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductId;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductSize;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.VariantId;
 import jakarta.persistence.*;
-
 import java.math.BigDecimal;
 
 @Entity

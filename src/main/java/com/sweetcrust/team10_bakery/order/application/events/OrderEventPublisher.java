@@ -3,11 +3,9 @@ package com.sweetcrust.team10_bakery.order.application.events;
 import com.sweetcrust.team10_bakery.shared.utils.Event;
 import com.sweetcrust.team10_bakery.shared.utils.EventPublisher;
 import com.sweetcrust.team10_bakery.shared.utils.Observer;
-
-import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.stereotype.Component;
 
 @Component
 public class OrderEventPublisher implements EventPublisher {

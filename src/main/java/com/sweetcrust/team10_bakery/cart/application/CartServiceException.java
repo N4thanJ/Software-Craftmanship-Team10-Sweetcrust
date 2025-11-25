@@ -4,7 +4,7 @@ import com.sweetcrust.team10_bakery.shared.application.ServiceException;
 
 public class CartServiceException extends ServiceException {
 
-    public CartServiceException(String field, String message) {
-        super(field, message);
-    }
+  public CartServiceException(String field, String message) {
+    super(field, message);
+  }
 }

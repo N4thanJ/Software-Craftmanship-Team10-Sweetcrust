@@ -2,9 +2,8 @@ package com.sweetcrust.team10_bakery.product.domain.valueobjects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.springframework.util.Assert;
-
 import java.util.UUID;
+import org.springframework.util.Assert;
 
 public record ProductId(UUID id) {
 

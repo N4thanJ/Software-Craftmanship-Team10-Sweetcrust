@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public interface DiscountPolicy {
 
-    BigDecimal applyDiscount(BigDecimal subtotal);
+  BigDecimal applyDiscount(BigDecimal subtotal);
 
-    BigDecimal discountRate();
+  BigDecimal discountRate();
 }

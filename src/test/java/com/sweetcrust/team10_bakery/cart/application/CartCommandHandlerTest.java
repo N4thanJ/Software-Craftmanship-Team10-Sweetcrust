@@ -1,5 +1,8 @@
 package com.sweetcrust.team10_bakery.cart.application;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.sweetcrust.team10_bakery.cart.application.commands.AddItemToCartCommand;
 import com.sweetcrust.team10_bakery.cart.application.commands.CreateCartCommand;
 import com.sweetcrust.team10_bakery.cart.application.commands.RemoveItemFromCartCommand;
@@ -13,19 +16,15 @@ import com.sweetcrust.team10_bakery.product.domain.valueobjects.VariantId;
 import com.sweetcrust.team10_bakery.product.infrastructure.ProductRepository;
 import com.sweetcrust.team10_bakery.product.infrastructure.ProductVariantRepository;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserId;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CartCommandHandlerTest {

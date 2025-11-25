@@ -9,6 +9,5 @@ import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopId;
 
 public interface InventoryItemRepository extends JpaRepository<InventoryItem, InventoryItemId> {
 
-    boolean existsByShopIdAndVariantId(ShopId shopId, VariantId variantId);
-
+  boolean existsByShopIdAndVariantId(ShopId shopId, VariantId variantId);
 }

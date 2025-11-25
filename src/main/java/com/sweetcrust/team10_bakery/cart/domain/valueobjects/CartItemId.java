@@ -2,27 +2,26 @@ package com.sweetcrust.team10_bakery.cart.domain.valueobjects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.springframework.util.Assert;
-
 import java.util.UUID;
+import org.springframework.util.Assert;
 
 public record CartItemId(UUID id) {
 
-    public CartItemId {
-        Assert.notNull(id, "id must not be null");
-    }
+  public CartItemId {
+    Assert.notNull(id, "id must not be null");
+  }
 
-    public CartItemId() {
-        this(UUID.randomUUID());
-    }
+  public CartItemId() {
+    this(UUID.randomUUID());
+  }
 
-    @JsonCreator
-    public CartItemId(String id) {
-        this(UUID.fromString(id));
-    }
+  @JsonCreator
+  public CartItemId(String id) {
+    this(UUID.fromString(id));
+  }
 
-    @JsonValue
-    public String asString() {
-        return id.toString();
-    }
+  @JsonValue
+  public String asString() {
+    return id.toString();
+  }
 }

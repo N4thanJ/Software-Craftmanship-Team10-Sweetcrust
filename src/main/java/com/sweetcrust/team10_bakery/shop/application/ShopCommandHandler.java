@@ -11,33 +11,36 @@ import org.springframework.stereotype.Service;
 @Service
 public class ShopCommandHandler {
 
-    private final ShopRepository shopRepository;
-    private final UserRepository userRepository;
+  private final ShopRepository shopRepository;
+  private final UserRepository userRepository;
 
-    public ShopCommandHandler(ShopRepository shopRepository,  UserRepository userRepository) {
-        this.shopRepository = shopRepository;
-        this.userRepository = userRepository;
+  public ShopCommandHandler(ShopRepository shopRepository, UserRepository userRepository) {
+    this.shopRepository = shopRepository;
+    this.userRepository = userRepository;
+  }
+
+  public Shop createShop(AddShopCommand addShopCommand) {
+    User user =
+        userRepository
+            .findById(addShopCommand.userId())
+            .orElseThrow(() -> new ShopServiceException("userId", "User not found"));
+
+    boolean existsByName = shopRepository.existsByName(addShopCommand.name());
+    if (existsByName) {
+      throw new ShopServiceException("name", "Shop already exists");
     }
 
-    public Shop createShop(AddShopCommand addShopCommand) {
-        User user = userRepository.findById(addShopCommand.userId())
-                .orElseThrow(() -> new ShopServiceException("userId", "User not found"));
-
-        boolean existsByName = shopRepository.existsByName(addShopCommand.name());
-        if (existsByName) {
-            throw new ShopServiceException("name", "Shop already exists");
-        }
-
-        if (user.getRole() != UserRole.ADMIN) {
-            throw new ShopServiceException("userRole", "only admins can create a new shop");
-        }
-
-        Shop shop = new Shop(
-                addShopCommand.name(),
-                addShopCommand.shopAddress(),
-                addShopCommand.email(),
-                addShopCommand.countryCode());
-
-        return shopRepository.save(shop);
+    if (user.getRole() != UserRole.ADMIN) {
+      throw new ShopServiceException("userRole", "only admins can create a new shop");
     }
+
+    Shop shop =
+        new Shop(
+            addShopCommand.name(),
+            addShopCommand.shopAddress(),
+            addShopCommand.email(),
+            addShopCommand.countryCode());
+
+    return shopRepository.save(shop);
+  }
 }

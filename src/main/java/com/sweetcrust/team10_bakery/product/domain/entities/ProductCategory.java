@@ -10,45 +10,43 @@ import jakarta.persistence.Table;
 @Table(name = "product_categories")
 public class ProductCategory {
 
-    @EmbeddedId
-    private CategoryId categoryId;
+  @EmbeddedId private CategoryId categoryId;
 
-    private String name;
+  private String name;
 
-    private String description;
+  private String description;
 
-    protected  ProductCategory() {
+  protected ProductCategory() {}
+
+  public ProductCategory(String name, String description) {
+    this.categoryId = new CategoryId();
+    setName(name);
+    setDescription(description);
+  }
+
+  public CategoryId getCategoryId() {
+    return categoryId;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setName(String name) {
+    if (name == null || name.isBlank()) {
+      throw new ProductDomainException("category", "name should not be null or blank");
     }
+    this.name = name;
+  }
 
-    public ProductCategory(String name, String description) {
-        this.categoryId = new CategoryId();
-        setName(name);
-        setDescription(description);
+  public void setDescription(String description) {
+    if (description == null || description.isBlank()) {
+      throw new ProductDomainException("category", "description should not be null or blank");
     }
-
-    public CategoryId getCategoryId() {
-        return categoryId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setName(String name) {
-        if  (name == null || name.isBlank()) {
-            throw new ProductDomainException("category", "name should not be null or blank");
-        }
-        this.name = name;
-    }
-
-    public void setDescription(String description) {
-        if (description == null || description.isBlank()) {
-            throw new ProductDomainException("category", "description should not be null or blank");
-        }
-        this.description = description;
-    }
+    this.description = description;
+  }
 }

@@ -6,10 +6,8 @@ import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserId;
 import java.time.LocalDateTime;
 
 public record CreateB2COrderCommand(
-                Address deliveryAddress,
-                LocalDateTime requestedDeliveryDate,
-                UserId customerId,
-                CartId cartId,
-                String discountCode
-) {
-}
+    Address deliveryAddress,
+    LocalDateTime requestedDeliveryDate,
+    UserId customerId,
+    CartId cartId,
+    String discountCode) {}
