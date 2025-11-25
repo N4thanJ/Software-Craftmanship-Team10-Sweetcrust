@@ -3,24 +3,22 @@ package com.sweetcrust.team10_bakery.product.application;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
+import com.sweetcrust.team10_bakery.product.domain.entities.Product;
+import com.sweetcrust.team10_bakery.product.domain.entities.ProductCategory;
+import com.sweetcrust.team10_bakery.product.domain.entities.ProductVariant;
+import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductId;
+import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductSize;
+import com.sweetcrust.team10_bakery.product.infrastructure.ProductRepository;
+import com.sweetcrust.team10_bakery.product.presentation.dto.ProductResponseDto;
+import com.sweetcrust.team10_bakery.product.presentation.dto.ProductVariantResponseDto;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-
-import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductId;
-import com.sweetcrust.team10_bakery.product.presentation.dto.ProductResponseDto;
-import com.sweetcrust.team10_bakery.product.presentation.dto.ProductVariantResponseDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import com.sweetcrust.team10_bakery.product.domain.entities.Product;
-import com.sweetcrust.team10_bakery.product.domain.entities.ProductCategory;
-import com.sweetcrust.team10_bakery.product.domain.entities.ProductVariant;
-import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductSize;
-import com.sweetcrust.team10_bakery.product.infrastructure.ProductRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductQueryHandlerTest {

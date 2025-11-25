@@ -18,12 +18,11 @@ import com.sweetcrust.team10_bakery.shop.infrastructure.ShopRepository;
 import com.sweetcrust.team10_bakery.user.domain.entities.User;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserRole;
 import com.sweetcrust.team10_bakery.user.infrastructure.UserRepository;
-import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import org.springframework.stereotype.Service;
 
 @Service
 public class OrderCommandHandler {

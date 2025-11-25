@@ -1,10 +1,9 @@
 package com.sweetcrust.team10_bakery.order.domain.policies;
 
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Component;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Component;
 
 @Primary
 @Component

@@ -1,5 +1,10 @@
 package com.sweetcrust.team10_bakery.order.application;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import com.sweetcrust.team10_bakery.cart.domain.entities.Cart;
 import com.sweetcrust.team10_bakery.cart.domain.valueobjects.CartId;
 import com.sweetcrust.team10_bakery.cart.infrastructure.CartRepository;
@@ -20,21 +25,15 @@ import com.sweetcrust.team10_bakery.user.domain.entities.User;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserId;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserRole;
 import com.sweetcrust.team10_bakery.user.infrastructure.UserRepository;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderCommandHandlerTest {

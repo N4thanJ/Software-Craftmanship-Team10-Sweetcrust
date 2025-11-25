@@ -2,11 +2,10 @@ package com.sweetcrust.team10_bakery.order.application;
 
 import com.sweetcrust.team10_bakery.order.domain.entities.Order;
 import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderId;
-import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopId;
 import com.sweetcrust.team10_bakery.order.infrastructure.OrderRepository;
-import org.springframework.stereotype.Service;
-
+import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopId;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Service
 public class OrderQueryHandler {

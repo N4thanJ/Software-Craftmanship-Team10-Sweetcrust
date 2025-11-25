@@ -1,21 +1,20 @@
 package com.sweetcrust.team10_bakery.user.application;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+
 import com.sweetcrust.team10_bakery.user.domain.entities.User;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserId;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserRole;
 import com.sweetcrust.team10_bakery.user.infrastructure.UserRepository;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class UserQueryHandlerTest {

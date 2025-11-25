@@ -9,11 +9,10 @@ import com.sweetcrust.team10_bakery.product.application.commands.MarkProductUnav
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductId;
 import com.sweetcrust.team10_bakery.product.presentation.dto.ProductResponseDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.UUID;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/product")

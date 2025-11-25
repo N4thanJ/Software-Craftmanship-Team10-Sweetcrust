@@ -6,11 +6,10 @@ import com.sweetcrust.team10_bakery.user.application.commands.AddUserCommand;
 import com.sweetcrust.team10_bakery.user.domain.entities.User;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserId;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.UUID;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")

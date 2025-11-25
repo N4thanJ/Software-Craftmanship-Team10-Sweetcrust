@@ -4,10 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
-
 import com.sweetcrust.team10_bakery.product.application.commands.*;
 import com.sweetcrust.team10_bakery.product.domain.entities.Product;
 import com.sweetcrust.team10_bakery.product.domain.entities.ProductCategory;
@@ -17,6 +13,9 @@ import com.sweetcrust.team10_bakery.product.infrastructure.ProductRepository;
 import com.sweetcrust.team10_bakery.user.domain.entities.User;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserRole;
 import com.sweetcrust.team10_bakery.user.infrastructure.UserRepository;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

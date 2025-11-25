@@ -1,24 +1,19 @@
 package com.sweetcrust.team10_bakery.inventory.presentation;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.sweetcrust.team10_bakery.inventory.application.InventoryItemCommandHandler;
 import com.sweetcrust.team10_bakery.inventory.application.InventoryItemQueryHandler;
 import com.sweetcrust.team10_bakery.inventory.application.commands.AddStockCommand;
 import com.sweetcrust.team10_bakery.inventory.domain.entities.InventoryItem;
 import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopId;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import java.util.List;
-import java.util.UUID;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/inventory")
