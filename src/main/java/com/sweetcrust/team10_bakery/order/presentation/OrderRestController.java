@@ -3,6 +3,7 @@ package com.sweetcrust.team10_bakery.order.presentation;
 import com.sweetcrust.team10_bakery.order.application.OrderCommandHandler;
 import com.sweetcrust.team10_bakery.order.application.OrderQueryHandler;
 import com.sweetcrust.team10_bakery.order.application.commands.CancelOrderCommand;
+import com.sweetcrust.team10_bakery.order.application.commands.ConfirmOrderCommand;
 import com.sweetcrust.team10_bakery.order.application.commands.CreateB2BOrderCommand;
 import com.sweetcrust.team10_bakery.order.application.commands.CreateB2COrderCommand;
 import com.sweetcrust.team10_bakery.order.application.queries.GetAllOrdersByUserIdQuery;
@@ -77,14 +78,8 @@ public class OrderRestController {
 
   @PostMapping("/{orderId}/confirm")
   public ResponseEntity<Order> confirmOrder(
-      @PathVariable("orderId") UUID orderIdStr,
-      @RequestParam("sourceShopId") UUID sourceShopIdStr,
-      @RequestParam("userId") UUID userIdStr) {
-    OrderId orderId = new OrderId(orderIdStr);
-    ShopId sourceShopId = new ShopId(sourceShopIdStr);
-    UserId userId = new UserId(userIdStr);
-
-    Order confirmed = orderCommandHandler.confirmOrder(orderId, sourceShopId, userId);
+          @RequestBody ConfirmOrderCommand confirmOrderCommand) {
+    Order confirmed = orderCommandHandler.confirmOrder(confirmOrderCommand);
     return ResponseEntity.ok(confirmed);
   }
 

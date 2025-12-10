@@ -4,6 +4,7 @@ import com.sweetcrust.team10_bakery.cart.domain.entities.Cart;
 import com.sweetcrust.team10_bakery.cart.infrastructure.CartItemRepository;
 import com.sweetcrust.team10_bakery.cart.infrastructure.CartRepository;
 import com.sweetcrust.team10_bakery.order.application.commands.CancelOrderCommand;
+import com.sweetcrust.team10_bakery.order.application.commands.ConfirmOrderCommand;
 import com.sweetcrust.team10_bakery.order.application.commands.CreateB2BOrderCommand;
 import com.sweetcrust.team10_bakery.order.application.commands.CreateB2COrderCommand;
 import com.sweetcrust.team10_bakery.order.application.events.*;
@@ -11,14 +12,11 @@ import com.sweetcrust.team10_bakery.order.domain.entities.Order;
 import com.sweetcrust.team10_bakery.order.domain.policies.DiscountCodePolicy;
 import com.sweetcrust.team10_bakery.order.domain.policies.DiscountCodeRegistry;
 import com.sweetcrust.team10_bakery.order.domain.policies.DiscountPolicy;
-import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderId;
 import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderStatus;
 import com.sweetcrust.team10_bakery.order.infrastructure.OrderRepository;
 import com.sweetcrust.team10_bakery.shop.domain.entities.Shop;
-import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopId;
 import com.sweetcrust.team10_bakery.shop.infrastructure.ShopRepository;
 import com.sweetcrust.team10_bakery.user.domain.entities.User;
-import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserId;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserRole;
 import com.sweetcrust.team10_bakery.user.infrastructure.UserRepository;
 import java.math.BigDecimal;
@@ -183,15 +181,15 @@ public class OrderCommandHandler {
     return savedOrder;
   }
 
-  public Order confirmOrder(OrderId orderId, ShopId sourceShopId, UserId userId) {
+  public Order confirmOrder(ConfirmOrderCommand command) {
     Order order =
         orderRepository
-            .findById(orderId)
+            .findById(command.orderId())
             .orElseThrow(() -> new OrderServiceException("orderId", "Order not found"));
 
     Shop sourceShop =
         shopRepository
-            .findById(sourceShopId)
+            .findById(command.sourceShopId())
             .orElseThrow(() -> new OrderServiceException("sourceShopId", "Source shop not found"));
 
     if (!order.getSourceShopId().equals(sourceShop.getShopId())) {
@@ -201,11 +199,11 @@ public class OrderCommandHandler {
 
     User user =
         userRepository
-            .findById(userId)
+            .findById(command.sourceShopOwnerId())
             .orElseThrow(() -> new OrderServiceException("userId", "User not found"));
 
-    if (user.getRole() != UserRole.BAKER && user.getRole() != UserRole.ADMIN) {
-      throw new OrderServiceException("userId", "Only baker or admin users can confirm orders");
+    if (!user.getUserId().equals(sourceShop.getOwnerId())) {
+      throw new OrderServiceException("userId", "Only the source shop owner can confirm an order for their shop.");
     }
 
     order.confirm();

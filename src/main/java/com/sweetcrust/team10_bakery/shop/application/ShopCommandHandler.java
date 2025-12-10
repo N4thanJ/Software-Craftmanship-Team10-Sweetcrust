@@ -39,8 +39,8 @@ public class ShopCommandHandler {
             addShopCommand.name(),
             addShopCommand.shopAddress(),
             addShopCommand.email(),
-            addShopCommand.countryCode());
-
+            addShopCommand.countryCode(),
+            addShopCommand.userId());
     return shopRepository.save(shop);
   }
 }
