@@ -7,6 +7,7 @@ import com.sweetcrust.team10_bakery.cart.application.commands.CreateCartCommand;
 import com.sweetcrust.team10_bakery.cart.application.commands.RemoveItemFromCartCommand;
 import com.sweetcrust.team10_bakery.cart.domain.entities.Cart;
 import com.sweetcrust.team10_bakery.cart.domain.valueobjects.CartItemId;
+import com.sweetcrust.team10_bakery.cart.presentation.dto.CartResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +29,8 @@ public class CartRestController {
   }
 
   @GetMapping()
-  public ResponseEntity<Iterable<Cart>> getAllCarts() {
-    List<Cart> carts = cartQueryHandler.getAllCarts();
+  public ResponseEntity<Iterable<CartResponse>> getAllCarts() {
+    List<CartResponse> carts = cartQueryHandler.getAllCarts();
     return ResponseEntity.ok(carts);
   }
 
