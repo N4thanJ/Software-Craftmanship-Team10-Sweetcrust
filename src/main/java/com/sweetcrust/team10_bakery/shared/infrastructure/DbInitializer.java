@@ -734,7 +734,8 @@ public class DbInitializer {
                 .setCountry("France")
                 .build(),
             "bonjour@sweetcrust.com",
-            new CountryCode("FR"));
+            new CountryCode("FR"),
+            bakerBill.getUserId());
 
     Shop tokyoShop =
         new Shop(
@@ -746,7 +747,8 @@ public class DbInitializer {
                 .setCountry("Japan")
                 .build(),
             "konnichiwa@sweetcrust.com",
-            new CountryCode("JP"));
+            new CountryCode("JP"),
+            bakerBella.getUserId());
 
     Shop newYorkShop =
         new Shop(
@@ -758,7 +760,8 @@ public class DbInitializer {
                 .setCountry("United States")
                 .build(),
             "bigapple@sweetcrust.com",
-            new CountryCode("US"));
+            new CountryCode("US"),
+            bakerBenny.getUserId());
 
     Shop londonShop =
         new Shop(
@@ -770,7 +773,8 @@ public class DbInitializer {
                 .setCountry("United Kingdom")
                 .build(),
             "cheerio@sweetcrust.com",
-            new CountryCode("GB"));
+            new CountryCode("GB"),
+            bakerBill.getUserId());
 
     Shop berlinShop =
         new Shop(
@@ -782,7 +786,8 @@ public class DbInitializer {
                 .setCountry("Germany")
                 .build(),
             "gutentag@sweetcrust.com",
-            new CountryCode("DE"));
+            new CountryCode("DE"),
+            bakerBetty.getUserId());
 
     Shop romeShop =
         new Shop(
@@ -794,7 +799,8 @@ public class DbInitializer {
                 .setCountry("Italy")
                 .build(),
             "ciao@sweetcrust.com",
-            new CountryCode("IT"));
+            new CountryCode("IT"),
+            bakerBella.getUserId());
 
     Shop barcelonaShop =
         new Shop(
@@ -806,7 +812,8 @@ public class DbInitializer {
                 .setCountry("Spain")
                 .build(),
             "hola@sweetcrust.com",
-            new CountryCode("ES"));
+            new CountryCode("ES"),
+            bakerBenny.getUserId());
 
     Shop amsterdamShop =
         new Shop(
@@ -818,7 +825,8 @@ public class DbInitializer {
                 .setCountry("Netherlands")
                 .build(),
             "hallo@sweetcrust.com",
-            new CountryCode("NL"));
+            new CountryCode("NL"),
+            bakerBetty.getUserId());
 
     shopRepository.save(parisShop);
     shopRepository.save(tokyoShop);

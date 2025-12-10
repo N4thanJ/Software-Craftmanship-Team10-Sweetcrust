@@ -4,16 +4,21 @@ import com.sweetcrust.team10_bakery.shared.domain.valueobjects.Address;
 import com.sweetcrust.team10_bakery.shop.domain.ShopDomainException;
 import com.sweetcrust.team10_bakery.shop.domain.valueobjects.CountryCode;
 import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopId;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.sweetcrust.team10_bakery.user.domain.entities.User;
+import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserId;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "shops")
 public class Shop {
 
   @EmbeddedId private ShopId shopId;
+
+  @Embedded
+  @AttributeOverrides({
+          @AttributeOverride(name = "id", column = @Column(name = "owner_user_id"))
+  })
+  private UserId ownerId;
 
   private String name;
 
@@ -25,17 +30,20 @@ public class Shop {
 
   protected Shop() {}
 
-  public Shop(String name, Address address, String email, CountryCode countryCode) {
+  public Shop(String name, Address address, String email, CountryCode countryCode, UserId ownerId) {
     this.shopId = new ShopId();
     setName(name);
     setAddress(address);
     setEmail(email);
     setCountryCode(countryCode);
+    setOwnerId(ownerId);
   }
 
   public ShopId getShopId() {
     return shopId;
   }
+
+  public UserId getOwnerId() { return ownerId; }
 
   public String getName() {
     return name;
@@ -51,6 +59,13 @@ public class Shop {
 
   public CountryCode getCountryCode() {
     return countryCode;
+  }
+
+  public void setOwnerId(UserId newOwnerId) {
+    if (newOwnerId == null) {
+      throw new ShopDomainException("ownerId", "ownerId should not be null");
+    }
+    this.ownerId = newOwnerId;
   }
 
   public void setName(String name) {
