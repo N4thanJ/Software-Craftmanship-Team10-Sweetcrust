@@ -6,6 +6,7 @@ import com.sweetcrust.team10_bakery.cart.domain.valueobjects.CartId;
 import com.sweetcrust.team10_bakery.cart.domain.valueobjects.CartItemId;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserId;
 import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,71 +15,29 @@ import java.util.List;
 @Table(name = "carts")
 public class Cart {
 
-  @EmbeddedId private CartId cartId;
+    @EmbeddedId
+    private CartId cartId;
 
-  @Embedded
-  @AttributeOverride(name = "id", column = @Column(name = "owner_id"))
-  private UserId ownerId;
+    @Embedded
+    @AttributeOverride(name = "id", column = @Column(name = "owner_id"))
+    private UserId ownerId;
 
-  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumn(name = "cart_id", nullable = false)
-  private final List<CartItem> cartItems = new ArrayList<>();
-
-  public Cart() {
-    this.cartId = new CartId();
-  }
-
-  public CartId getCartId() {
-    return cartId;
-  }
-
-  public UserId getOwnerId() {
-    return ownerId;
-  }
-
-  public void setOwnerId(UserId ownerId) {
-    if (ownerId == null) {
-      throw new CartDomainException("ownerId", "ownerId must not be null");
-    }
-    this.ownerId = ownerId;
-  }
-
-  public List<CartItem> getCartItems() {
-    return List.copyOf(cartItems);
-  }
-
-  public void addCartItem(CartItem newItem) {
-    if (newItem == null) {
-      throw new CartDomainException("cartItem", "cartItem must not be null");
+    public Cart() {
+        this.cartId = new CartId();
     }
 
-    cartItems.stream()
-        .filter(item -> item.isSameVariant(newItem.getVariantId()))
-        .findFirst()
-        .ifPresentOrElse(
-            existingItem -> existingItem.increaseQuantity(newItem.getQuantity()),
-            () -> cartItems.add(newItem));
-  }
-
-  public void removeCartItem(CartItemId cartItemId) {
-    if (cartItemId == null) {
-      throw new CartDomainException("cartItemId", "cartItemId must not be null");
+    public CartId getCartId() {
+        return cartId;
     }
 
-    boolean removed = cartItems.removeIf(item -> item.getCartItemId().equals(cartItemId));
-
-    if (!removed) {
-      throw new CartDomainException("cartItemId", "CartItem not found");
+    public UserId getOwnerId() {
+        return ownerId;
     }
-  }
 
-  @JsonIgnore
-  public boolean isEmpty() {
-    return cartItems.isEmpty();
-  }
-
-  @Transient
-  public BigDecimal getCartTotalPrice() {
-    return cartItems.stream().map(CartItem::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
-  }
+    public void setOwnerId(UserId ownerId) {
+        if (ownerId == null) {
+            throw new CartDomainException("ownerId", "ownerId must not be null");
+        }
+        this.ownerId = ownerId;
+    }
 }

@@ -1,6 +1,7 @@
 package com.sweetcrust.team10_bakery.order.application;
 
 import com.sweetcrust.team10_bakery.cart.domain.entities.Cart;
+import com.sweetcrust.team10_bakery.cart.infrastructure.CartItemRepository;
 import com.sweetcrust.team10_bakery.cart.infrastructure.CartRepository;
 import com.sweetcrust.team10_bakery.order.application.commands.CancelOrderCommand;
 import com.sweetcrust.team10_bakery.order.application.commands.CreateB2BOrderCommand;
@@ -18,10 +19,12 @@ import com.sweetcrust.team10_bakery.shop.infrastructure.ShopRepository;
 import com.sweetcrust.team10_bakery.user.domain.entities.User;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserRole;
 import com.sweetcrust.team10_bakery.user.infrastructure.UserRepository;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,10 +37,11 @@ public class OrderCommandHandler {
     private final CartRepository cartRepository;
     private final OrderEventPublisher orderEventPublisher;
     private final DiscountCodeRegistry discountCodeRegistry;
+    private final CartItemRepository cartItemRepository;
 
     public OrderCommandHandler(OrderRepository orderRepository, ShopRepository shopRepository,
                                UserRepository userRepository, DiscountPolicy discountPolicy, CartRepository cartRepository,
-                               OrderEventPublisher orderEventPublisher, DiscountCodeRegistry discountCodeRegistry) {
+                               OrderEventPublisher orderEventPublisher, DiscountCodeRegistry discountCodeRegistry, CartItemRepository cartItemRepository) {
         this.orderRepository = orderRepository;
         this.shopRepository = shopRepository;
         this.userRepository = userRepository;
@@ -45,6 +49,7 @@ public class OrderCommandHandler {
         this.cartRepository = cartRepository;
         this.orderEventPublisher = orderEventPublisher;
         this.discountCodeRegistry = discountCodeRegistry;
+        this.cartItemRepository = cartItemRepository;
     }
 
     public Order createB2COrder(CreateB2COrderCommand createB2COrderCommand) {
@@ -79,7 +84,7 @@ public class OrderCommandHandler {
                 createB2COrderCommand.cartId(),
                 shop.getShopId());
 
-        BigDecimal subtotal = cart.getCartItems().stream()
+        BigDecimal subtotal = cartItemRepository.findByCartId(cart.getCartId()).stream()
                 .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -127,7 +132,7 @@ public class OrderCommandHandler {
             throw new OrderServiceException("userId", "Only users with baker role can make B2B orders");
         }
 
-        BigDecimal subtotal = cart.getCartItems().stream()
+        BigDecimal subtotal = cartItemRepository.findByCartId(cart.getCartId()).stream()
                 .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -152,7 +157,7 @@ public class OrderCommandHandler {
     public Order cancelOrder(CancelOrderCommand cancelOrderCommand) {
         Order order = orderRepository.findById(cancelOrderCommand.orderId())
                 .orElseThrow(() -> new OrderServiceException("orderId", "Order not found"));
-        
+
         User user = userRepository.findById(cancelOrderCommand.userId())
                 .orElseThrow(() -> new OrderServiceException("userId", "User not found"));
 
@@ -164,7 +169,7 @@ public class OrderCommandHandler {
             Shop orderingShop = shopRepository.findById(order.getOrderingShopId())
                     .orElseThrow(() -> new OrderServiceException("orderingShopId", "Shop not found"));
             Shop sourceShop = shopRepository.findById(order.getSourceShopId())
-                    .orElseThrow(() -> new OrderServiceException("sourceShopId", "Shop not found")); 
+                    .orElseThrow(() -> new OrderServiceException("sourceShopId", "Shop not found"));
 
             order.cancel();
 

@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 
 import com.sweetcrust.team10_bakery.cart.domain.entities.Cart;
 import com.sweetcrust.team10_bakery.cart.domain.valueobjects.CartId;
+import com.sweetcrust.team10_bakery.cart.infrastructure.CartItemRepository;
 import com.sweetcrust.team10_bakery.cart.infrastructure.CartRepository;
 import com.sweetcrust.team10_bakery.order.application.commands.CreateB2BOrderCommand;
 import com.sweetcrust.team10_bakery.order.application.commands.CreateB2COrderCommand;
@@ -25,10 +26,12 @@ import com.sweetcrust.team10_bakery.user.domain.entities.User;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserId;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserRole;
 import com.sweetcrust.team10_bakery.user.infrastructure.UserRepository;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -43,6 +46,9 @@ public class OrderCommandHandlerTest {
 
     @Mock
     private ShopRepository shopRepository;
+
+    @Mock
+    private CartItemRepository cartItemRepository;
 
     @Mock
     private UserRepository userRepository;
@@ -102,7 +108,7 @@ public class OrderCommandHandlerTest {
         when(shopRepository.findAll()).thenReturn(List.of(shop));
         when(shop.getShopId()).thenReturn(new ShopId());
 
-        when(cart.getCartItems()).thenReturn(List.of());
+        when(cartItemRepository.findByCartId(cart.getCartId())).thenReturn(List.of());
 
         when(discountCodeRegistry.getByCode(discountCode)).thenReturn(policy);
         when(policy.applyDiscount(any())).thenReturn(BigDecimal.ZERO);
@@ -281,7 +287,6 @@ public class OrderCommandHandlerTest {
 
         Cart cart = mock(Cart.class);
         when(cartRepository.findById(cartId)).thenReturn(Optional.of(cart));
-        when(cart.getCartItems()).thenReturn(List.of());
 
         lenient().when(discountPolicy.applyDiscount(any())).thenReturn(BigDecimal.ZERO);
         lenient().when(discountPolicy.discountRate()).thenReturn(BigDecimal.ZERO);
