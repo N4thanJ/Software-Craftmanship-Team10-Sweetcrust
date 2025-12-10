@@ -9,19 +9,22 @@ import com.sweetcrust.team10_bakery.cart.application.commands.RemoveItemFromCart
 import com.sweetcrust.team10_bakery.cart.domain.entities.Cart;
 import com.sweetcrust.team10_bakery.cart.domain.entities.CartItem;
 import com.sweetcrust.team10_bakery.cart.domain.valueobjects.CartItemId;
+import com.sweetcrust.team10_bakery.cart.infrastructure.CartItemRepository;
 import com.sweetcrust.team10_bakery.cart.infrastructure.CartRepository;
 import com.sweetcrust.team10_bakery.product.domain.entities.Product;
 import com.sweetcrust.team10_bakery.product.domain.entities.ProductVariant;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.VariantId;
-import com.sweetcrust.team10_bakery.product.infrastructure.ProductRepository;
 import com.sweetcrust.team10_bakery.product.infrastructure.ProductVariantRepository;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserId;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -33,7 +36,7 @@ public class CartCommandHandlerTest {
     private CartRepository cartRepository;
 
     @Mock
-    private ProductRepository productRepository;
+    private CartItemRepository cartItemRepository;
 
     @Mock
     private ProductVariantRepository productVariantRepository;
@@ -67,13 +70,16 @@ public class CartCommandHandlerTest {
         when(cartRepository.findByOwnerId(userId)).thenReturn(Optional.empty());
         when(cartRepository.save(any(Cart.class))).thenAnswer(i -> i.getArguments()[0]);
 
+        ArgumentCaptor<CartItem> itemCaptor = ArgumentCaptor.forClass(CartItem.class);
+        when(cartItemRepository.save(itemCaptor.capture())).thenAnswer(i -> i.getArguments()[0]);
+
         // when
         Cart cart = cartCommandHandler.createCart(command);
 
         // then
         assertEquals(userId, cart.getOwnerId());
-        assertEquals(1, cart.getCartItems().size());
-        CartItem item = cart.getCartItems().getFirst();
+
+        CartItem item = itemCaptor.getValue();
         assertEquals(variantId, item.getVariantId());
         assertEquals(3, item.getQuantity());
 
@@ -98,12 +104,14 @@ public class CartCommandHandlerTest {
         when(variant.getProduct()).thenReturn(product);
 
         when(productVariantRepository.findById(variantId)).thenReturn(Optional.of(variant));
+        when(cartItemRepository.save(any(CartItem.class))).thenAnswer(i -> i.getArguments()[0]);
+
 
         // when
         cartCommandHandler.createCart(command);
 
         // then
-        verify(existingCart).addCartItem(any(CartItem.class));
+        verify(cartItemRepository).save(any(CartItem.class));
         verify(cartRepository).save(existingCart);
     }
 
@@ -125,12 +133,13 @@ public class CartCommandHandlerTest {
         when(variant.getProduct()).thenReturn(product);
 
         when(productVariantRepository.findById(variantId)).thenReturn(Optional.of(variant));
+        when(cartItemRepository.save(any(CartItem.class))).thenAnswer(i -> i.getArguments()[0]);
 
         // when
         cartCommandHandler.addItemToCart(command);
 
         // then
-        verify(existingCart).addCartItem(any(CartItem.class));
+        verify(cartItemRepository).save(any(CartItem.class));
         verify(cartRepository).save(existingCart);
     }
 
@@ -152,19 +161,24 @@ public class CartCommandHandlerTest {
         RemoveItemFromCartCommand command = new RemoveItemFromCartCommand(userId, 2);
 
         CartItem cartItem = mock(CartItem.class);
-        when(cartItem.getCartItemId()).thenReturn(cartItemId);
         when(cartItem.getQuantity()).thenReturn(5);
 
         Cart cart = mock(Cart.class);
-        when(cart.getCartItems()).thenReturn(List.of(cartItem));
-        when(cartRepository.findByOwnerId(userId)).thenReturn(Optional.of(cart));
-        when(cartRepository.save(cart)).thenReturn(cart);
-        when(cart.isEmpty()).thenReturn(false);
 
+        when(cartRepository.findByOwnerId(userId)).thenReturn(Optional.of(cart));
+        when(cartItemRepository.getCartItemByCartItemId(cartItemId)).thenReturn(Optional.of(cartItem));
+        when(cartItemRepository.findByCartId(cart.getCartId())).thenReturn(List.of(cartItem)); // Cart not empty
+        when(cartItemRepository.save(cartItem)).thenReturn(cartItem);
+        when(cartRepository.save(cart)).thenReturn(cart);
+
+        // when
         cartCommandHandler.removeItemFromCart(command, cartItemId);
 
+        // then
         verify(cartItem).decreaseQuantity(2);
+        verify(cartItemRepository).save(cartItem);
         verify(cartRepository).save(cart);
+        verify(cartItemRepository, never()).delete(any());
     }
 
     @Test
@@ -173,19 +187,22 @@ public class CartCommandHandlerTest {
         RemoveItemFromCartCommand command = new RemoveItemFromCartCommand(userId, 5);
 
         CartItem cartItem = mock(CartItem.class);
-        when(cartItem.getCartItemId()).thenReturn(cartItemId);
         when(cartItem.getQuantity()).thenReturn(5);
 
         Cart cart = mock(Cart.class);
-        when(cart.getCartItems()).thenReturn(List.of(cartItem));
+
         when(cartRepository.findByOwnerId(userId)).thenReturn(Optional.of(cart));
-        when(cart.isEmpty()).thenReturn(false);
+        when(cartItemRepository.getCartItemByCartItemId(cartItemId)).thenReturn(Optional.of(cartItem));
+        when(cartItemRepository.findByCartId(cart.getCartId())).thenReturn(List.of(mock(CartItem.class))); // Cart not empty
         when(cartRepository.save(cart)).thenReturn(cart);
 
+        // when
         cartCommandHandler.removeItemFromCart(command, cartItemId);
 
-        verify(cart).removeCartItem(cartItemId);
+        // then
+        verify(cartItemRepository).delete(cartItem);
         verify(cartRepository).save(cart);
+        verify(cartRepository, never()).delete(any());
     }
 
     @Test
@@ -194,18 +211,21 @@ public class CartCommandHandlerTest {
         RemoveItemFromCartCommand command = new RemoveItemFromCartCommand(userId, 5);
 
         CartItem cartItem = mock(CartItem.class);
-        when(cartItem.getCartItemId()).thenReturn(cartItemId);
         when(cartItem.getQuantity()).thenReturn(5);
 
         Cart cart = mock(Cart.class);
-        when(cart.getCartItems()).thenReturn(List.of(cartItem));
-        when(cartRepository.findByOwnerId(userId)).thenReturn(Optional.of(cart));
-        when(cart.isEmpty()).thenReturn(true);
 
+        when(cartRepository.findByOwnerId(userId)).thenReturn(Optional.of(cart));
+        when(cartItemRepository.getCartItemByCartItemId(cartItemId)).thenReturn(Optional.of(cartItem));
+        when(cartItemRepository.findByCartId(cart.getCartId())).thenReturn(List.of()); // Cart IS empty
+
+        // when
         cartCommandHandler.removeItemFromCart(command, cartItemId);
 
-        verify(cart).removeCartItem(cartItemId);
+        // then
+        verify(cartItemRepository).delete(cartItem);
         verify(cartRepository).delete(cart);
+        verify(cartRepository, never()).save(any());
     }
 
     @Test
@@ -214,8 +234,8 @@ public class CartCommandHandlerTest {
         RemoveItemFromCartCommand command = new RemoveItemFromCartCommand(userId, 5);
 
         Cart cart = mock(Cart.class);
-        when(cart.getCartItems()).thenReturn(List.of());
         when(cartRepository.findByOwnerId(userId)).thenReturn(Optional.of(cart));
+        when(cartItemRepository.getCartItemByCartItemId(cartItemId)).thenReturn(Optional.empty());
 
         CartServiceException exception = assertThrows(CartServiceException.class,
                 () -> cartCommandHandler.removeItemFromCart(command, cartItemId));
