@@ -11,22 +11,23 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class OpenApiConfig {
 
-    @Bean
-    public OpenAPI sweetCrustOpenAPI() {
-        Contact contact = new Contact();
-        contact.setEmail("support@sweetcrust.com");
-        contact.setName("SweetCrust Support");
+  @Bean
+  public OpenAPI sweetCrustOpenAPI() {
+    Contact contact = new Contact();
+    contact.setEmail("support@sweetcrust.com");
+    contact.setName("SweetCrust Support");
 
-        Server server = new Server();
-        server.setUrl("http://localhost:8080");
-        server.setDescription("Local dev server");
+    Server server = new Server();
+    server.setUrl("http://localhost:8080");
+    server.setDescription("Local dev server");
 
-        Info info = new Info()
-                .title("SweetCrust API")
-                .version("1.0.0")
-                .contact(contact)
-                .description("API for the SweetCrust bakery chain");
+    Info info =
+        new Info()
+            .title("SweetCrust API")
+            .version("1.0.0")
+            .contact(contact)
+            .description("API for the SweetCrust bakery chain");
 
-        return new OpenAPI().info(info).servers(List.of(server));
-    }
+    return new OpenAPI().info(info).servers(List.of(server));
+  }
 }

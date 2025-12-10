@@ -5,10 +5,7 @@ import com.sweetcrust.team10_bakery.order.domain.entities.Order;
 import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderId;
 import com.sweetcrust.team10_bakery.order.infrastructure.OrderRepository;
 import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopId;
-
 import java.util.List;
-
-import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserId;
 import org.springframework.stereotype.Service;
 
 @Service

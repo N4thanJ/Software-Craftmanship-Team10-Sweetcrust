@@ -6,7 +6,6 @@ import com.sweetcrust.team10_bakery.cart.domain.valueobjects.CartItemId;
 import com.sweetcrust.team10_bakery.product.domain.entities.ProductVariant;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.VariantId;
 import jakarta.persistence.*;
-
 import java.math.BigDecimal;
 import java.util.Objects;
 

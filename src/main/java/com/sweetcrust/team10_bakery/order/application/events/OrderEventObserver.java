@@ -61,41 +61,45 @@ public class OrderEventObserver implements Observer {
                 + " has been processed.");
       }
 
-        case OrderShippedEvent orderShippedEvent -> {
-            emailAdapter.sendEmail(
-                orderShippedEvent.getRecipientEmail(),
-                "Order shipped",
-                "Your order with id" + orderShippedEvent.getOrder().getOrderId() + " has been shipped and is on its way!");
+      case OrderShippedEvent orderShippedEvent -> {
+        emailAdapter.sendEmail(
+            orderShippedEvent.getRecipientEmail(),
+            "Order shipped",
+            "Your order with id"
+                + orderShippedEvent.getOrder().getOrderId()
+                + " has been shipped and is on its way!");
 
-            emailAdapter.sendEmail(
-                orderShippedEvent.getSenderEmail(),
-                "Order shipped notification sent",
-                "A shipping notification has been sent to the customer.");
-        }
+        emailAdapter.sendEmail(
+            orderShippedEvent.getSenderEmail(),
+            "Order shipped notification sent",
+            "A shipping notification has been sent to the customer.");
+      }
 
-        case OrderConfirmedEvent orderConfirmedEvent -> {
-            emailAdapter.sendEmail(
-                orderConfirmedEvent.getRecipientEmail(),
-                "Order confirmed",
-                "Your order with id" + orderConfirmedEvent.getOrder().getOrderId() + " has been confirmed and is being processed!");
+      case OrderConfirmedEvent orderConfirmedEvent -> {
+        emailAdapter.sendEmail(
+            orderConfirmedEvent.getRecipientEmail(),
+            "Order confirmed",
+            "Your order with id"
+                + orderConfirmedEvent.getOrder().getOrderId()
+                + " has been confirmed and is being processed!");
 
-            emailAdapter.sendEmail(
-                orderConfirmedEvent.getSenderEmail(),
-                "Order confirmation sent",
-                "An order confirmation has been sent to the customer.");
-        }
+        emailAdapter.sendEmail(
+            orderConfirmedEvent.getSenderEmail(),
+            "Order confirmation sent",
+            "An order confirmation has been sent to the customer.");
+      }
 
-        case OrderDeliveredEvent orderDeliveredEvent -> {
-            emailAdapter.sendEmail(
-                orderDeliveredEvent.getRecipientEmail(),
-                "Order delivered",
-                "Your order has been delivered. Enjoy your purchase!");
+      case OrderDeliveredEvent orderDeliveredEvent -> {
+        emailAdapter.sendEmail(
+            orderDeliveredEvent.getRecipientEmail(),
+            "Order delivered",
+            "Your order has been delivered. Enjoy your purchase!");
 
-            emailAdapter.sendEmail(
-                orderDeliveredEvent.getSenderEmail(),
-                "Order delivered",
-                "Order" + orderDeliveredEvent.getOrder().getOrderId() + " has been delivered.");
-        }
+        emailAdapter.sendEmail(
+            orderDeliveredEvent.getSenderEmail(),
+            "Order delivered",
+            "Order" + orderDeliveredEvent.getOrder().getOrderId() + " has been delivered.");
+      }
 
       default -> throw new IllegalArgumentException("Unknown event type: " + event.getClass());
     }

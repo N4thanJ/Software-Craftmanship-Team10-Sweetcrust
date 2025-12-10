@@ -7,21 +7,21 @@ import org.springframework.util.Assert;
 
 public record OrderId(UUID id) {
 
-    public OrderId {
-        Assert.notNull(id, "id must not be null");
-    }
+  public OrderId {
+    Assert.notNull(id, "id must not be null");
+  }
 
-    public OrderId() {
-        this(UUID.randomUUID());
-    }
+  public OrderId() {
+    this(UUID.randomUUID());
+  }
 
-    @JsonCreator
-    public OrderId(String id) {
-        this(UUID.fromString(id));
-    }
+  @JsonCreator
+  public OrderId(String id) {
+    this(UUID.fromString(id));
+  }
 
-    @JsonValue
-    public String asString() {
-        return id.toString();
-    }
+  @JsonValue
+  public String asString() {
+    return id.toString();
+  }
 }

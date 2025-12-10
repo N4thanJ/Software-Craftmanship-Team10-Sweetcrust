@@ -11,45 +11,44 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ProductQueryHandler {
-    private final ProductRepository productRepository;
+  private final ProductRepository productRepository;
 
-    public ProductQueryHandler(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+  public ProductQueryHandler(ProductRepository productRepository) {
+    this.productRepository = productRepository;
+  }
 
-    public List<ProductResponseDto> getAllProducts() {
-        List<Product> products = productRepository.findAll();
+  public List<ProductResponseDto> getAllProducts() {
+    List<Product> products = productRepository.findAll();
 
-        return products.stream()
-                .map(this::toProductResponseDto)
-                .toList();
-    }
+    return products.stream().map(this::toProductResponseDto).toList();
+  }
 
-    public ProductResponseDto getProductById(ProductId productId) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new OrderServiceException("product", "product not found"));
+  public ProductResponseDto getProductById(ProductId productId) {
+    Product product =
+        productRepository
+            .findById(productId)
+            .orElseThrow(() -> new OrderServiceException("product", "product not found"));
 
-        return toProductResponseDto(product);
-    }
+    return toProductResponseDto(product);
+  }
 
-    // Mapper
-    private ProductResponseDto toProductResponseDto(Product product) {
-        List<ProductVariantResponseDto> variants = product.getVariants().stream()
-                .map(v -> new ProductVariantResponseDto(
-                        v.getVariantId(),
-                        v.getSize(),
-                        v.getVariantName(),
-                        v.getPriceModifier()
-                )).toList();
+  // Mapper
+  private ProductResponseDto toProductResponseDto(Product product) {
+    List<ProductVariantResponseDto> variants =
+        product.getVariants().stream()
+            .map(
+                v ->
+                    new ProductVariantResponseDto(
+                        v.getVariantId(), v.getSize(), v.getVariantName(), v.getPriceModifier()))
+            .toList();
 
-        return new ProductResponseDto(
-                product.getProductId(),
-                product.getName(),
-                product.getDescription(),
-                product.getBasePrice(),
-                product.isAvailable(),
-                product.getCategoryId(),
-                variants
-        );
-    }
+    return new ProductResponseDto(
+        product.getProductId(),
+        product.getName(),
+        product.getDescription(),
+        product.getBasePrice(),
+        product.isAvailable(),
+        product.getCategoryId(),
+        variants);
+  }
 }

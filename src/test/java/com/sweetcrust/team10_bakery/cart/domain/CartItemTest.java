@@ -7,9 +7,7 @@ import com.sweetcrust.team10_bakery.cart.domain.entities.CartItem;
 import com.sweetcrust.team10_bakery.cart.domain.valueobjects.CartId;
 import com.sweetcrust.team10_bakery.product.domain.entities.ProductVariant;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.VariantId;
-
 import java.math.BigDecimal;
-
 import org.junit.jupiter.api.Test;
 
 public class CartItemTest {

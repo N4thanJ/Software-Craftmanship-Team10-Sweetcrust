@@ -19,26 +19,27 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/inventory")
 @Tag(name = "Inventory Management", description = "Endpoints related to inventory management")
 public class InventoryRestController {
-    private final InventoryItemCommandHandler inventoryItemCommandHandler;
-    private final InventoryItemQueryHandler inventoryItemQueryHandler;
+  private final InventoryItemCommandHandler inventoryItemCommandHandler;
+  private final InventoryItemQueryHandler inventoryItemQueryHandler;
 
-    public InventoryRestController(InventoryItemCommandHandler inventoryItemCommandHandler,
-            InventoryItemQueryHandler inventoryQueryHandler) {
-        this.inventoryItemCommandHandler = inventoryItemCommandHandler;
-        this.inventoryItemQueryHandler = inventoryQueryHandler;
-    }
+  public InventoryRestController(
+      InventoryItemCommandHandler inventoryItemCommandHandler,
+      InventoryItemQueryHandler inventoryQueryHandler) {
+    this.inventoryItemCommandHandler = inventoryItemCommandHandler;
+    this.inventoryItemQueryHandler = inventoryQueryHandler;
+  }
 
-    @GetMapping()
-    public ResponseEntity<Iterable<InventoryItem>> getAllInventoryItems() {
-        List<InventoryItem> inventoryItems = inventoryItemQueryHandler.getAllInventoryItems();
-        return ResponseEntity.ok(inventoryItems);
-    }
+  @GetMapping()
+  public ResponseEntity<Iterable<InventoryItem>> getAllInventoryItems() {
+    List<InventoryItem> inventoryItems = inventoryItemQueryHandler.getAllInventoryItems();
+    return ResponseEntity.ok(inventoryItems);
+  }
 
-    @PostMapping("/{shopId}")
-    public ResponseEntity<InventoryItem> addStockToShop(@PathVariable ShopId shopId,
-            @RequestBody AddStockCommand addStockCommand) {
-        InventoryItem inventoryItem = inventoryItemCommandHandler.createInventoryItem(shopId, addStockCommand);
-        return ResponseEntity.ok(inventoryItem);
-    }
-
+  @PostMapping("/{shopId}")
+  public ResponseEntity<InventoryItem> addStockToShop(
+      @PathVariable ShopId shopId, @RequestBody AddStockCommand addStockCommand) {
+    InventoryItem inventoryItem =
+        inventoryItemCommandHandler.createInventoryItem(shopId, addStockCommand);
+    return ResponseEntity.ok(inventoryItem);
+  }
 }

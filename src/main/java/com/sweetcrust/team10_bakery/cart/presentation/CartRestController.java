@@ -14,39 +14,46 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/cart")
-@Tag(name = "Cart Management", description = "Endpoints related to adding and removing items from carts")
+@Tag(
+    name = "Cart Management",
+    description = "Endpoints related to adding and removing items from carts")
 public class CartRestController {
-    private final CartQueryHandler cartQueryHandler;
-    private final CartCommandHandler cartCommandHandler;
+  private final CartQueryHandler cartQueryHandler;
+  private final CartCommandHandler cartCommandHandler;
 
-    public CartRestController(CartQueryHandler cartQueryHandler, CartCommandHandler cartCommandHandler) {
-        this.cartQueryHandler = cartQueryHandler;
-        this.cartCommandHandler = cartCommandHandler;
-    }
+  public CartRestController(
+      CartQueryHandler cartQueryHandler, CartCommandHandler cartCommandHandler) {
+    this.cartQueryHandler = cartQueryHandler;
+    this.cartCommandHandler = cartCommandHandler;
+  }
 
-    @GetMapping()
-    public ResponseEntity<Iterable<Cart>> getAllCarts() {
-        List<Cart> carts = cartQueryHandler.getAllCarts();
-        return ResponseEntity.ok(carts);
-    }
+  @GetMapping()
+  public ResponseEntity<Iterable<Cart>> getAllCarts() {
+    List<Cart> carts = cartQueryHandler.getAllCarts();
+    return ResponseEntity.ok(carts);
+  }
 
-    @PostMapping()
-    public ResponseEntity<Cart> createCart(@RequestBody CreateCartCommand createCartCommand) {
-        Cart cart = cartCommandHandler.createCart(createCartCommand);
-        return ResponseEntity.ok(cart);
-    }
+  @PostMapping()
+  public ResponseEntity<Cart> createCart(@RequestBody CreateCartCommand createCartCommand) {
+    Cart cart = cartCommandHandler.createCart(createCartCommand);
+    return ResponseEntity.ok(cart);
+  }
 
-    @PutMapping
-    public ResponseEntity<Cart> addItemToCart(@RequestBody AddItemToCartCommand addItemToCartCommand) {
-        Cart cart = cartCommandHandler.addItemToCart(addItemToCartCommand);
-        return ResponseEntity.ok(cart);
-    }
+  @PutMapping
+  public ResponseEntity<Cart> addItemToCart(
+      @RequestBody AddItemToCartCommand addItemToCartCommand) {
+    Cart cart = cartCommandHandler.addItemToCart(addItemToCartCommand);
+    return ResponseEntity.ok(cart);
+  }
 
-    @DeleteMapping("/{cartItemId}")
-    public ResponseEntity<Cart> removeItemFromCart(@RequestBody RemoveItemFromCartCommand removeItemFromCartCommand, @PathVariable CartItemId cartItemId) {
+  @DeleteMapping("/{cartItemId}")
+  public ResponseEntity<Cart> removeItemFromCart(
+      @RequestBody RemoveItemFromCartCommand removeItemFromCartCommand,
+      @PathVariable CartItemId cartItemId) {
 
-        return cartCommandHandler.removeItemFromCart(removeItemFromCartCommand, cartItemId)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.noContent().build());
-    }
+    return cartCommandHandler
+        .removeItemFromCart(removeItemFromCartCommand, cartItemId)
+        .map(ResponseEntity::ok)
+        .orElse(ResponseEntity.noContent().build());
+  }
 }

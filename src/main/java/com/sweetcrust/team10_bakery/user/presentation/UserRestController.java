@@ -13,33 +13,35 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
-@Tag(name = "User Management", description = "Endpoints related to user registration and user fetching")
+@Tag(
+    name = "User Management",
+    description = "Endpoints related to user registration and user fetching")
 public class UserRestController {
 
-    private final UserCommandHandler userCommandHandler;
-    private final UserQueryHandler userQueryHandler;
+  private final UserCommandHandler userCommandHandler;
+  private final UserQueryHandler userQueryHandler;
 
-    public UserRestController(UserCommandHandler userCommandHandler, UserQueryHandler userQueryHandler) {
-        this.userCommandHandler = userCommandHandler;
-        this.userQueryHandler = userQueryHandler;
-    }
+  public UserRestController(
+      UserCommandHandler userCommandHandler, UserQueryHandler userQueryHandler) {
+    this.userCommandHandler = userCommandHandler;
+    this.userQueryHandler = userQueryHandler;
+  }
 
-    @GetMapping()
-    public ResponseEntity<Iterable<User>> getAllUsers() {
-        List<User> users = userQueryHandler.getAllUsers();
-        return ResponseEntity.ok(users);
-    }
+  @GetMapping()
+  public ResponseEntity<Iterable<User>> getAllUsers() {
+    List<User> users = userQueryHandler.getAllUsers();
+    return ResponseEntity.ok(users);
+  }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<User> getUser(@PathVariable UUID userId) {
-        User user = userQueryHandler.getUserById(new UserId(userId));
-        return ResponseEntity.ok(user);
-    }
+  @GetMapping("/{userId}")
+  public ResponseEntity<User> getUser(@PathVariable UUID userId) {
+    User user = userQueryHandler.getUserById(new UserId(userId));
+    return ResponseEntity.ok(user);
+  }
 
-    @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestBody AddUserCommand addUserCommand) {
-        User user = userCommandHandler.registerUser(addUserCommand);
-        return ResponseEntity.ok(user);
-    }
-
+  @PostMapping("/register")
+  public ResponseEntity<User> registerUser(@RequestBody AddUserCommand addUserCommand) {
+    User user = userCommandHandler.registerUser(addUserCommand);
+    return ResponseEntity.ok(user);
+  }
 }
