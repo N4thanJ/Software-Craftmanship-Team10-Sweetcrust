@@ -2,8 +2,10 @@ package com.sweetcrust.team10_bakery;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+@EnableScheduling
 public class Team10BakeryApplication {
 
   public static void main(String[] args) {
