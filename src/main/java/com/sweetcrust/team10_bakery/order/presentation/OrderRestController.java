@@ -8,6 +8,7 @@ import com.sweetcrust.team10_bakery.order.application.commands.CreateB2COrderCom
 import com.sweetcrust.team10_bakery.order.domain.entities.Order;
 import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderId;
 import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopId;
+import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserId;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.UUID;
@@ -57,6 +58,20 @@ public class OrderRestController {
     public ResponseEntity<Order> createB2BOrder(@RequestBody CreateB2BOrderCommand createB2BOrderCommand) {
         Order order = orderCommandHandler.createB2BOrder(createB2BOrderCommand);
         return ResponseEntity.ok(order);
+    }
+
+    @PostMapping("/{orderId}/confirm")
+    public ResponseEntity<Order> confirmOrder(
+            @PathVariable("orderId") UUID orderIdStr,
+            @RequestParam("sourceShopId") UUID sourceShopIdStr,
+            @RequestParam("userId") UUID userIdStr
+    ) {
+        OrderId orderId = new OrderId(orderIdStr);
+        ShopId sourceShopId = new ShopId(sourceShopIdStr);
+        UserId userId = new UserId(userIdStr);
+
+        Order confirmed = orderCommandHandler.confirmOrder(orderId, sourceShopId, userId);
+        return ResponseEntity.ok(confirmed);
     }
 
     @PostMapping("/cancel")

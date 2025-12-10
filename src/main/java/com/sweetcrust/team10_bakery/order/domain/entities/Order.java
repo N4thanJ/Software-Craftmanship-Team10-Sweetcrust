@@ -39,7 +39,7 @@ public class Order {
   private CartId cartId;
 
   @Enumerated(EnumType.STRING)
-  private OrderStatus status;
+  private OrderStatus status = OrderStatus.PENDING;
 
   @Embedded private Address deliveryAddress;
 
@@ -180,6 +180,7 @@ public class Order {
           "requestedDeliveryDate", "requestedDeliveryDate should be after orderDate");
     }
     this.requestedDeliveryDate = requestedDeliveryDate;
+    this.status = OrderStatus.PENDING;
   }
 
   public void setCustomerId(UserId customerId) {
@@ -272,30 +273,23 @@ public class Order {
     this.status = OrderStatus.CONFIRMED;
   }
 
-  public void startPreparing() {
+  public void markShipped() {
     if (status != OrderStatus.CONFIRMED) {
-      throw new OrderDomainException("status", "Only confirmed orders can be prepared");
+      throw new OrderDomainException("status", "Only confirmed orders can be marked as shipped");
     }
-    this.status = OrderStatus.PREPARING;
-  }
-
-  public void markReady() {
-    if (status != OrderStatus.PREPARING) {
-      throw new OrderDomainException("status", "Only preparing orders can be marked as ready");
-    }
-    this.status = OrderStatus.READY;
+    this.status = OrderStatus.SHIPPED;
   }
 
   public void deliver() {
-    if (status != OrderStatus.READY) {
-      throw new OrderDomainException("status", "Only ready orders can be delivered");
+    if (status != OrderStatus.SHIPPED) {
+      throw new OrderDomainException("status", "Only shipped orders can be delivered");
     }
     this.status = OrderStatus.DELIVERED;
   }
 
   public void cancel() {
-    if (status == OrderStatus.DELIVERED) {
-      throw new OrderDomainException("status", "Delivered orders cannot be cancelled");
+    if (status == OrderStatus.SHIPPED || status == OrderStatus.DELIVERED) {
+      throw new OrderDomainException("status", "Shipped or Delivered orders cannot be cancelled");
     }
 
     LocalDateTime cancellationCutoff = requestedDeliveryDate.minusDays(1);
