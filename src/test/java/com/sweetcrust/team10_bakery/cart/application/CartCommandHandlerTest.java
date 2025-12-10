@@ -16,11 +16,9 @@ import com.sweetcrust.team10_bakery.product.domain.entities.ProductVariant;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.VariantId;
 import com.sweetcrust.team10_bakery.product.infrastructure.ProductVariantRepository;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserId;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

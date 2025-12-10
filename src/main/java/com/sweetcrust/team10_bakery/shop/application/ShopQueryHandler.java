@@ -9,18 +9,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class ShopQueryHandler {
 
-    private final ShopRepository shopRepository;
+  private final ShopRepository shopRepository;
 
-    public ShopQueryHandler(ShopRepository shopRepository) {
-        this.shopRepository = shopRepository;
-    }
+  public ShopQueryHandler(ShopRepository shopRepository) {
+    this.shopRepository = shopRepository;
+  }
 
-    public List<Shop> getAllShops() {
-        return shopRepository.findAll();
-    }
+  public List<Shop> getAllShops() {
+    return shopRepository.findAll();
+  }
 
-    public Shop getShopById(ShopId shopId) {
-        return shopRepository.findById(shopId)
-                .orElseThrow(() -> new ShopServiceException("shop", "shop not found"));
-    }
+  public Shop getShopById(ShopId shopId) {
+    return shopRepository
+        .findById(shopId)
+        .orElseThrow(() -> new ShopServiceException("shop", "shop not found"));
+  }
 }

@@ -6,25 +6,25 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class NoOpDiscountCodePolicy implements DiscountCodePolicy {
-    private static final BigDecimal RATE = BigDecimal.ZERO;
+  private static final BigDecimal RATE = BigDecimal.ZERO;
 
-    @Override
-    public BigDecimal applyDiscount(BigDecimal subtotal) {
-        return subtotal == null ? BigDecimal.ZERO : subtotal;
-    }
+  @Override
+  public BigDecimal applyDiscount(BigDecimal subtotal) {
+    return subtotal == null ? BigDecimal.ZERO : subtotal;
+  }
 
-    @Override
-    public BigDecimal discountRate() {
-        return RATE;
-    }
+  @Override
+  public BigDecimal discountRate() {
+    return RATE;
+  }
 
-    @Override
-    public String code() {
-        return "NO_DISCOUNT";
-    }
+  @Override
+  public String code() {
+    return "NO_DISCOUNT";
+  }
 
-    @Override
-    public LocalDate expiryDate() {
-        return LocalDate.MAX;
-    }
+  @Override
+  public LocalDate expiryDate() {
+    return LocalDate.MAX;
+  }
 }

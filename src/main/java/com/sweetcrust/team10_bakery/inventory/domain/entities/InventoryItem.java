@@ -14,84 +14,83 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "inventory_items")
 public class InventoryItem {
-    @EmbeddedId
-    private InventoryItemId inventoryItemId;
+  @EmbeddedId private InventoryItemId inventoryItemId;
 
-    @Embedded
-    @AttributeOverride(name = "id", column = @Column(name = "shop_id"))
-    private ShopId shopId;
+  @Embedded
+  @AttributeOverride(name = "id", column = @Column(name = "shop_id"))
+  private ShopId shopId;
 
-    @Embedded
-    @AttributeOverride(name = "id", column = @Column(name = "varian_id"))
-    private VariantId variantId;
+  @Embedded
+  @AttributeOverride(name = "id", column = @Column(name = "varian_id"))
+  private VariantId variantId;
 
-    private int quantityOnHand;
-    private int quantityReserved;
+  private int quantityOnHand;
+  private int quantityReserved;
 
-    protected InventoryItem() {
+  protected InventoryItem() {}
+
+  public InventoryItem(ShopId shopId, VariantId variantId) {
+    this.inventoryItemId = new InventoryItemId();
+    setShopId(shopId);
+    setVariantId(variantId);
+    setQuantityOnHand(0);
+    setQuantityReserved(0);
+  }
+
+  public void setInventoryItemId(InventoryItemId inventoryItemId) {
+    if (inventoryItemId == null) {
+      throw new InventoryDomainException("InventoryItemId", "InventoryItemId should not be null");
     }
+    this.inventoryItemId = inventoryItemId;
+  }
 
-    public InventoryItem(ShopId shopId, VariantId variantId) {
-        this.inventoryItemId = new InventoryItemId();
-        setShopId(shopId);
-        setVariantId(variantId);
-        setQuantityOnHand(0);
-        setQuantityReserved(0);
+  public void setShopId(ShopId shopId) {
+    if (shopId == null) {
+      throw new InventoryDomainException("ShopId", "ShopId should not be null");
     }
+    this.shopId = shopId;
+  }
 
-    public void setInventoryItemId(InventoryItemId inventoryItemId) {
-        if (inventoryItemId == null) {
-            throw new InventoryDomainException("InventoryItemId", "InventoryItemId should not be null");
-        }
-        this.inventoryItemId = inventoryItemId;
+  public void setVariantId(VariantId variantId) {
+    if (variantId == null) {
+      throw new InventoryDomainException("VariantId", "VariantId should not be null");
     }
+    this.variantId = variantId;
+  }
 
-    public void setShopId(ShopId shopId) {
-        if (shopId == null) {
-            throw new InventoryDomainException("ShopId", "ShopId should not be null");
-        }
-        this.shopId = shopId;
+  public void setQuantityOnHand(int quantityOnHand) {
+    if (quantityOnHand < 0) {
+      throw new InventoryDomainException(
+          "QuantityOnHand", "QuantityOnHand should be a postive number");
     }
+    this.quantityOnHand = quantityOnHand;
+  }
 
-    public void setVariantId(VariantId variantId) {
-        if (variantId == null) {
-            throw new InventoryDomainException("VariantId", "VariantId should not be null");
-        }
-        this.variantId = variantId;
+  public void setQuantityReserved(int quantityReserved) {
+    if (quantityReserved < 0) {
+      throw new InventoryDomainException(
+          "QuantityReserved", "QuantityReserved should be a postive number");
     }
+    this.quantityReserved = quantityReserved;
+  }
 
-    public void setQuantityOnHand(int quantityOnHand) {
-        if (quantityOnHand < 0) {
-            throw new InventoryDomainException("QuantityOnHand", "QuantityOnHand should be a postive number");
-        }
-        this.quantityOnHand = quantityOnHand;
-    }
+  public ShopId getShopId() {
+    return shopId;
+  }
 
-    public void setQuantityReserved(int quantityReserved) {
-        if (quantityReserved < 0) {
-            throw new InventoryDomainException("QuantityReserved", "QuantityReserved should be a postive number");
-        }
-        this.quantityReserved = quantityReserved;
-    }
+  public VariantId getVariantId() {
+    return variantId;
+  }
 
-    public ShopId getShopId() {
-        return shopId;
-    }
+  public int getQuantityOnHand() {
+    return quantityOnHand;
+  }
 
-    public VariantId getVariantId() {
-        return variantId;
-    }
+  public int getQuantityReserved() {
+    return quantityReserved;
+  }
 
-    public int getQuantityOnHand() {
-        return quantityOnHand;
-    }
-
-    public int getQuantityReserved() {
-        return quantityReserved;
-    }
-
-    public InventoryItemId getInventoryItemId() {
-        return inventoryItemId;
-    }
-
+  public InventoryItemId getInventoryItemId() {
+    return inventoryItemId;
+  }
 }

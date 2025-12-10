@@ -5,12 +5,10 @@ import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderId;
 import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderStatus;
 import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopId;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserId;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, OrderId> {

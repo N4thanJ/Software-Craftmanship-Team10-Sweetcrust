@@ -9,20 +9,19 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class OrderEventPublisher implements EventPublisher {
-    private final List<Observer> observers = new ArrayList<>();
+  private final List<Observer> observers = new ArrayList<>();
 
-    public void subscribe(Observer observer) {
-        observers.add(observer);
-    }
+  public void subscribe(Observer observer) {
+    observers.add(observer);
+  }
 
-    public void unsubscribe(Observer observer) {
-        observers.remove(observer);
-    }
+  public void unsubscribe(Observer observer) {
+    observers.remove(observer);
+  }
 
-    public void publish(Event event) {
-        for (Observer observer : observers) {
-            observer.onEvent(event);
-        }
+  public void publish(Event event) {
+    for (Observer observer : observers) {
+      observer.onEvent(event);
     }
-    
+  }
 }

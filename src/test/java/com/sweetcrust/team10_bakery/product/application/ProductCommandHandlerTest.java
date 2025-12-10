@@ -26,279 +26,265 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class ProductCommandHandlerTest {
 
-    @Mock
-    private ProductRepository productRepository;
+  @Mock private ProductRepository productRepository;
 
-    @Mock
-    private UserRepository userRepository;
+  @Mock private UserRepository userRepository;
 
-    @InjectMocks
-    private ProductCommandHandler productCommandHandler;
+  @InjectMocks private ProductCommandHandler productCommandHandler;
 
-    private ProductCategory pastryCategory;
-    private Product chocolateCroissant;
-    private User baker;
-    private User admin;
-    private User customer;
+  private ProductCategory pastryCategory;
+  private Product chocolateCroissant;
+  private User baker;
+  private User admin;
+  private User customer;
 
-    @BeforeEach
-    void setup() {
-        pastryCategory = new ProductCategory("Koffiekoeken", "Het hele assortiment van chocokoeken");
-        chocolateCroissant = new Product(
-                "Choco Croissant",
-                "Fluffy, buttery, chocolate-filled pastry",
-                BigDecimal.valueOf(2.99),
-                true,
-                pastryCategory.getCategoryId()
-        );
+  @BeforeEach
+  void setup() {
+    pastryCategory = new ProductCategory("Koffiekoeken", "Het hele assortiment van chocokoeken");
+    chocolateCroissant =
+        new Product(
+            "Choco Croissant",
+            "Fluffy, buttery, chocolate-filled pastry",
+            BigDecimal.valueOf(2.99),
+            true,
+            pastryCategory.getCategoryId());
 
-        baker = new User("baker123", "Bakery123!", "baker@sweetcrust.com", UserRole.BAKER);
-        admin = new User("admin007", "Admin123!", "admin@sweetcrust.com", UserRole.ADMIN);
-        customer = new User("sleepy", "SleepyJoe123!", "sleepy@sweetcrust.com", UserRole.CUSTOMER);
-    }
+    baker = new User("baker123", "Bakery123!", "baker@sweetcrust.com", UserRole.BAKER);
+    admin = new User("admin007", "Admin123!", "admin@sweetcrust.com", UserRole.ADMIN);
+    customer = new User("sleepy", "SleepyJoe123!", "sleepy@sweetcrust.com", UserRole.CUSTOMER);
+  }
 
-    @Test
-    void givenUniqueProduct_whenCreating_thenProductIsSaved() {
-        AddProductCommand command = new AddProductCommand(
-                "Chocokoek",
-                "A classic chocolate pastry",
-                BigDecimal.valueOf(2.99),
-                true,
-                pastryCategory.getCategoryId(),
-                List.of(),
-                baker.getUserId()
-        );
+  @Test
+  void givenUniqueProduct_whenCreating_thenProductIsSaved() {
+    AddProductCommand command =
+        new AddProductCommand(
+            "Chocokoek",
+            "A classic chocolate pastry",
+            BigDecimal.valueOf(2.99),
+            true,
+            pastryCategory.getCategoryId(),
+            List.of(),
+            baker.getUserId());
 
-        when(userRepository.findById(baker.getUserId())).thenReturn(Optional.of(baker));
+    when(userRepository.findById(baker.getUserId())).thenReturn(Optional.of(baker));
 
-        when(productRepository.existsByName("Chocokoek")).thenReturn(false);
+    when(productRepository.existsByName("Chocokoek")).thenReturn(false);
 
-        productCommandHandler.createProduct(command);
+    productCommandHandler.createProduct(command);
 
-        verify(productRepository, times(1)).save(any(Product.class));
-    }
+    verify(productRepository, times(1)).save(any(Product.class));
+  }
 
-    @Test
-    void givenDuplicateProductName_whenCreating_thenExceptionThrown() {
-        AddProductCommand command = new AddProductCommand(
-                "Choco Croissant",
-                "Duplicate delight",
-                BigDecimal.valueOf(2.99),
-                true,
-                pastryCategory.getCategoryId(),
-                List.of(),
-                baker.getUserId()
-        );
+  @Test
+  void givenDuplicateProductName_whenCreating_thenExceptionThrown() {
+    AddProductCommand command =
+        new AddProductCommand(
+            "Choco Croissant",
+            "Duplicate delight",
+            BigDecimal.valueOf(2.99),
+            true,
+            pastryCategory.getCategoryId(),
+            List.of(),
+            baker.getUserId());
 
-        when(userRepository.findById(baker.getUserId())).thenReturn(Optional.of(baker));
+    when(userRepository.findById(baker.getUserId())).thenReturn(Optional.of(baker));
 
-        when(productRepository.existsByName("Choco Croissant")).thenReturn(true);
+    when(productRepository.existsByName("Choco Croissant")).thenReturn(true);
 
-        ProductServiceException ex = assertThrows(
-                ProductServiceException.class,
-                () -> productCommandHandler.createProduct(command)
-        );
+    ProductServiceException ex =
+        assertThrows(
+            ProductServiceException.class, () -> productCommandHandler.createProduct(command));
 
-        assertEquals("name", ex.getField());
-        verify(productRepository, never()).save(any());
-    }
+    assertEquals("name", ex.getField());
+    verify(productRepository, never()).save(any());
+  }
 
-    @Test
-    void givenUnauthorizedUser_whenCreating_thenExceptionIsThrown() {
-        AddProductCommand command = new AddProductCommand(
-                "Chocokoek",
-                "A classic chocolate pastry",
-                BigDecimal.valueOf(2.99),
-                true,
-                pastryCategory.getCategoryId(),
-                List.of(),
-                customer.getUserId()
-        );
+  @Test
+  void givenUnauthorizedUser_whenCreating_thenExceptionIsThrown() {
+    AddProductCommand command =
+        new AddProductCommand(
+            "Chocokoek",
+            "A classic chocolate pastry",
+            BigDecimal.valueOf(2.99),
+            true,
+            pastryCategory.getCategoryId(),
+            List.of(),
+            customer.getUserId());
 
-        when(userRepository.findById(customer.getUserId())).thenReturn(Optional.of(customer));
+    when(userRepository.findById(customer.getUserId())).thenReturn(Optional.of(customer));
 
-        ProductServiceException ex = assertThrows(
-                ProductServiceException.class,
-                () -> productCommandHandler.createProduct(command)
-        );
-        verify(productRepository, never()).save(any(Product.class));
-    }
+    ProductServiceException ex =
+        assertThrows(
+            ProductServiceException.class, () -> productCommandHandler.createProduct(command));
+    verify(productRepository, never()).save(any(Product.class));
+  }
 
-    @Test
-    void givenNewVariant_whenAdding_thenVariantIsSaved() {
-        AddProductVariantCommand variantCommand = new AddProductVariantCommand(
-                ProductSize.REGULAR,
-                "Choco Mini",
-                BigDecimal.valueOf(0.3),
-                baker.getUserId()
-        );
+  @Test
+  void givenNewVariant_whenAdding_thenVariantIsSaved() {
+    AddProductVariantCommand variantCommand =
+        new AddProductVariantCommand(
+            ProductSize.REGULAR, "Choco Mini", BigDecimal.valueOf(0.3), baker.getUserId());
 
-        when(userRepository.findById(baker.getUserId())).thenReturn(Optional.of(baker));
+    when(userRepository.findById(baker.getUserId())).thenReturn(Optional.of(baker));
 
-        when(productRepository.findById(chocolateCroissant.getProductId())).thenReturn(Optional.of(chocolateCroissant));
+    when(productRepository.findById(chocolateCroissant.getProductId()))
+        .thenReturn(Optional.of(chocolateCroissant));
 
-        productCommandHandler.addVariantToProduct(chocolateCroissant.getProductId(), variantCommand);
+    productCommandHandler.addVariantToProduct(chocolateCroissant.getProductId(), variantCommand);
 
-        assertEquals(1, chocolateCroissant.getVariants().size());
-        verify(productRepository, times(1)).save(chocolateCroissant);
-    }
+    assertEquals(1, chocolateCroissant.getVariants().size());
+    verify(productRepository, times(1)).save(chocolateCroissant);
+  }
 
-    @Test
-    void givenDuplicateVariant_whenAdding_thenExceptionThrown() {
-        ProductVariant existingVariant = new ProductVariant(
-                ProductSize.REGULAR,
-                "Choco Mini",
-                BigDecimal.valueOf(0.3),
-                chocolateCroissant.getProductId()
-        );
-        chocolateCroissant.addVariant(existingVariant);
+  @Test
+  void givenDuplicateVariant_whenAdding_thenExceptionThrown() {
+    ProductVariant existingVariant =
+        new ProductVariant(
+            ProductSize.REGULAR,
+            "Choco Mini",
+            BigDecimal.valueOf(0.3),
+            chocolateCroissant.getProductId());
+    chocolateCroissant.addVariant(existingVariant);
 
-        AddProductVariantCommand duplicateCommand = new AddProductVariantCommand(
-                ProductSize.REGULAR,
-                "Choco Mini",
-                BigDecimal.valueOf(0.3),
-                baker.getUserId()
-        );
+    AddProductVariantCommand duplicateCommand =
+        new AddProductVariantCommand(
+            ProductSize.REGULAR, "Choco Mini", BigDecimal.valueOf(0.3), baker.getUserId());
 
-        when(userRepository.findById(baker.getUserId())).thenReturn(Optional.of(baker));
+    when(userRepository.findById(baker.getUserId())).thenReturn(Optional.of(baker));
 
-        when(productRepository.findById(chocolateCroissant.getProductId())).thenReturn(Optional.of(chocolateCroissant));
+    when(productRepository.findById(chocolateCroissant.getProductId()))
+        .thenReturn(Optional.of(chocolateCroissant));
 
-        ProductServiceException ex = assertThrows(
-                ProductServiceException.class,
-                () -> productCommandHandler.addVariantToProduct(chocolateCroissant.getProductId(), duplicateCommand)
-        );
+    ProductServiceException ex =
+        assertThrows(
+            ProductServiceException.class,
+            () ->
+                productCommandHandler.addVariantToProduct(
+                    chocolateCroissant.getProductId(), duplicateCommand));
 
-        assertEquals("variant", ex.getField());
-        verify(productRepository, never()).save(any());
-    }
+    assertEquals("variant", ex.getField());
+    verify(productRepository, never()).save(any());
+  }
 
-    @Test
-    void givenUnauthorizedUser_whenAdding_thenVariantIsSaved() {
-        AddProductVariantCommand variantCommand = new AddProductVariantCommand(
-                ProductSize.REGULAR,
-                "Choco Mini",
-                BigDecimal.valueOf(0.3),
-                customer.getUserId()
-        );
+  @Test
+  void givenUnauthorizedUser_whenAdding_thenVariantIsSaved() {
+    AddProductVariantCommand variantCommand =
+        new AddProductVariantCommand(
+            ProductSize.REGULAR, "Choco Mini", BigDecimal.valueOf(0.3), customer.getUserId());
 
-        when(userRepository.findById(customer.getUserId())).thenReturn(Optional.of(customer));
+    when(userRepository.findById(customer.getUserId())).thenReturn(Optional.of(customer));
 
-        ProductServiceException ex = assertThrows(
-                ProductServiceException.class,
-                () -> productCommandHandler.addVariantToProduct(chocolateCroissant.getProductId(), variantCommand)
-        );
+    ProductServiceException ex =
+        assertThrows(
+            ProductServiceException.class,
+            () ->
+                productCommandHandler.addVariantToProduct(
+                    chocolateCroissant.getProductId(), variantCommand));
 
-        verify(productRepository, never()).save(any(Product.class));
-    }
+    verify(productRepository, never()).save(any(Product.class));
+  }
 
-    @Test
-    void givenUnavailableProduct_whenBakerMarksAvailable_thenProductIsAvailable() {
-        chocolateCroissant.markUnavailable();
-        MarkProductAvailableCommand command = new MarkProductAvailableCommand(
-                chocolateCroissant.getProductId(),
-                baker.getUserId()
-        );
+  @Test
+  void givenUnavailableProduct_whenBakerMarksAvailable_thenProductIsAvailable() {
+    chocolateCroissant.markUnavailable();
+    MarkProductAvailableCommand command =
+        new MarkProductAvailableCommand(chocolateCroissant.getProductId(), baker.getUserId());
 
-        when(productRepository.findById(chocolateCroissant.getProductId())).thenReturn(Optional.of(chocolateCroissant));
-        when(userRepository.findById(baker.getUserId())).thenReturn(Optional.of(baker));
+    when(productRepository.findById(chocolateCroissant.getProductId()))
+        .thenReturn(Optional.of(chocolateCroissant));
+    when(userRepository.findById(baker.getUserId())).thenReturn(Optional.of(baker));
 
-        productCommandHandler.markProductAvailable(command);
+    productCommandHandler.markProductAvailable(command);
 
-        assertTrue(chocolateCroissant.isAvailable());
-        verify(productRepository, times(1)).save(chocolateCroissant);
-    }
+    assertTrue(chocolateCroissant.isAvailable());
+    verify(productRepository, times(1)).save(chocolateCroissant);
+  }
 
-    @Test
-    void givenAlreadyAvailableProduct_whenMarkAvailable_thenExceptionThrown() {
-        MarkProductAvailableCommand command = new MarkProductAvailableCommand(
-                chocolateCroissant.getProductId(),
-                baker.getUserId()
-        );
+  @Test
+  void givenAlreadyAvailableProduct_whenMarkAvailable_thenExceptionThrown() {
+    MarkProductAvailableCommand command =
+        new MarkProductAvailableCommand(chocolateCroissant.getProductId(), baker.getUserId());
 
-        when(productRepository.findById(chocolateCroissant.getProductId())).thenReturn(Optional.of(chocolateCroissant));
-        when(userRepository.findById(baker.getUserId())).thenReturn(Optional.of(baker));
+    when(productRepository.findById(chocolateCroissant.getProductId()))
+        .thenReturn(Optional.of(chocolateCroissant));
+    when(userRepository.findById(baker.getUserId())).thenReturn(Optional.of(baker));
 
-        ProductServiceException ex = assertThrows(
-                ProductServiceException.class,
-                () -> productCommandHandler.markProductAvailable(command)
-        );
+    ProductServiceException ex =
+        assertThrows(
+            ProductServiceException.class,
+            () -> productCommandHandler.markProductAvailable(command));
 
-        assertEquals("product", ex.getField());
-        verify(productRepository, never()).save(any());
-    }
+    assertEquals("product", ex.getField());
+    verify(productRepository, never()).save(any());
+  }
 
-    @Test
-    void givenUnauthorizedUser_whenMarkAvailable_thenExceptionThrown() {
-        MarkProductAvailableCommand command = new MarkProductAvailableCommand(
-                chocolateCroissant.getProductId(),
-                customer.getUserId()
-        );
+  @Test
+  void givenUnauthorizedUser_whenMarkAvailable_thenExceptionThrown() {
+    MarkProductAvailableCommand command =
+        new MarkProductAvailableCommand(chocolateCroissant.getProductId(), customer.getUserId());
 
-        when(productRepository.findById(chocolateCroissant.getProductId())).thenReturn(Optional.of(chocolateCroissant));
-        when(userRepository.findById(customer.getUserId())).thenReturn(Optional.of(customer));
+    when(productRepository.findById(chocolateCroissant.getProductId()))
+        .thenReturn(Optional.of(chocolateCroissant));
+    when(userRepository.findById(customer.getUserId())).thenReturn(Optional.of(customer));
 
-        ProductServiceException ex = assertThrows(
-                ProductServiceException.class,
-                () -> productCommandHandler.markProductAvailable(command)
-        );
+    ProductServiceException ex =
+        assertThrows(
+            ProductServiceException.class,
+            () -> productCommandHandler.markProductAvailable(command));
 
-        assertEquals("role", ex.getField());
-        verify(productRepository, never()).save(any());
-    }
+    assertEquals("role", ex.getField());
+    verify(productRepository, never()).save(any());
+  }
 
-    @Test
-    void givenAvailableProduct_whenAdminMarksUnavailable_thenProductIsUnavailable() {
-        MarkProductUnavailableCommand command = new MarkProductUnavailableCommand(
-                chocolateCroissant.getProductId(),
-                admin.getUserId()
-        );
+  @Test
+  void givenAvailableProduct_whenAdminMarksUnavailable_thenProductIsUnavailable() {
+    MarkProductUnavailableCommand command =
+        new MarkProductUnavailableCommand(chocolateCroissant.getProductId(), admin.getUserId());
 
-        when(productRepository.findById(chocolateCroissant.getProductId())).thenReturn(Optional.of(chocolateCroissant));
-        when(userRepository.findById(admin.getUserId())).thenReturn(Optional.of(admin));
+    when(productRepository.findById(chocolateCroissant.getProductId()))
+        .thenReturn(Optional.of(chocolateCroissant));
+    when(userRepository.findById(admin.getUserId())).thenReturn(Optional.of(admin));
 
-        productCommandHandler.markProductUnavailable(command);
+    productCommandHandler.markProductUnavailable(command);
 
-        assertFalse(chocolateCroissant.isAvailable());
-        verify(productRepository, times(1)).save(chocolateCroissant);
-    }
+    assertFalse(chocolateCroissant.isAvailable());
+    verify(productRepository, times(1)).save(chocolateCroissant);
+  }
 
-    @Test
-    void givenAlreadyUnavailableProduct_whenMarkUnavailable_thenExceptionThrown() {
-        chocolateCroissant.markUnavailable();
-        MarkProductUnavailableCommand command = new MarkProductUnavailableCommand(
-                chocolateCroissant.getProductId(),
-                admin.getUserId()
-        );
+  @Test
+  void givenAlreadyUnavailableProduct_whenMarkUnavailable_thenExceptionThrown() {
+    chocolateCroissant.markUnavailable();
+    MarkProductUnavailableCommand command =
+        new MarkProductUnavailableCommand(chocolateCroissant.getProductId(), admin.getUserId());
 
-        when(productRepository.findById(chocolateCroissant.getProductId())).thenReturn(Optional.of(chocolateCroissant));
-        when(userRepository.findById(admin.getUserId())).thenReturn(Optional.of(admin));
+    when(productRepository.findById(chocolateCroissant.getProductId()))
+        .thenReturn(Optional.of(chocolateCroissant));
+    when(userRepository.findById(admin.getUserId())).thenReturn(Optional.of(admin));
 
-        ProductServiceException ex = assertThrows(
-                ProductServiceException.class,
-                () -> productCommandHandler.markProductUnavailable(command)
-        );
+    ProductServiceException ex =
+        assertThrows(
+            ProductServiceException.class,
+            () -> productCommandHandler.markProductUnavailable(command));
 
-        assertEquals("product", ex.getField());
-        verify(productRepository, never()).save(any());
-    }
+    assertEquals("product", ex.getField());
+    verify(productRepository, never()).save(any());
+  }
 
-    @Test
-    void givenUnauthorizedUser_whenMarkUnavailable_thenExceptionThrown() {
-        MarkProductUnavailableCommand command = new MarkProductUnavailableCommand(
-                chocolateCroissant.getProductId(),
-                customer.getUserId()
-        );
+  @Test
+  void givenUnauthorizedUser_whenMarkUnavailable_thenExceptionThrown() {
+    MarkProductUnavailableCommand command =
+        new MarkProductUnavailableCommand(chocolateCroissant.getProductId(), customer.getUserId());
 
-        when(productRepository.findById(chocolateCroissant.getProductId())).thenReturn(Optional.of(chocolateCroissant));
-        when(userRepository.findById(customer.getUserId())).thenReturn(Optional.of(customer));
+    when(productRepository.findById(chocolateCroissant.getProductId()))
+        .thenReturn(Optional.of(chocolateCroissant));
+    when(userRepository.findById(customer.getUserId())).thenReturn(Optional.of(customer));
 
-        ProductServiceException ex = assertThrows(
-                ProductServiceException.class,
-                () -> productCommandHandler.markProductUnavailable(command)
-        );
+    ProductServiceException ex =
+        assertThrows(
+            ProductServiceException.class,
+            () -> productCommandHandler.markProductUnavailable(command));
 
-        assertEquals("role", ex.getField());
-        verify(productRepository, never()).save(any());
-    }
+    assertEquals("role", ex.getField());
+    verify(productRepository, never()).save(any());
+  }
 }

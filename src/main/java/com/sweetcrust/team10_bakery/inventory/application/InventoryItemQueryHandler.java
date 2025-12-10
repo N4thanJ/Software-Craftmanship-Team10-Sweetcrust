@@ -7,13 +7,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class InventoryItemQueryHandler {
-    private final InventoryItemRepository inventoryItemRepository;
+  private final InventoryItemRepository inventoryItemRepository;
 
-    public InventoryItemQueryHandler(InventoryItemRepository inventoryItemRepository) {
-        this.inventoryItemRepository = inventoryItemRepository;
-    }
+  public InventoryItemQueryHandler(InventoryItemRepository inventoryItemRepository) {
+    this.inventoryItemRepository = inventoryItemRepository;
+  }
 
-    public List<InventoryItem> getAllInventoryItems() {
-        return inventoryItemRepository.findAll();
-    }
+  public List<InventoryItem> getAllInventoryItems() {
+    return inventoryItemRepository.findAll();
+  }
 }

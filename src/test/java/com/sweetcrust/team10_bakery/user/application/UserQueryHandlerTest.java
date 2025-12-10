@@ -19,50 +19,54 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class UserQueryHandlerTest {
 
-    @Mock
-    private UserRepository userRepository;
+  @Mock private UserRepository userRepository;
 
-    @InjectMocks
-    private UserQueryHandler userQueryHandler;
+  @InjectMocks private UserQueryHandler userQueryHandler;
 
-    @Test
-    void givenGetAllUsers_whenGettingAllUsers_thenAllUsersAreReturned() {
-        // given
-        List<User> allUsers = List.of(new User("bread-sheeran", "BreadS123!", "breadsheeran@sweetcrust.com", UserRole.BAKER), new User("toast-malone", "ToastM123!", "toastmalone@sweetcrust.com", UserRole.CUSTOMER));
-        when(userRepository.findAll()).thenReturn(allUsers);
+  @Test
+  void givenGetAllUsers_whenGettingAllUsers_thenAllUsersAreReturned() {
+    // given
+    List<User> allUsers =
+        List.of(
+            new User("bread-sheeran", "BreadS123!", "breadsheeran@sweetcrust.com", UserRole.BAKER),
+            new User(
+                "toast-malone", "ToastM123!", "toastmalone@sweetcrust.com", UserRole.CUSTOMER));
+    when(userRepository.findAll()).thenReturn(allUsers);
 
-        // when
-        List<User> users = userQueryHandler.getAllUsers();
+    // when
+    List<User> users = userQueryHandler.getAllUsers();
 
-        // then
-        assertNotNull(users);
-        assertEquals(2, users.size());
-    }
+    // then
+    assertNotNull(users);
+    assertEquals(2, users.size());
+  }
 
-    @Test
-    void givenExistingUserId_whenGetById_thenUserWithIdIsReturned() {
-        // given
-        UserId userId = new UserId(UUID.randomUUID());
-        User user = new User("bread-sheeran", "BreadS123!", "breadsheeran@sweetcrust.com", UserRole.BAKER);
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+  @Test
+  void givenExistingUserId_whenGetById_thenUserWithIdIsReturned() {
+    // given
+    UserId userId = new UserId(UUID.randomUUID());
+    User user =
+        new User("bread-sheeran", "BreadS123!", "breadsheeran@sweetcrust.com", UserRole.BAKER);
+    when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
-        // when
-        User foundUser = userQueryHandler.getUserById(userId);
+    // when
+    User foundUser = userQueryHandler.getUserById(userId);
 
-        // then
-        assertEquals(user, foundUser);
-    }
+    // then
+    assertEquals(user, foundUser);
+  }
 
-    @Test
-    void givenInexistingUserId_whenGetById_thenExceptionisThrown() {
-        // given
-        UserId userId = new UserId(UUID.randomUUID());
+  @Test
+  void givenInexistingUserId_whenGetById_thenExceptionisThrown() {
+    // given
+    UserId userId = new UserId(UUID.randomUUID());
 
-        // when
-        UserServiceException exception = assertThrows(UserServiceException.class, () -> userQueryHandler.getUserById(userId));
+    // when
+    UserServiceException exception =
+        assertThrows(UserServiceException.class, () -> userQueryHandler.getUserById(userId));
 
-        // then
-        assertEquals("user", exception.getField());
-        assertEquals("user not found", exception.getMessage());
-    }
+    // then
+    assertEquals("user", exception.getField());
+    assertEquals("user not found", exception.getMessage());
+  }
 }

@@ -17,49 +17,54 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class UserCommandHandlerTest {
 
-    @Mock
-    private UserRepository userRepository;
+  @Mock private UserRepository userRepository;
 
-    @InjectMocks
-    private UserCommandHandler userCommandHandler;
+  @InjectMocks private UserCommandHandler userCommandHandler;
 
-    @Test
-    void givenValidData_whenRegisterUser_thenUserIsCreated() {
-        // given
-        AddUserCommand addUserCommand = new AddUserCommand("bread-sheeran", "breadsheeran@sweetcrust.com", "BreadS123!", "BAKER");
+  @Test
+  void givenValidData_whenRegisterUser_thenUserIsCreated() {
+    // given
+    AddUserCommand addUserCommand =
+        new AddUserCommand("bread-sheeran", "breadsheeran@sweetcrust.com", "BreadS123!", "BAKER");
 
-        // when
-        userCommandHandler.registerUser(addUserCommand);
+    // when
+    userCommandHandler.registerUser(addUserCommand);
 
-        // then
-        verify(userRepository, times(1)).save(any(User.class));
-    }
+    // then
+    verify(userRepository, times(1)).save(any(User.class));
+  }
 
-    @Test
-    void givenAlreadyRegisteredEmail_whenRegisterUser_thenExceptionIsThrown() {
-        // given
-        AddUserCommand addUserCommand = new AddUserCommand("bread-sheeran", "breadsheeran@sweetcrust.com", "BreadS123!", "BAKER");
-        when(userRepository.existsByEmail(addUserCommand.email())).thenReturn(true);
+  @Test
+  void givenAlreadyRegisteredEmail_whenRegisterUser_thenExceptionIsThrown() {
+    // given
+    AddUserCommand addUserCommand =
+        new AddUserCommand("bread-sheeran", "breadsheeran@sweetcrust.com", "BreadS123!", "BAKER");
+    when(userRepository.existsByEmail(addUserCommand.email())).thenReturn(true);
 
-        // when
-        UserServiceException exception = assertThrows(UserServiceException.class, () -> userCommandHandler.registerUser(addUserCommand));
+    // when
+    UserServiceException exception =
+        assertThrows(
+            UserServiceException.class, () -> userCommandHandler.registerUser(addUserCommand));
 
-        // then
-        assertEquals("email", exception.getField());
-        assertEquals("user with email already exists", exception.getMessage());
-    }
+    // then
+    assertEquals("email", exception.getField());
+    assertEquals("user with email already exists", exception.getMessage());
+  }
 
-    @Test
-    void givenAlreadyRegisteredUsername_whenRegisterUser_thenExceptionIsThrown() {
-        // given
-        AddUserCommand addUserCommand = new AddUserCommand("bread-sheeran", "breadsheeran@sweetcrust.com", "BreadS123!", "BAKER");
-        when(userRepository.existsByUsername(addUserCommand.username())).thenReturn(true);
+  @Test
+  void givenAlreadyRegisteredUsername_whenRegisterUser_thenExceptionIsThrown() {
+    // given
+    AddUserCommand addUserCommand =
+        new AddUserCommand("bread-sheeran", "breadsheeran@sweetcrust.com", "BreadS123!", "BAKER");
+    when(userRepository.existsByUsername(addUserCommand.username())).thenReturn(true);
 
-        // when
-        UserServiceException exception = assertThrows(UserServiceException.class, () -> userCommandHandler.registerUser(addUserCommand));
+    // when
+    UserServiceException exception =
+        assertThrows(
+            UserServiceException.class, () -> userCommandHandler.registerUser(addUserCommand));
 
-        // then
-        assertEquals("username", exception.getField());
-        assertEquals("user with username already exists", exception.getMessage());
-    }
+    // then
+    assertEquals("username", exception.getField());
+    assertEquals("user with username already exists", exception.getMessage());
+  }
 }

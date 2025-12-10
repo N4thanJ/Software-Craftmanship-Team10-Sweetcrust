@@ -9,19 +9,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserQueryHandler {
 
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    public UserQueryHandler(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+  public UserQueryHandler(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
+  public List<User> getAllUsers() {
+    return userRepository.findAll();
+  }
 
-    public User getUserById(UserId userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UserServiceException("user", "user not found"));
-    }
-
+  public User getUserById(UserId userId) {
+    return userRepository
+        .findById(userId)
+        .orElseThrow(() -> new UserServiceException("user", "user not found"));
+  }
 }

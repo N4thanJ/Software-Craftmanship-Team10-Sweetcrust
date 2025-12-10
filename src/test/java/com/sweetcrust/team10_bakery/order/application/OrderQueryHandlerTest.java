@@ -19,52 +19,51 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class OrderQueryHandlerTest {
 
-    @Mock
-    private OrderRepository orderRepository;
+  @Mock private OrderRepository orderRepository;
 
-    @InjectMocks
-    private OrderQueryHandler orderQueryHandler;
+  @InjectMocks private OrderQueryHandler orderQueryHandler;
 
-    @Test
-    void givenGetAllOrders_whenGettingAllOrders_thenAllOrdersAreReturned() {
-        // given
-        Order crustyCroissantOrder = mock(Order.class);
-        Order butteryBaguetteOrder = mock(Order.class);
-        List<Order> allOrders = List.of(crustyCroissantOrder, butteryBaguetteOrder);
-        when(orderRepository.findAll()).thenReturn(allOrders);
+  @Test
+  void givenGetAllOrders_whenGettingAllOrders_thenAllOrdersAreReturned() {
+    // given
+    Order crustyCroissantOrder = mock(Order.class);
+    Order butteryBaguetteOrder = mock(Order.class);
+    List<Order> allOrders = List.of(crustyCroissantOrder, butteryBaguetteOrder);
+    when(orderRepository.findAll()).thenReturn(allOrders);
 
-        // when
-        List<Order> orders = orderQueryHandler.getAllOrders();
+    // when
+    List<Order> orders = orderQueryHandler.getAllOrders();
 
-        // then
-        assertNotNull(orders);
-        assertEquals(2, orders.size());
-    }
+    // then
+    assertNotNull(orders);
+    assertEquals(2, orders.size());
+  }
 
-    @Test
-    void givenExistingOrderId_whenGetById_thenOrderWithIdIsReturned() {
-        // given
-        OrderId orderId = new OrderId(UUID.randomUUID());
-        Order sourdoughOrder = mock(Order.class);
-        when(orderRepository.findById(orderId)).thenReturn(Optional.of(sourdoughOrder));
+  @Test
+  void givenExistingOrderId_whenGetById_thenOrderWithIdIsReturned() {
+    // given
+    OrderId orderId = new OrderId(UUID.randomUUID());
+    Order sourdoughOrder = mock(Order.class);
+    when(orderRepository.findById(orderId)).thenReturn(Optional.of(sourdoughOrder));
 
-        // when
-        Order foundOrder = orderQueryHandler.getOrderById(orderId);
+    // when
+    Order foundOrder = orderQueryHandler.getOrderById(orderId);
 
-        // then
-        assertEquals(sourdoughOrder, foundOrder);
-    }
+    // then
+    assertEquals(sourdoughOrder, foundOrder);
+  }
 
-    @Test
-    void givenInexistingOrderId_whenGetById_thenExceptionIsThrown() {
-        // given
-        OrderId orderId = new OrderId(UUID.randomUUID());
+  @Test
+  void givenInexistingOrderId_whenGetById_thenExceptionIsThrown() {
+    // given
+    OrderId orderId = new OrderId(UUID.randomUUID());
 
-        // when
-        OrderServiceException exception = assertThrows(OrderServiceException.class, () -> orderQueryHandler.getOrderById(orderId));
+    // when
+    OrderServiceException exception =
+        assertThrows(OrderServiceException.class, () -> orderQueryHandler.getOrderById(orderId));
 
-        // then
-        assertEquals("order", exception.getField());
-        assertEquals("order not found", exception.getMessage());
-    }
+    // then
+    assertEquals("order", exception.getField());
+    assertEquals("order not found", exception.getMessage());
+  }
 }

@@ -12,19 +12,19 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(ServiceException.class)
-    public ResponseEntity<Map<String, String>> handleServiceExceptions(ServiceException ex) {
-        Map<String, String> errors = new HashMap<>();
-        errors.put("field", ex.getField());
-        errors.put("message", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
-    }
+  @ExceptionHandler(ServiceException.class)
+  public ResponseEntity<Map<String, String>> handleServiceExceptions(ServiceException ex) {
+    Map<String, String> errors = new HashMap<>();
+    errors.put("field", ex.getField());
+    errors.put("message", ex.getMessage());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+  }
 
-    @ExceptionHandler(DomainException.class)
-    public ResponseEntity<Map<String, String>> handleDomainExceptions(DomainException ex) {
-        Map<String, String> errors = new HashMap<>();
-        errors.put("field", ex.getField());
-        errors.put("message", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
-    }
+  @ExceptionHandler(DomainException.class)
+  public ResponseEntity<Map<String, String>> handleDomainExceptions(DomainException ex) {
+    Map<String, String> errors = new HashMap<>();
+    errors.put("field", ex.getField());
+    errors.put("message", ex.getMessage());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+  }
 }
