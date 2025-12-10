@@ -14,7 +14,8 @@ import org.springframework.stereotype.Repository;
 public interface OrderRepository extends JpaRepository<Order, OrderId> {
   List<Order> findBySourceShopId(ShopId sourceShopId);
 
-  List<Order> findByStatusAndRequestedDeliveryDateBetween(OrderStatus status, LocalDateTime startInclusive, LocalDateTime endInclusive);
+  List<Order> findByStatusAndRequestedDeliveryDateBetween(
+      OrderStatus status, LocalDateTime startInclusive, LocalDateTime endInclusive);
 
   List<Order> findByCustomerId(UserId customerId);
 }

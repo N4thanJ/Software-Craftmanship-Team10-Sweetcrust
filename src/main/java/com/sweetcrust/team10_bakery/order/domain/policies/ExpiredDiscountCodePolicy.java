@@ -1,7 +1,5 @@
 package com.sweetcrust.team10_bakery.order.domain.policies;
 
-import org.springframework.stereotype.Component;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import org.springframework.stereotype.Component;
