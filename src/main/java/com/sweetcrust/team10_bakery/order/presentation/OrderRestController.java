@@ -5,12 +5,17 @@ import com.sweetcrust.team10_bakery.order.application.OrderQueryHandler;
 import com.sweetcrust.team10_bakery.order.application.commands.CancelOrderCommand;
 import com.sweetcrust.team10_bakery.order.application.commands.CreateB2BOrderCommand;
 import com.sweetcrust.team10_bakery.order.application.commands.CreateB2COrderCommand;
+import com.sweetcrust.team10_bakery.order.application.queries.GetAllOrdersByUserIdQuery;
 import com.sweetcrust.team10_bakery.order.domain.entities.Order;
 import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderId;
+import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderType;
 import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopId;
+import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserId;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.List;
 import java.util.UUID;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,6 +44,13 @@ public class OrderRestController {
     public ResponseEntity<Order> getOrderById(@PathVariable UUID orderId) {
         Order order = orderQueryHandler.getOrderById(new OrderId(orderId));
         return ResponseEntity.ok(order);
+    }
+
+    @GetMapping("/{orderType}/{userId}")
+    public ResponseEntity<Iterable<Order>> getAllOrdersForCustomer(@PathVariable OrderType orderType, @PathVariable UUID userId) {
+        GetAllOrdersByUserIdQuery query = new GetAllOrdersByUserIdQuery(orderType, new UserId(userId));
+        List<Order> orders = orderQueryHandler.getAllOrdersForCustomer(query);
+        return ResponseEntity.ok(orders);
     }
 
     @GetMapping("/shop/{sourceShopId}")
