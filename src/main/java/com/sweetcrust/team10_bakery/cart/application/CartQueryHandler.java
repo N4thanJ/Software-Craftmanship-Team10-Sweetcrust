@@ -12,21 +12,22 @@ import org.springframework.stereotype.Service;
 @Service
 public class CartQueryHandler {
   private final CartRepository cartRepository;
-    private final CartItemRepository cartItemRepository;
+  private final CartItemRepository cartItemRepository;
 
-    public CartQueryHandler(CartRepository cartRepository, CartItemRepository cartItemRepository) {
+  public CartQueryHandler(CartRepository cartRepository, CartItemRepository cartItemRepository) {
     this.cartRepository = cartRepository;
-        this.cartItemRepository = cartItemRepository;
-    }
+    this.cartItemRepository = cartItemRepository;
+  }
 
   public List<CartResponse> getAllCarts() {
     List<Cart> carts = cartRepository.findAll();
 
     return carts.stream()
-            .map(cart -> {
-                List<CartItem> items = cartItemRepository.findByCartId(cart.getCartId());
-                return CartMapper.toCartResponse(cart, items);
+        .map(
+            cart -> {
+              List<CartItem> items = cartItemRepository.findByCartId(cart.getCartId());
+              return CartMapper.toCartResponse(cart, items);
             })
-            .toList();
+        .toList();
   }
 }
