@@ -1,13 +1,12 @@
 package com.sweetcrust.team10_bakery.product.domain;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.sweetcrust.team10_bakery.product.domain.entities.ProductVariant;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductId;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductSize;
-import org.junit.jupiter.api.Test;
-
 import java.math.BigDecimal;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 public class ProductVariantTest {
 

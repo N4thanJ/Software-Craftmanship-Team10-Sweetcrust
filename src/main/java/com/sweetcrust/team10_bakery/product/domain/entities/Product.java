@@ -4,7 +4,6 @@ import com.sweetcrust.team10_bakery.product.domain.ProductDomainException;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.CategoryId;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductId;
 import jakarta.persistence.*;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,14 +1,13 @@
 package com.sweetcrust.team10_bakery.order.domain.policies;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 @Primary
 @Component
-public class B2BDiscountPolicy implements DiscountPolicy{
+public class B2BDiscountPolicy implements DiscountPolicy {
 
     private final BigDecimal discountRate = new BigDecimal("0.21");
 

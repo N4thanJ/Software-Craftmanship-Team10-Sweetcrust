@@ -9,24 +9,25 @@ import org.springframework.stereotype.Component;
 @Component
 public class MockEmailAdapter implements EmailService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MockEmailAdapter.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(MockEmailAdapter.class);
 
-    @Override
-    public void sendEmail(String to, String subject, String body) {
-        LOGGER.info(
-                """
-                        
+  @Override
+  public void sendEmail(String to, String subject, String body) {
+    LOGGER.info(
+        """
+
                         ===== MOCK EMAIL =====\
-                        
+
                         To: {}\
-                        
+
                         Subject: {}\
-                        
+
                         Body:
                         {}\
-                        
+
                         =====================""",
-                to, subject, body
-        );
-    }
+        to,
+        subject,
+        body);
+  }
 }

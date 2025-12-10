@@ -6,9 +6,8 @@ import com.sweetcrust.team10_bakery.product.domain.valueobjects.ProductId;
 import com.sweetcrust.team10_bakery.product.infrastructure.ProductRepository;
 import com.sweetcrust.team10_bakery.product.presentation.dto.ProductResponseDto;
 import com.sweetcrust.team10_bakery.product.presentation.dto.ProductVariantResponseDto;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Service
 public class ProductQueryHandler {

@@ -1,5 +1,10 @@
 package com.sweetcrust.team10_bakery.user.application;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import com.sweetcrust.team10_bakery.user.application.commands.AddUserCommand;
 import com.sweetcrust.team10_bakery.user.domain.entities.User;
 import com.sweetcrust.team10_bakery.user.infrastructure.UserRepository;
@@ -8,11 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UserCommandHandlerTest {
@@ -38,11 +38,11 @@ public class UserCommandHandlerTest {
     @Test
     void givenAlreadyRegisteredEmail_whenRegisterUser_thenExceptionIsThrown() {
         // given
-        AddUserCommand addUserCommand = new AddUserCommand("bread-sheeran", "breadsheeran@sweetcrust.com",  "BreadS123!", "BAKER");
+        AddUserCommand addUserCommand = new AddUserCommand("bread-sheeran", "breadsheeran@sweetcrust.com", "BreadS123!", "BAKER");
         when(userRepository.existsByEmail(addUserCommand.email())).thenReturn(true);
 
         // when
-        UserServiceException exception = assertThrows(UserServiceException.class, ()  -> userCommandHandler.registerUser(addUserCommand));
+        UserServiceException exception = assertThrows(UserServiceException.class, () -> userCommandHandler.registerUser(addUserCommand));
 
         // then
         assertEquals("email", exception.getField());
@@ -52,11 +52,11 @@ public class UserCommandHandlerTest {
     @Test
     void givenAlreadyRegisteredUsername_whenRegisterUser_thenExceptionIsThrown() {
         // given
-        AddUserCommand addUserCommand = new AddUserCommand("bread-sheeran", "breadsheeran@sweetcrust.com",  "BreadS123!", "BAKER");
+        AddUserCommand addUserCommand = new AddUserCommand("bread-sheeran", "breadsheeran@sweetcrust.com", "BreadS123!", "BAKER");
         when(userRepository.existsByUsername(addUserCommand.username())).thenReturn(true);
 
         // when
-        UserServiceException exception = assertThrows(UserServiceException.class, ()  -> userCommandHandler.registerUser(addUserCommand));
+        UserServiceException exception = assertThrows(UserServiceException.class, () -> userCommandHandler.registerUser(addUserCommand));
 
         // then
         assertEquals("username", exception.getField());

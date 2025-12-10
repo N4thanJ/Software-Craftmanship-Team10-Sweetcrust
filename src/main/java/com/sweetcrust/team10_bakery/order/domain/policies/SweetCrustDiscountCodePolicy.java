@@ -1,14 +1,13 @@
 package com.sweetcrust.team10_bakery.order.domain.policies;
 
-import org.springframework.stereotype.Component;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import org.springframework.stereotype.Component;
 
 @Component
 public class SweetCrustDiscountCodePolicy implements DiscountCodePolicy {
 
-    private static final BigDecimal RATE = BigDecimal.valueOf(0.10); // 10%
+    private static final BigDecimal RATE = BigDecimal.valueOf(0.10);
 
     @Override
     public BigDecimal applyDiscount(BigDecimal subtotal) {
@@ -28,6 +27,6 @@ public class SweetCrustDiscountCodePolicy implements DiscountCodePolicy {
 
     @Override
     public LocalDate expiryDate() {
-        return LocalDate.MAX; // Expires in 6 months
+        return LocalDate.MAX;
     }
 }

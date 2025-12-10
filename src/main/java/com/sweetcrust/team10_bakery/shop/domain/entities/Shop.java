@@ -4,7 +4,6 @@ import com.sweetcrust.team10_bakery.shared.domain.valueobjects.Address;
 import com.sweetcrust.team10_bakery.shop.domain.ShopDomainException;
 import com.sweetcrust.team10_bakery.shop.domain.valueobjects.CountryCode;
 import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopId;
-
 import jakarta.persistence.Embedded;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;

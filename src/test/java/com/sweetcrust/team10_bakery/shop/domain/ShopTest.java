@@ -1,11 +1,11 @@
 package com.sweetcrust.team10_bakery.shop.domain;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.sweetcrust.team10_bakery.shared.domain.valueobjects.Address;
 import com.sweetcrust.team10_bakery.shop.domain.entities.Shop;
 import com.sweetcrust.team10_bakery.shop.domain.valueobjects.CountryCode;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ShopTest {
 

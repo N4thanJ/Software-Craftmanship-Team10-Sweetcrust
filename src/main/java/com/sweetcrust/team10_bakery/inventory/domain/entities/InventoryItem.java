@@ -4,7 +4,6 @@ import com.sweetcrust.team10_bakery.inventory.domain.InventoryDomainException;
 import com.sweetcrust.team10_bakery.inventory.domain.valueobjects.InventoryItemId;
 import com.sweetcrust.team10_bakery.product.domain.valueobjects.VariantId;
 import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopId;
-
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;

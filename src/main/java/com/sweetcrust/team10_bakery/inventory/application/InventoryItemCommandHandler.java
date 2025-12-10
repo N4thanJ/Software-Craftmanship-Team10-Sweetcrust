@@ -1,13 +1,12 @@
 package com.sweetcrust.team10_bakery.inventory.application;
 
-import org.springframework.stereotype.Service;
-
 import com.sweetcrust.team10_bakery.inventory.application.commands.AddStockCommand;
 import com.sweetcrust.team10_bakery.inventory.domain.entities.InventoryItem;
 import com.sweetcrust.team10_bakery.inventory.infrastructure.InventoryItemRepository;
 import com.sweetcrust.team10_bakery.shop.domain.entities.Shop;
 import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopId;
 import com.sweetcrust.team10_bakery.shop.infrastructure.ShopRepository;
+import org.springframework.stereotype.Service;
 
 @Service
 public class InventoryItemCommandHandler {
