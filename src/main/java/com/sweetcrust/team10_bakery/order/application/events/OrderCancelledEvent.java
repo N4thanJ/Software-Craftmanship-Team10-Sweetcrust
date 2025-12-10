@@ -14,6 +14,7 @@ public class OrderCancelledEvent implements Event {
     this.recipientEmail = recipientEmail;
   }
 
+  @Override
   public Order getOrder() {
     return order;
   }
