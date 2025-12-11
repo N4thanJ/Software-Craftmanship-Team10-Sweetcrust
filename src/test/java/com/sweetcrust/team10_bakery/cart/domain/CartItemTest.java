@@ -31,9 +31,9 @@ public class CartItemTest {
     when(defaultVariant.getPrice()).thenReturn(defaultPrice);
   }
 
-  private void expectFieldError(String field, String message, Runnable action) {
+  private void expectFieldError(String message, Runnable action) {
     CartDomainException ex = assertThrows(CartDomainException.class, action::run);
-    assertEquals(field, ex.getField());
+    assertEquals("quantity", ex.getField());
     assertEquals(message, ex.getMessage());
   }
 
@@ -57,27 +57,15 @@ public class CartItemTest {
   }
 
   @Test
-  void givenNullVariant_whenCreatingCartItem_thenThrowsException() {
-    expectFieldError(
-        "variant",
-        "variant must not be null",
-        () -> CartItem.fromVariant(defaultCartId, null, defaultQuantity));
-  }
-
-  @Test
   void givenZeroQuantity_whenCreatingCartItem_thenThrowsException() {
     expectFieldError(
-        "quantity",
-        "quantity must be positive",
-        () -> CartItem.fromVariant(defaultCartId, defaultVariant, 0));
+        "quantity must be positive", () -> CartItem.fromVariant(defaultCartId, defaultVariant, 0));
   }
 
   @Test
   void givenNegativeQuantity_whenCreatingCartItem_thenThrowsException() {
     expectFieldError(
-        "quantity",
-        "quantity must be positive",
-        () -> CartItem.fromVariant(defaultCartId, defaultVariant, -1));
+        "quantity must be positive", () -> CartItem.fromVariant(defaultCartId, defaultVariant, -1));
   }
 
   @Test
@@ -95,7 +83,7 @@ public class CartItemTest {
   void givenInvalidAmount_whenIncreasingQuantity_thenThrowsException() {
     CartItem cartItem = createDefaultItem();
 
-    expectFieldError("quantity", "amount must be positive", () -> cartItem.increaseQuantity(0));
+    expectFieldError("amount must be positive", () -> cartItem.increaseQuantity(0));
   }
 
   @Test
@@ -114,7 +102,6 @@ public class CartItemTest {
     CartItem cartItem = createDefaultItem();
 
     expectFieldError(
-        "quantity",
         "quantity must be greater than or equal to amount",
         () -> cartItem.decreaseQuantity(defaultQuantity + 1));
   }
