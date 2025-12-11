@@ -77,8 +77,7 @@ public class OrderRestController {
   }
 
   @PostMapping("/{orderId}/confirm")
-  public ResponseEntity<Order> confirmOrder(
-          @RequestBody ConfirmOrderCommand confirmOrderCommand) {
+  public ResponseEntity<Order> confirmOrder(@RequestBody ConfirmOrderCommand confirmOrderCommand) {
     Order confirmed = orderCommandHandler.confirmOrder(confirmOrderCommand);
     return ResponseEntity.ok(confirmed);
   }

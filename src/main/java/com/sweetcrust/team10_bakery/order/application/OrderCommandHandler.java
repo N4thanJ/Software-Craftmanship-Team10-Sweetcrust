@@ -203,7 +203,8 @@ public class OrderCommandHandler {
             .orElseThrow(() -> new OrderServiceException("userId", "User not found"));
 
     if (!user.getUserId().equals(sourceShop.getOwnerId())) {
-      throw new OrderServiceException("userId", "Only the source shop owner can confirm an order for their shop.");
+      throw new OrderServiceException(
+          "userId", "Only the source shop owner can confirm an order for their shop.");
     }
 
     order.confirm();
