@@ -4,162 +4,187 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.sweetcrust.team10_bakery.cart.domain.valueobjects.CartId;
 import com.sweetcrust.team10_bakery.order.domain.entities.Order;
-import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderStatus;
-import com.sweetcrust.team10_bakery.order.domain.valueobjects.OrderType;
 import com.sweetcrust.team10_bakery.shared.domain.valueobjects.Address;
 import com.sweetcrust.team10_bakery.shop.domain.valueobjects.ShopId;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserId;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class OrderTest {
-  @Test
-  void givenValidB2CData_whenCreatingOrder_thenOrderIsCreated() {
-    // given
-    Address address =
+
+  private Address defaultAddress;
+  private UserId defaultCustomerId;
+  private ShopId defaultSourceShopId;
+  private ShopId defaultOrderingShopId;
+  private CartId defaultCartId;
+  private LocalDateTime defaultRequestedDate;
+  private LocalDateTime defaultPastRequestedDate;
+
+  @BeforeEach
+  void setup() {
+    defaultAddress =
         Address.builder()
-            .setStreet("Bakery Lane 13")
-            .setCity("Donutville")
-            .setPostalCode("12345")
-            .setCountry("Sweetland")
+            .setStreet("Default Street 1")
+            .setCity("Default City")
+            .setPostalCode("00000")
+            .setCountry("Defaultland")
             .build();
-    UserId customerId = new UserId();
-    LocalDateTime requestedDeliveryDate = LocalDateTime.now().plusDays(1);
-    CartId cartId = new CartId();
-    ShopId shopId = new ShopId();
 
-    // when
-    Order order = Order.createB2C(address, requestedDeliveryDate, customerId, cartId, shopId);
+    defaultCustomerId = new UserId();
+    defaultSourceShopId = new ShopId();
+    defaultOrderingShopId = new ShopId();
+    defaultCartId = new CartId();
 
-    // then
-    assertNotNull(order);
-    assertNotNull(order.getOrderId());
-    assertEquals(OrderType.B2C, order.getOrderType());
-    assertNull(order.getOrderingShopId());
-    assertEquals(shopId, order.getSourceShopId());
-    assertEquals(customerId, order.getCustomerId());
-    assertEquals(cartId, order.getCartId());
-    assertEquals(OrderStatus.PENDING, order.getStatus());
-    assertEquals(address, order.getDeliveryAddress());
-    assertEquals(requestedDeliveryDate, order.getRequestedDeliveryDate());
+    defaultRequestedDate = LocalDateTime.now().plusDays(2);
+    defaultPastRequestedDate = LocalDateTime.now().minusDays(2);
+  }
+
+  private Order createB2C() {
+    return Order.createB2C(
+        defaultAddress,
+        defaultRequestedDate,
+        defaultCustomerId,
+        defaultCartId,
+        defaultSourceShopId);
+  }
+
+  private Order createB2B() {
+    return Order.createB2B(
+        defaultRequestedDate, defaultOrderingShopId, defaultSourceShopId, defaultCartId);
+  }
+
+  private void expectFieldError(String field, String message, Runnable action) {
+    OrderDomainException ex = assertThrows(OrderDomainException.class, action::run);
+    assertEquals(field, ex.getField());
+    assertEquals(message, ex.getMessage());
   }
 
   @Test
-  void givenValidB2BData_whenCreatingOrder_thenOrderIsCreated() {
-    // given
-    LocalDateTime requestedDeliveryDate = LocalDateTime.now().plusDays(2);
-    ShopId orderingShopId = new ShopId();
-    ShopId sourceShopId = new ShopId();
-    CartId cartId = new CartId();
-
-    // when
-    Order order = Order.createB2B(requestedDeliveryDate, orderingShopId, sourceShopId, cartId);
-
-    // then
-    assertNotNull(order);
-    assertNotNull(order.getOrderId());
-    assertEquals(OrderType.B2B, order.getOrderType());
-    assertEquals(orderingShopId, order.getOrderingShopId());
-    assertEquals(sourceShopId, order.getSourceShopId());
-    assertNull(order.getCustomerId());
-    assertEquals(cartId, order.getCartId());
-    assertEquals(OrderStatus.PENDING, order.getStatus());
-    assertNull(order.getDeliveryAddress());
-    assertEquals(requestedDeliveryDate, order.getRequestedDeliveryDate());
+  void givenNullOrderType_whenSetting_thenThrowsException() {
+    Order order = createB2C();
+    expectFieldError("orderType", "orderType should not be null", () -> order.setOrderType(null));
   }
 
   @Test
-  void givenNullDeliveryAddressForB2C_whenCreatingOrder_thenThrowsException() {
-    // given
-    UserId customerId = new UserId();
-    CartId cartId = new CartId();
-    ShopId shopId = new ShopId();
-    LocalDateTime requestedDeliveryDate = LocalDateTime.now().plusDays(1);
-
-    // when
-    OrderDomainException exception =
-        assertThrows(
-            OrderDomainException.class,
-            () -> Order.createB2C(null, requestedDeliveryDate, customerId, cartId, shopId));
-
-    // then
-    assertEquals("deliveryAddress", exception.getField());
-    assertEquals("deliveryAddress should not be null", exception.getMessage());
+  void givenNullDeliveryAddress_whenSetting_thenThrowsException() {
+    Order order = createB2C();
+    expectFieldError(
+        "deliveryAddress",
+        "deliveryAddress should not be null",
+        () -> order.setDeliveryAddress(null));
   }
 
   @Test
-  void givenNullRequestedDeliveryDateForB2C_whenCreatingOrder_thenThrowsException() {
-    // given
-    Address address =
-        Address.builder()
-            .setStreet("Cupcake Crescent 99")
-            .setCity("Frostingtown")
-            .setPostalCode("54321")
-            .setCountry("Sweetland")
-            .build();
-    UserId customerId = new UserId();
-    CartId cartId = new CartId();
-    ShopId shopId = new ShopId();
-
-    // when
-    OrderDomainException exception =
-        assertThrows(
-            OrderDomainException.class,
-            () -> Order.createB2C(address, null, customerId, cartId, shopId));
-
-    // then
-    assertEquals("requestedDeliveryDate", exception.getField());
-    assertEquals("requestedDeliveryDate should not be null", exception.getMessage());
+  void givenNullRequestedDeliveryDate_whenSetting_thenThrowsException() {
+    Order order = createB2C();
+    expectFieldError(
+        "requestedDeliveryDate",
+        "requestedDeliveryDate should not be null",
+        () -> order.setRequestedDeliveryDate(null));
   }
 
   @Test
-  void givenRequestedDeliveryDateBeforeOrderDate_whenCreatingB2COrder_thenThrowsException() {
-    // given
-    Address address =
-        Address.builder()
-            .setStreet("Pie Street 7")
-            .setCity("Tartville")
-            .setPostalCode("11111")
-            .setCountry("Sweetland")
-            .build();
-    UserId customerId = new UserId();
-    LocalDateTime requestedDeliveryDate = LocalDateTime.now().minusDays(1);
-    CartId cartId = new CartId();
-    ShopId shopId = new ShopId();
-
-    // when
-    OrderDomainException exception =
-        assertThrows(
-            OrderDomainException.class,
-            () -> Order.createB2C(address, requestedDeliveryDate, customerId, cartId, shopId));
-
-    // then
-    assertEquals("requestedDeliveryDate", exception.getField());
-    assertEquals("requestedDeliveryDate should be after orderDate", exception.getMessage());
+  void givenPastRequestedDeliveryDate_whenSetting_thenThrowsException() {
+    Order order = createB2C();
+    expectFieldError(
+        "requestedDeliveryDate",
+        "requestedDeliveryDate should be after orderDate",
+        () -> order.setRequestedDeliveryDate(defaultPastRequestedDate));
   }
 
   @Test
-  void givenNullCustomerIdForB2C_whenCreatingOrder_thenThrowsException() {
-    // given
-    Address address =
-        Address.builder()
-            .setStreet("Muffin Avenue 42")
-            .setCity("Bakerville")
-            .setPostalCode("67890")
-            .setCountry("Sweetland")
-            .build();
-    LocalDateTime requestedDeliveryDate = LocalDateTime.now().plusDays(1);
-    CartId cartId = new CartId();
-    ShopId shopId = new ShopId();
+  void givenNullCustomerId_whenSetting_thenThrowsException() {
+    Order order = createB2C();
+    expectFieldError(
+        "customerId", "customerId should not be null", () -> order.setCustomerId(null));
+  }
 
-    // when
-    OrderDomainException exception =
-        assertThrows(
-            OrderDomainException.class,
-            () -> Order.createB2C(address, requestedDeliveryDate, null, cartId, shopId));
+  @Test
+  void givenNullOrderingShopId_whenSetting_thenThrowsException() {
+    Order order = createB2B();
+    expectFieldError(
+        "orderingShopId", "orderingShopId should not be null", () -> order.setOrderingShopId(null));
+  }
 
-    // then
-    assertEquals("customerId", exception.getField());
-    assertEquals("customerId should not be null", exception.getMessage());
+  @Test
+  void givenNullSourceShopId_whenSetting_thenThrowsException() {
+    Order order = createB2C();
+    expectFieldError(
+        "sourceShopId", "sourceShopId should not be null", () -> order.setSourceShopId(null));
+  }
+
+  @Test
+  void givenNullCartId_whenSetting_thenThrowsException() {
+    Order order = createB2C();
+    expectFieldError("cartId", "cartId should not be null", () -> order.setCartId(null));
+  }
+
+  @Test
+  void givenNegativeSubtotal_whenSetting_thenThrowsException() {
+    Order order = createB2C();
+    expectFieldError(
+        "subtotal", "subtotal cannot be negative", () -> order.setSubtotal(BigDecimal.valueOf(-1)));
+  }
+
+  @Test
+  void givenNegativeTotalAfterDiscount_whenSetting_thenThrowsException() {
+    Order order = createB2C();
+    expectFieldError(
+        "totalAfterDiscount",
+        "totalAfterDiscount cannot be negative",
+        () -> order.setTotalAfterDiscount(BigDecimal.valueOf(-0.01)));
+  }
+
+  @Test
+  void givenInvalidDiscountRate_whenSetting_thenThrowsException() {
+    Order order = createB2C();
+    expectFieldError(
+        "discountRate",
+        "discountRate must be between 0 and 1",
+        () -> order.setDiscountRate(BigDecimal.valueOf(-0.01)));
+    expectFieldError(
+        "discountRate",
+        "discountRate must be between 0 and 1",
+        () -> order.setDiscountRate(BigDecimal.valueOf(1.01)));
+  }
+
+  @Test
+  void givenNonPendingOrder_whenConfirming_thenThrowsException() {
+    Order order = createB2C();
+    order.confirm();
+    expectFieldError("status", "Only pending orders can be confirmed", order::confirm);
+  }
+
+  @Test
+  void givenNonConfirmedOrder_whenMarkingShipped_thenThrowsException() {
+    Order order = createB2C();
+    expectFieldError(
+        "status", "Only confirmed orders can be marked as shipped", order::markShipped);
+  }
+
+  @Test
+  void givenNonShippedOrder_whenDelivering_thenThrowsException() {
+    Order order = createB2C();
+    expectFieldError("status", "Only shipped orders can be delivered", order::deliver);
+  }
+
+  @Test
+  void givenShippedOrDeliveredOrder_whenCancelling_thenThrowsException() {
+    Order order = createB2C();
+    order.confirm();
+    order.markShipped();
+    expectFieldError("status", "Shipped or Delivered orders cannot be cancelled", order::cancel);
+  }
+
+  @Test
+  void givenTooLateCancellation_whenCancelling_thenThrowsException() {
+    Order order = createB2C();
+    order.setRequestedDeliveryDate(LocalDateTime.now().plusHours(10));
+    expectFieldError(
+        "status",
+        "Orders can only be cancelled up until 1 day before the requested delivery date",
+        order::cancel);
   }
 }
