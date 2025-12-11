@@ -1,14 +1,20 @@
 package com.sweetcrust.team10_bakery.cart.domain;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import com.sweetcrust.team10_bakery.cart.domain.entities.Cart;
+import com.sweetcrust.team10_bakery.cart.domain.valueobjects.CartId;
 import org.junit.jupiter.api.Test;
 
 public class CartTest {
-  @Test
-  void givenNullCartItem_whenAddingCartItem_thenThrowsException() {}
 
   @Test
-  void givenOrderWithItems_whenRemovingOrderItem_thenItemIsRemoved() {}
+  void givenDefaultConstructor_whenCreatingCart_thenCartIdIsGenerated() {
+    // when
+    Cart cart = new Cart();
 
-  @Test
-  void givenEmptyOrder_whenValidatingOrder_thenThrowsException() {}
+    // then
+    assertNotNull(cart.getCartId());
+    assertInstanceOf(CartId.class, cart.getCartId());
+  }
 }
