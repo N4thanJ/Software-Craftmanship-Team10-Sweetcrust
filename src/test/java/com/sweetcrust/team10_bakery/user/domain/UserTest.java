@@ -4,339 +4,174 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.sweetcrust.team10_bakery.user.domain.entities.User;
 import com.sweetcrust.team10_bakery.user.domain.valueobjects.UserRole;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class UserTest {
 
+  private String defaultUsername;
+  private String defaultPassword;
+  private String defaultEmail;
+  private UserRole defaultRole;
+
+  @BeforeEach
+  void setup() {
+    defaultUsername = "muffin-man";
+    defaultPassword = "Bread123!";
+    defaultEmail = "muffin@sweetcrust.com";
+    defaultRole = UserRole.CUSTOMER;
+  }
+
+  private User createUser() {
+    return new User(defaultUsername, defaultPassword, defaultEmail, defaultRole);
+  }
+
+  private void expectFieldError(String field, String message, Runnable action) {
+    UserDomainException ex = assertThrows(UserDomainException.class, action::run);
+    assertEquals(field, ex.getField());
+    assertEquals(message, ex.getMessage());
+  }
+
   @Test
   void givenValidData_whenCreatingUser_thenUserIsCreated() {
-    // given
-    String username = "muffin-man";
-    String password = "Bread123!";
-    String email = "muffin@sweetcrust.com";
-    UserRole role = UserRole.CUSTOMER;
+    User user = createUser();
 
-    // when
-    User user = new User(username, password, email, role);
-
-    // then
     assertNotNull(user);
     assertNotNull(user.getUserId());
-    assertEquals(username, user.getUsername());
-    assertEquals(password, user.getPassword());
-    assertEquals(email, user.getEmail());
-    assertEquals(role, user.getRole());
+    assertEquals(defaultUsername, user.getUsername());
+    assertEquals(defaultPassword, user.getPassword());
+    assertEquals(defaultEmail, user.getEmail());
+    assertEquals(defaultRole, user.getRole());
   }
 
   @Test
   void givenNullUsername_whenCreatingUser_thenThrowsException() {
-    // given
-    String password = "Baguette1!";
-    String email = "bready@sweetcrust.com";
-    UserRole role = UserRole.CUSTOMER;
-
-    // when
-    UserDomainException exception =
-        assertThrows(UserDomainException.class, () -> new User(null, password, email, role));
-
-    // then
-    assertEquals("username", exception.getField());
-    assertEquals("username cannot be null or blank", exception.getMessage());
+    defaultUsername = null;
+    expectFieldError("username", "username cannot be null or blank", this::createUser);
   }
 
   @Test
   void givenEmptyUsername_whenCreatingUser_thenThrowsException() {
-    // given
-    String password = "Baguette1!";
-    String email = "bready@sweetcrust.com";
-    UserRole role = UserRole.CUSTOMER;
-
-    // when
-    UserDomainException exception =
-        assertThrows(UserDomainException.class, () -> new User("", password, email, role));
-
-    // then
-    assertEquals("username", exception.getField());
-    assertEquals("username cannot be null or blank", exception.getMessage());
+    defaultUsername = "";
+    expectFieldError("username", "username cannot be null or blank", this::createUser);
   }
 
   @Test
   void givenBlankUsername_whenCreatingUser_thenThrowsException() {
-    // given
-    String password = "Baguette1!";
-    String email = "bready@sweetcrust.com";
-    UserRole role = UserRole.CUSTOMER;
-
-    // when
-    UserDomainException exception =
-        assertThrows(UserDomainException.class, () -> new User("   ", password, email, role));
-
-    // then
-    assertEquals("username", exception.getField());
-    assertEquals("username cannot be null or blank", exception.getMessage());
+    defaultUsername = "   ";
+    expectFieldError("username", "username cannot be null or blank", this::createUser);
   }
 
   @Test
   void givenNullPassword_whenCreatingUser_thenThrowsException() {
-    // when
-    UserDomainException exception =
-        assertThrows(
-            UserDomainException.class,
-            () -> new User("captain-crumb", null, "crumb@sweetcrust.com", UserRole.CUSTOMER));
-
-    // then
-    assertEquals("password", exception.getField());
-    assertEquals("password cannot be null or blank", exception.getMessage());
+    defaultPassword = null;
+    expectFieldError("password", "password cannot be null or blank", this::createUser);
   }
 
   @Test
   void givenEmptyPassword_whenCreatingUser_thenThrowsException() {
-    // when
-    UserDomainException exception =
-        assertThrows(
-            UserDomainException.class,
-            () -> new User("captain-crumb", "", "crumb@sweetcrust.com", UserRole.CUSTOMER));
-
-    // then
-    assertEquals("password", exception.getField());
-    assertEquals("password cannot be null or blank", exception.getMessage());
+    defaultPassword = "";
+    expectFieldError("password", "password cannot be null or blank", this::createUser);
   }
 
   @Test
   void givenBlankPassword_whenCreatingUser_thenThrowsException() {
-    // when
-    UserDomainException exception =
-        assertThrows(
-            UserDomainException.class,
-            () -> new User("captain-crumb", "   ", "crumb@sweetcrust.com", UserRole.CUSTOMER));
-
-    // then
-    assertEquals("password", exception.getField());
-    assertEquals("password cannot be null or blank", exception.getMessage());
+    defaultPassword = "   ";
+    expectFieldError("password", "password cannot be null or blank", this::createUser);
   }
 
   @Test
   void givenPasswordShorterThan8Characters_whenCreatingUser_thenThrowsException() {
-    // given
-    String password = "Short1!";
-
-    // when
-    UserDomainException exception =
-        assertThrows(
-            UserDomainException.class,
-            () -> new User("flourpower", password, "flour@sweetcrust.com", UserRole.CUSTOMER));
-
-    // then
-    assertEquals("password", exception.getField());
-    assertEquals("password must be at least 8 characters", exception.getMessage());
+    defaultPassword = "Short1!";
+    expectFieldError("password", "password must be at least 8 characters", this::createUser);
   }
 
   @Test
   void givenPasswordWithoutLowerCase_whenCreatingUser_thenThrowsException() {
-    // given
-    String password = "MUFFINTOP123!";
-
-    // when
-    UserDomainException exception =
-        assertThrows(
-            UserDomainException.class,
-            () -> new User("muffin-man", password, "muffin@sweetcrust.com", UserRole.CUSTOMER));
-
-    // then
-    assertEquals("password", exception.getField());
-    assertEquals("password must have 1 lower case letter", exception.getMessage());
+    defaultPassword = "MUFFINTOP123!";
+    expectFieldError("password", "password must have 1 lower case letter", this::createUser);
   }
 
   @Test
   void givenPasswordWithoutUpperCase_whenCreatingUser_thenThrowsException() {
-    // given
-    String password = "croissant123!";
-
-    // when
-    UserDomainException exception =
-        assertThrows(
-            UserDomainException.class,
-            () -> new User("buttercup", password, "butter@sweetcrust.com", UserRole.CUSTOMER));
-
-    // then
-    assertEquals("password", exception.getField());
-    assertEquals("password must have 1 upper case letter", exception.getMessage());
+    defaultPassword = "croissant123!";
+    expectFieldError("password", "password must have 1 upper case letter", this::createUser);
   }
 
   @Test
   void givenPasswordWithoutNumber_whenCreatingUser_thenThrowsException() {
-    // given
-    String password = "Baguette!";
-
-    // when
-    UserDomainException exception =
-        assertThrows(
-            UserDomainException.class,
-            () -> new User("baguetteboss", password, "baguette@sweetcrust.com", UserRole.CUSTOMER));
-
-    // then
-    assertEquals("password", exception.getField());
-    assertEquals("password must have 1 number", exception.getMessage());
+    defaultPassword = "Baguette!";
+    expectFieldError("password", "password must have 1 number", this::createUser);
   }
 
   @Test
   void givenPasswordWithoutSpecialCharacter_whenCreatingUser_thenThrowsException() {
-    // given
-    String password = "Cinnamon123";
-
-    // when
-    UserDomainException exception =
-        assertThrows(
-            UserDomainException.class,
-            () -> new User("bagelstein", password, "bagelstein@sweetcrust.com", UserRole.CUSTOMER));
-
-    // then
-    assertEquals("password", exception.getField());
-    assertEquals("password must have at least one special character", exception.getMessage());
+    defaultPassword = "Cinnamon123";
+    expectFieldError(
+        "password", "password must have at least one special character", this::createUser);
   }
 
   @Test
   void givenValidPasswordWithAtSymbol_whenCreatingUser_thenUserIsCreated() {
-    // given
-    String password = "Croissant123@#";
+    defaultPassword = "Croissant123@#";
 
-    // when
-    User user = new User("loaf-vader", password, "loaf@sweetcrust.com", UserRole.CUSTOMER);
+    User user = createUser();
 
-    // then
     assertNotNull(user);
-    assertEquals(password, user.getPassword());
+    assertEquals(defaultPassword, user.getPassword());
   }
 
   @Test
   void givenNullEmail_whenCreatingUser_thenThrowsException() {
-    // when
-    UserDomainException exception =
-        assertThrows(
-            UserDomainException.class,
-            () -> new User("bread-sheeran", "Pumpernickel7!", null, UserRole.CUSTOMER));
-
-    // then
-    assertEquals("email", exception.getField());
-    assertEquals("email cannot be null or blank", exception.getMessage());
+    defaultEmail = null;
+    expectFieldError("email", "email cannot be null or blank", this::createUser);
   }
 
   @Test
   void givenEmptyEmail_whenCreatingUser_thenThrowsException() {
-    // when
-    UserDomainException exception =
-        assertThrows(
-            UserDomainException.class,
-            () -> new User("bread-sheeran", "Pumpernickel7!", "", UserRole.CUSTOMER));
-
-    // then
-    assertEquals("email", exception.getField());
-    assertEquals("email cannot be null or blank", exception.getMessage());
+    defaultEmail = "";
+    expectFieldError("email", "email cannot be null or blank", this::createUser);
   }
 
   @Test
   void givenBlankEmail_whenCreatingUser_thenThrowsException() {
-    // when
-    UserDomainException exception =
-        assertThrows(
-            UserDomainException.class,
-            () -> new User("bread-sheeran", "Pumpernickel7!", "   ", UserRole.CUSTOMER));
-
-    // then
-    assertEquals("email", exception.getField());
-    assertEquals("email cannot be null or blank", exception.getMessage());
+    defaultEmail = "   ";
+    expectFieldError("email", "email cannot be null or blank", this::createUser);
   }
 
   @Test
   void givenEmailWithoutAtSymbol_whenCreatingUser_thenThrowsException() {
-    // given
-    String email = "invalidemail";
-
-    // when
-    UserDomainException exception =
-        assertThrows(
-            UserDomainException.class,
-            () -> new User("bread-sheeran", "Levain123!", email, UserRole.CUSTOMER));
-
-    // then
-    assertEquals("email", exception.getField());
-    assertEquals("invalid email", exception.getMessage());
+    defaultEmail = "invalidemail";
+    expectFieldError("email", "invalid email", this::createUser);
   }
 
   @Test
   void givenEmailWithoutUsername_whenCreatingUser_thenThrowsException() {
-    // given
-    String email = "@example.com";
-
-    // when
-    UserDomainException exception =
-        assertThrows(
-            UserDomainException.class,
-            () -> new User("bread-sheeran", "Levain123!", email, UserRole.CUSTOMER));
-
-    // then
-    assertEquals("email", exception.getField());
-    assertEquals("invalid email", exception.getMessage());
+    defaultEmail = "@example.com";
+    expectFieldError("email", "invalid email", this::createUser);
   }
 
   @Test
   void givenEmailWithoutDomain_whenCreatingUser_thenThrowsException() {
-    // given
-    String email = "invalid@";
-
-    // when
-    UserDomainException exception =
-        assertThrows(
-            UserDomainException.class,
-            () -> new User("bread-sheeran", "Levain123!", email, UserRole.CUSTOMER));
-
-    // then
-    assertEquals("email", exception.getField());
-    assertEquals("invalid email", exception.getMessage());
+    defaultEmail = "invalid@";
+    expectFieldError("email", "invalid email", this::createUser);
   }
 
   @Test
   void givenEmailWithoutTopLevelDomain_whenCreatingUser_thenThrowsException() {
-    // given
-    String email = "invalid@example";
-
-    // when
-    UserDomainException exception =
-        assertThrows(
-            UserDomainException.class,
-            () -> new User("bread-sheeran", "Levain123!", email, UserRole.CUSTOMER));
-
-    // then
-    assertEquals("email", exception.getField());
-    assertEquals("invalid email", exception.getMessage());
+    defaultEmail = "invalid@example";
+    expectFieldError("email", "invalid email", this::createUser);
   }
 
   @Test
   void givenEmailWithSpaces_whenCreatingUser_thenThrowsException() {
-    // given
-    String email = "invalid example@example.com";
-
-    // when
-    UserDomainException exception =
-        assertThrows(
-            UserDomainException.class,
-            () -> new User("bread-sheeran", "Levain123!", email, UserRole.CUSTOMER));
-
-    // then
-    assertEquals("email", exception.getField());
-    assertEquals("invalid email", exception.getMessage());
+    defaultEmail = "invalid email@example.com";
+    expectFieldError("email", "invalid email", this::createUser);
   }
 
   @Test
   void givenNullRole_whenCreatingUser_thenThrowsException() {
-    // when
-    UserDomainException exception =
-        assertThrows(
-            UserDomainException.class,
-            () -> new User("cupcake-queen", "Frosting6^", "cupcake@sweetcrust.com", null));
-
-    // then
-    assertEquals("role", exception.getField());
-    assertEquals("role cannot be null", exception.getMessage());
+    defaultRole = null;
+    expectFieldError("role", "role cannot be null", this::createUser);
   }
 }

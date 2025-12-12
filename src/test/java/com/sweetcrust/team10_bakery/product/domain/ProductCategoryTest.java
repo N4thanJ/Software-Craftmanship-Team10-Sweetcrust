@@ -7,6 +7,12 @@ import org.junit.jupiter.api.Test;
 
 public class ProductCategoryTest {
 
+  private void expectFieldError(String message, Runnable action) {
+    ProductDomainException ex = assertThrows(ProductDomainException.class, action::run);
+    assertEquals("category", ex.getField());
+    assertEquals(message, ex.getMessage());
+  }
+
   @Test
   void givenValidData_whenCreatingCategory_thenCategoryIsCreated() {
     // given
@@ -24,58 +30,24 @@ public class ProductCategoryTest {
   }
 
   @Test
-  void givenNullName_whenCreatingCategory_thenThrowsException() {
-    // given
-    String description = "Fluffy and sweet pastries";
-
-    // when
-    ProductDomainException exception =
-        assertThrows(ProductDomainException.class, () -> new ProductCategory(null, description));
-
-    // then
-    assertEquals("category", exception.getField());
-    assertEquals("name should not be null or blank", exception.getMessage());
+  void givenNullName_whenCreating_thenThrowsException() {
+    expectFieldError("name should not be null or blank", () -> new ProductCategory(null, "desc"));
   }
 
   @Test
-  void givenBlankName_whenCreatingCategory_thenThrowsException() {
-    // given
-    String description = "Fluffy and sweet pastries";
-
-    // when
-    ProductDomainException exception =
-        assertThrows(ProductDomainException.class, () -> new ProductCategory("   ", description));
-
-    // then
-    assertEquals("category", exception.getField());
-    assertEquals("name should not be null or blank", exception.getMessage());
+  void givenBlankName_whenCreating_thenThrowsException() {
+    expectFieldError("name should not be null or blank", () -> new ProductCategory("   ", "desc"));
   }
 
   @Test
-  void givenNullDescription_whenCreatingCategory_thenThrowsException() {
-    // given
-    String name = "Breadtopia";
-
-    // when
-    ProductDomainException exception =
-        assertThrows(ProductDomainException.class, () -> new ProductCategory(name, null));
-
-    // then
-    assertEquals("category", exception.getField());
-    assertEquals("description should not be null or blank", exception.getMessage());
+  void givenNullDescription_whenCreating_thenThrowsException() {
+    expectFieldError(
+        "description should not be null or blank", () -> new ProductCategory("Name", null));
   }
 
   @Test
-  void givenBlankDescription_whenCreatingCategory_thenThrowsException() {
-    // given
-    String name = "Breadtopia";
-
-    // when
-    ProductDomainException exception =
-        assertThrows(ProductDomainException.class, () -> new ProductCategory(name, "   "));
-
-    // then
-    assertEquals("category", exception.getField());
-    assertEquals("description should not be null or blank", exception.getMessage());
+  void givenBlankDescription_whenCreating_thenThrowsException() {
+    expectFieldError(
+        "description should not be null or blank", () -> new ProductCategory("Name", "   "));
   }
 }
