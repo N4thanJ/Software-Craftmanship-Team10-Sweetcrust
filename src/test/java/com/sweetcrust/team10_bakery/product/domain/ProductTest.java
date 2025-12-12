@@ -11,218 +11,116 @@ import org.junit.jupiter.api.Test;
 
 public class ProductTest {
 
+  private void expectFieldError(String field, String message, Runnable action) {
+    ProductDomainException ex = assertThrows(ProductDomainException.class, action::run);
+    assertEquals(field, ex.getField());
+    assertEquals(message, ex.getMessage());
+  }
+
+  private Product createValidProduct() {
+    return new Product(
+        "Sassy Cinnamon Roll",
+        "A cinnamon roll with attitude",
+        BigDecimal.valueOf(4.20),
+        true,
+        new CategoryId());
+  }
+
   @Test
   void givenValidData_whenCreatingProduct_thenProductIsCreated() {
-    // given
-    String name = "Sassy Cinnamon Roll";
-    String description = "A cinnamon roll with attitude";
-    BigDecimal price = BigDecimal.valueOf(4.20);
-    CategoryId categoryId = new CategoryId();
-    boolean available = true;
+    Product product = createValidProduct();
 
-    // when
-    Product product = new Product(name, description, price, available, categoryId);
-
-    // then
     assertNotNull(product);
     assertNotNull(product.getProductId());
-    assertEquals(name, product.getName());
-    assertEquals(description, product.getDescription());
-    assertEquals(price, product.getBasePrice());
+    assertEquals("Sassy Cinnamon Roll", product.getName());
+    assertEquals("A cinnamon roll with attitude", product.getDescription());
+    assertEquals(BigDecimal.valueOf(4.20), product.getBasePrice());
     assertTrue(product.isAvailable());
-    assertEquals(categoryId, product.getCategoryId());
+    assertNotNull(product.getCategoryId());
   }
 
   @Test
-  void givenNullName_whenCreatingProduct_thenThrowsException() {
-    // given
-    BigDecimal price = BigDecimal.valueOf(3.50);
-    CategoryId categoryId = new CategoryId();
-    boolean available = true;
-
-    // when
-    ProductDomainException exception =
-        assertThrows(
-            ProductDomainException.class,
-            () -> new Product(null, "Magically delicious", price, available, categoryId));
-
-    // then
-    assertEquals("product", exception.getField());
-    assertEquals("name should not be blank or null", exception.getMessage());
+  void givenNullName_whenCreating_thenThrowsException() {
+    expectFieldError(
+        "product",
+        "name should not be blank or null",
+        () -> new Product(null, "desc", BigDecimal.ONE, true, new CategoryId()));
   }
 
   @Test
-  void givenBlankName_whenCreatingProduct_thenThrowsException() {
-    // given
-    BigDecimal price = BigDecimal.valueOf(3.50);
-    CategoryId categoryId = new CategoryId();
-    boolean available = true;
-
-    // when
-    ProductDomainException exception =
-        assertThrows(
-            ProductDomainException.class,
-            () -> new Product("   ", "Magically delicious", price, available, categoryId));
-
-    // then
-    assertEquals("product", exception.getField());
-    assertEquals("name should not be blank or null", exception.getMessage());
+  void givenBlankName_whenCreating_thenThrowsException() {
+    expectFieldError(
+        "product",
+        "name should not be blank or null",
+        () -> new Product("   ", "desc", BigDecimal.ONE, true, new CategoryId()));
   }
 
   @Test
-  void givenNullDescription_whenCreatingProduct_thenThrowsException() {
-    // given
-    BigDecimal price = BigDecimal.valueOf(5.00);
-    CategoryId categoryId = new CategoryId();
-    boolean available = true;
-
-    // when
-    ProductDomainException exception =
-        assertThrows(
-            ProductDomainException.class,
-            () -> new Product("Funky Monkey Muffin", null, price, available, categoryId));
-
-    // then
-    assertEquals("product", exception.getField());
-    assertEquals("description should not be blank or null", exception.getMessage());
+  void givenNullDescription_whenCreating_thenThrowsException() {
+    expectFieldError(
+        "product",
+        "description should not be blank or null",
+        () -> new Product("Prod", null, BigDecimal.ONE, true, new CategoryId()));
   }
 
   @Test
-  void givenBlankDescription_whenCreatingProduct_thenThrowsException() {
-    // given
-    BigDecimal price = BigDecimal.valueOf(5.00);
-    CategoryId categoryId = new CategoryId();
-    boolean available = true;
-
-    // when
-    ProductDomainException exception =
-        assertThrows(
-            ProductDomainException.class,
-            () -> new Product("Funky Monkey Muffin", "   ", price, available, categoryId));
-
-    // then
-    assertEquals("product", exception.getField());
-    assertEquals("description should not be blank or null", exception.getMessage());
+  void givenBlankDescription_whenCreating_thenThrowsException() {
+    expectFieldError(
+        "product",
+        "description should not be blank or null",
+        () -> new Product("Prod", "   ", BigDecimal.ONE, true, new CategoryId()));
   }
 
   @Test
-  void givenNullBasePrice_whenCreatingProduct_thenThrowsException() {
-    // given
-    CategoryId categoryId = new CategoryId();
-    boolean available = true;
-
-    // when
-    ProductDomainException exception =
-        assertThrows(
-            ProductDomainException.class,
-            () ->
-                new Product(
-                    "Glazed Unicorn Donut", "Sparkly and magical", null, available, categoryId));
-
-    // then
-    assertEquals("product", exception.getField());
-    assertEquals("basePrice should not be null", exception.getMessage());
+  void givenNullBasePrice_whenCreating_thenThrowsException() {
+    expectFieldError(
+        "product",
+        "basePrice should not be null",
+        () -> new Product("Prod", "desc", null, true, new CategoryId()));
   }
 
   @Test
-  void givenZeroBasePrice_whenCreatingProduct_thenThrowsException() {
-    // given
-    CategoryId categoryId = new CategoryId();
-    BigDecimal price = BigDecimal.ZERO;
-    boolean available = true;
-
-    // when
-    ProductDomainException exception =
-        assertThrows(
-            ProductDomainException.class,
-            () ->
-                new Product(
-                    "Baguette of Doom", "Seriously dangerous carbs", price, available, categoryId));
-
-    // then
-    assertEquals("product", exception.getField());
-    assertEquals("basePrice should be greater than 0", exception.getMessage());
+  void givenZeroBasePrice_whenCreating_thenThrowsException() {
+    expectFieldError(
+        "product",
+        "basePrice should be greater than 0",
+        () -> new Product("Prod", "desc", BigDecimal.ZERO, true, new CategoryId()));
   }
 
   @Test
-  void givenNegativeBasePrice_whenCreatingProduct_thenThrowsException() {
-    // given
-    CategoryId categoryId = new CategoryId();
-    BigDecimal price = BigDecimal.valueOf(-2.50);
-    boolean available = true;
-
-    // when
-    ProductDomainException exception =
-        assertThrows(
-            ProductDomainException.class,
-            () ->
-                new Product(
-                    "Eclair of Mystery", "Sweet, but suspicious", price, available, categoryId));
-
-    // then
-    assertEquals("product", exception.getField());
-    assertEquals("basePrice should be greater than 0", exception.getMessage());
+  void givenNegativeBasePrice_whenCreating_thenThrowsException() {
+    expectFieldError(
+        "product",
+        "basePrice should be greater than 0",
+        () -> new Product("Prod", "desc", BigDecimal.valueOf(-2.50), true, new CategoryId()));
   }
 
   @Test
-  void givenNullCategoryId_whenCreatingProduct_thenThrowsException() {
-    // given
-    BigDecimal price = BigDecimal.valueOf(3.75);
-    boolean available = true;
-
-    // when
-    ProductDomainException exception =
-        assertThrows(
-            ProductDomainException.class,
-            () ->
-                new Product(
-                    "Croissantzilla", "Monster-sized buttery delight", price, available, null));
-
-    // then
-    assertEquals("product", exception.getField());
-    assertEquals("categoryId should not be null", exception.getMessage());
+  void givenNullCategoryId_whenCreating_thenThrowsException() {
+    expectFieldError(
+        "product",
+        "categoryId should not be null",
+        () -> new Product("Prod", "desc", BigDecimal.ONE, true, null));
   }
 
   @Test
   void givenValidVariant_whenAddingVariant_thenVariantIsAdded() {
-    // given
-    Product product =
-        new Product(
-            "Chocolate Chip Cookie",
-            "Crispy edges and chewy center",
-            BigDecimal.valueOf(2.50),
-            true,
-            new CategoryId());
+    Product product = createValidProduct();
 
     ProductVariant variant =
         new ProductVariant(
-            ProductSize.REGULAR, "Standard Pack", BigDecimal.valueOf(0), product.getProductId());
+            ProductSize.REGULAR, "Standard Pack", BigDecimal.ZERO, product.getProductId());
 
-    // when
     product.addVariant(variant);
 
-    // then
     assertEquals(1, product.getVariants().size());
     assertTrue(product.getVariants().contains(variant));
   }
 
   @Test
   void givenNullVariant_whenAddingVariant_thenThrowsException() {
-    // given
-    Product product =
-        new Product(
-            "Vanilla Cupcake",
-            "Simple but elegant",
-            BigDecimal.valueOf(3.00),
-            true,
-            new CategoryId());
+    Product product = createValidProduct();
 
-    // when
-    ProductDomainException exception =
-        assertThrows(ProductDomainException.class, () -> product.addVariant(null));
-
-    // then
-    assertEquals("variant", exception.getField());
-    assertEquals("variant cannot be null", exception.getMessage());
+    expectFieldError("variant", "variant cannot be null", () -> product.addVariant(null));
   }
 }

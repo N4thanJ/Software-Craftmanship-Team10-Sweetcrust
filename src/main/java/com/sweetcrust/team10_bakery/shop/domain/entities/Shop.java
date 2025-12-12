@@ -14,9 +14,7 @@ public class Shop {
   @EmbeddedId private ShopId shopId;
 
   @Embedded
-  @AttributeOverrides({
-          @AttributeOverride(name = "id", column = @Column(name = "owner_user_id"))
-  })
+  @AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "owner_user_id"))})
   private UserId ownerId;
 
   private String name;
@@ -42,7 +40,9 @@ public class Shop {
     return shopId;
   }
 
-  public UserId getOwnerId() { return ownerId; }
+  public UserId getOwnerId() {
+    return ownerId;
+  }
 
   public String getName() {
     return name;
