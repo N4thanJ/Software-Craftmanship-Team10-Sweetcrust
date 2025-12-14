@@ -1,14 +1,21 @@
 # SweetCrust - Bakery Management System
 
-SweetCrust is an international modern bakery chain. This backend serves as the ordering system designed to enhance the customer experience of both regular customers as well as other branches of the SweetCrust chain. The platform allows customers and bakers to browse bakery items and create B2B or B2C online orders. The backend allows tracking throughout the whole process of the order, from confirmation to delivery, an order status is always available. 
-The system knows how to differentiate orders an applies the appropriate pricing policy for each type of order. Wholesale orders automatically get purchase prices while normal B2C orders get the normal selling price.
+SweetCrust is an international modern bakery chain. This backend powers the online ordering system for both retail customers (B2C) and business partners or branches (B2B).
 
-The system also supports the application of discount codes on orders to support promotional events and stimulate orders during specific time periods.
-Active discount code: `HAPPYNEWYEAR50` valid until 31/01/2026
+The platform allows customers and bakers to browse products, place orders, and track them through every stage from confirmation to delivery with real-time order status updates.
 
-Each shop is connected to their own inventory to make sure orders can only be made if the desired products are in stock. 
+The system automatically distinguishes between B2C and B2B orders and applies the correct pricing:
 
-Products each have multiple variants with their own price modifiers. Some variants might just be an increase or decrease in size whereas other products see changes in flavour or ingredients.
+- B2C orders use standard selling prices
+
+- B2B (wholesale) orders use purchase prices
+
+Discount codes are supported for promotions and seasonal events.
+Active discount code: HAPPYNEWYEAR50 (valid until 31/01/2026)
+
+Each shop is linked to its own inventory, ensuring orders can only be placed for items that are in stock.
+
+Products support multiple variants, each with its own price modifier. Variants may differ in size, flavor, or ingredients, with pricing adjusted accordingly.
 
 ## Event Storming
 https://miro.com/app/board/uXjVJBbweag=/
