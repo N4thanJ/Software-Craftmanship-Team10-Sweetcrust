@@ -115,7 +115,7 @@ After starting the application, you can access the documentation at:
 	- **KISS/DRY/YAGNI**: Simple structure, shared kernel for reuse, minimal accidental complexity.
 	- **Law of Demeter**: Controllers delegate to handlers; domain objects encapsulate invariants.
 	- **Composition over Inheritance**: Prefer assembling behavior via entities/value objects/policies.
-	- **Hollywood Principle**: Inversion fo control with Spring configuration and annotations.
+	- **Hollywood Principle**: Inversion of control with Spring configuration and annotations.
 
 - **Test & Development Patterns**:
 	- **TDD / Red-Green-Refactor**: Tests are organized per context at `team10_bakery`; presence suggests test-first is feasible, though not guaranteed.
