@@ -67,7 +67,7 @@ After starting the application, you can access the documentation at:
 	- Persistence: OrderRepository.
 - **Inventory**:
 	- Endpoints: InventoryRestController.
-	- Use cases: InventoryitemCommandHandler, queries in `application`.
+	- Use cases: InventoryItemCommandHandler, queries in `application`.
 	- Persistence: InvetoryitemRepository.
 	- Errors: InvetoryDomainException, InvetoryitemServiceException.
 - **Procuct, Shop, User**:
