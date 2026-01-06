@@ -62,7 +62,7 @@ public class Order {
 
   protected Order() {}
 
-  // Factory METHOD PATTERN
+  // PATTERN: FACTORY METHOD
   private Order(LocalDateTime requestedDeliveryDate) {
     this.orderId = new OrderId();
     this.orderDate = LocalDateTime.now();

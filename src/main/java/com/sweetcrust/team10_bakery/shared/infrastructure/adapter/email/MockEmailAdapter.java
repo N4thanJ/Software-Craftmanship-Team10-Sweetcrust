@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-// ADAPTER
+// PATTERN: ADAPTER
 @Component
 public class MockEmailAdapter implements EmailService {
 

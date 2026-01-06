@@ -49,7 +49,7 @@ public class CartItem {
     this.unitPrice = unitPrice;
   }
 
-  // FACTORY METHOD PATTERN
+  // PATTERN: FACTORY METHOD
   public static CartItem fromVariant(CartId cartId, ProductVariant variant, int quantity) {
     if (variant == null) {
       throw new CartDomainException("variant", "variant must not be null");

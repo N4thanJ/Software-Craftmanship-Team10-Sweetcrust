@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
+// Pattern: Observer
 @Component
 public class OrderEventPublisher implements EventPublisher {
   private final List<Observer> observers = new ArrayList<>();

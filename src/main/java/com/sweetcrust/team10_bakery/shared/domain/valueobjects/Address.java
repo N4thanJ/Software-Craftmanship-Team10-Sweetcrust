@@ -13,7 +13,7 @@ public class Address {
 
   protected Address() {}
 
-  // BUILDER PATTERN
+  // PATTERN: BUILDER
   private Address(AddressBuilder builder) {
     this.street = builder.street;
     this.city = builder.city;
